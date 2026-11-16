@@ -31,6 +31,7 @@ interface TopBarProps {
 const NAV_TITLES: Record<NavSection, string> = {
   home: 'Monitoring Peta Satelit & Ringkasan Transmisi',
   perangkat: 'Inventaris & Kondisi Perangkat',
+  sarana: 'Sarana & Prasarana Transmisi',
   teknisi: 'Profil Teknisi Satuan Transmisi',
   jadwal: 'Jadwal Tugas Teknisi Transmisi',
   laporan: 'Tiket & Riwayat Laporan Pemeliharaan',

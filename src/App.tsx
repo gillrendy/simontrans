@@ -5,6 +5,7 @@ import { HomeView } from './components/HomeView';
 import { JadwalView } from './components/JadwalView';
 import { LaporanView } from './components/LaporanView';
 import { PerangkatView } from './components/PerangkatView';
+import { SaranaPrasaranaView } from './components/SaranaPrasaranaView';
 import { Sidebar } from './components/Sidebar';
 import { TeknisiView } from './components/TeknisiView';
 import { TopBar } from './components/TopBar';
@@ -13,14 +14,14 @@ import {
   DeviceCategory,
   DeviceCondition,
   DeviceItem,
-  GenderType,
+  EmploymentStatus,
+  GenderCode,
   MaintenanceReport,
   NavSection,
   ReportPriority,
   ScheduleAssignment,
   Station,
   Technician,
-  TechnicianRoleStatus,
   TicketStatus,
   TransmisiDatabase,
   UserAccount,
@@ -28,8 +29,8 @@ import {
 } from './types/transmisi';
 import { formatNowWIB } from './utils/stationHelpers';
 
-const STORAGE_DB_KEY = 'simontrans_tvri_sumsel_db_v2';
-const STORAGE_USER_KEY = 'simontrans_tvri_user_v2';
+const STORAGE_DB_KEY = 'simontrans_tvri_sumsel_db_v3';
+const STORAGE_USER_KEY = 'simontrans_tvri_user_v3';
 const STORAGE_THEME_KEY = 'simontrans_sumsel_theme_v1';
 
 export default function App() {
@@ -62,22 +63,10 @@ export default function App() {
         const cached = localStorage.getItem(STORAGE_DB_KEY);
         if (cached) {
           const parsed = JSON.parse(cached) as TransmisiDatabase;
-          const mapRole = (r: string) =>
-            r === 'Ketua Tim' ? 'Koordinator Daerah' : r;
           setDb({
             ...parsed,
-            technicians: parsed.technicians.map((t) => ({
-              ...t,
-              roleStatus: mapRole(t.roleStatus) as TechnicianRoleStatus,
-            })),
-            users: parsed.users.map((u) => ({
-              ...u,
-              roleStatus: mapRole(u.roleStatus) as TechnicianRoleStatus | 'Koordinator',
-            })),
-            schedules: (parsed.schedules ?? []).map((s) => ({
-              ...s,
-              roleStatus: mapRole(s.roleStatus),
-            })),
+            schedules: parsed.schedules ?? [],
+            infrastructure: parsed.infrastructure ?? [],
           });
           setLoading(false);
           return;
@@ -114,6 +103,7 @@ export default function App() {
       const normalized: TransmisiDatabase = {
         ...data,
         schedules: data.schedules ?? [],
+        infrastructure: data.infrastructure ?? [],
       };
       setDb(normalized);
       localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(normalized));
@@ -356,61 +346,57 @@ export default function App() {
     fullName: string;
     role: UserRole;
     stationId: string;
-    roleStatus: TechnicianRoleStatus | 'Koordinator';
-    education: string;
-    gender: GenderType;
+    gender: GenderCode;
+    employmentStatus: EmploymentStatus;
+    jabatan: string;
     phone: string;
   }) => {
     if (!db) return;
     const st = db.stations.find((s) => s.id === payload.stationId);
     const region = st?.region ?? 'Palembang';
+    const newId = `usr-${Date.now()}`;
     const avatarKey =
       payload.role === 'Admin'
         ? 'coord_admin'
-        : payload.gender === 'Perempuan'
+        : payload.gender === 'P'
         ? 'tech_female_1'
         : 'tech_male_2';
 
     const newUser: UserAccount = {
-      id: `usr-${Date.now()}`,
+      id: newId,
       username: payload.username,
       password: payload.password,
       fullName: payload.fullName,
       role: payload.role,
       stationId: payload.stationId,
       region,
-      roleStatus: payload.roleStatus,
-      education: payload.education,
       gender: payload.gender,
-      phone: payload.phone,
+      employmentStatus: payload.employmentStatus,
+      jabatan: payload.jabatan,
+      onDuty: true,
+      shift: 'Pagi (07:00 - 15:00)',
+      phone: payload.phone || '0812-7000-0000',
       avatarKey,
     };
 
-    let nextTechs = db.technicians;
-    if (payload.role === 'Teknisi') {
-      const newTech: Technician = {
-        id: `tec-${Date.now()}`,
-        name: payload.fullName,
-        stationId: payload.stationId,
-        region,
-        roleStatus:
-          payload.roleStatus === 'Koordinator'
-            ? 'Koordinator Daerah'
-            : payload.roleStatus,
-        education: payload.education,
-        gender: payload.gender,
-        onDuty: true,
-        shift: 'Pagi (07:00 - 15:00)',
-        phone: payload.phone || '0812-7000-0000',
-        avatarKey,
-      };
-      nextTechs = [...db.technicians, newTech];
-    }
+    const newTech: Technician = {
+      id: newId,
+      name: payload.fullName,
+      stationId: payload.stationId,
+      region,
+      gender: payload.gender,
+      employmentStatus: payload.employmentStatus,
+      jabatan: payload.jabatan,
+      onDuty: true,
+      shift: 'Pagi (07:00 - 15:00)',
+      phone: payload.phone || '0812-7000-0000',
+      avatarKey,
+    };
 
     persistDb({
       ...db,
       users: [...db.users, newUser],
-      technicians: nextTechs,
+      technicians: [...db.technicians, newTech],
     });
   };
 
@@ -421,10 +407,11 @@ export default function App() {
     fullName: string;
     role: UserRole;
     stationId: string;
-    roleStatus: TechnicianRoleStatus | 'Koordinator';
-    education: string;
-    gender: GenderType;
+    gender: GenderCode;
+    employmentStatus: EmploymentStatus;
+    jabatan: string;
     phone: string;
+    onDuty: boolean;
     avatarDataUrl?: string | null;
   }) => {
     if (!db) return;
@@ -442,34 +429,55 @@ export default function App() {
             role: payload.role,
             stationId: payload.stationId,
             region,
-            roleStatus: payload.roleStatus,
-            education: payload.education,
             gender: payload.gender,
+            employmentStatus: payload.employmentStatus,
+            jabatan: payload.jabatan,
+            onDuty: payload.onDuty,
             phone: payload.phone,
             avatarDataUrl: payload.avatarDataUrl ?? u.avatarDataUrl ?? null,
           }
         : u
     );
 
-    const nextTechs = db.technicians.map((t) => {
-      if (oldUser && t.name === oldUser.fullName) {
-        return {
-          ...t,
-          name: payload.fullName,
-          stationId: payload.stationId,
-          region,
-          roleStatus:
-            payload.roleStatus === 'Koordinator'
-              ? 'Koordinator Daerah'
-              : payload.roleStatus,
-          education: payload.education,
-          gender: payload.gender,
-          phone: payload.phone || t.phone,
-          avatarDataUrl: payload.avatarDataUrl ?? t.avatarDataUrl ?? null,
-        };
-      }
-      return t;
-    });
+    const hasMatchingTech = db.technicians.some(
+      (t) => t.id === payload.id || (oldUser && t.name === oldUser.fullName)
+    );
+
+    const nextTechs = hasMatchingTech
+      ? db.technicians.map((t) => {
+          if (t.id === payload.id || (oldUser && t.name === oldUser.fullName)) {
+            return {
+              ...t,
+              name: payload.fullName,
+              stationId: payload.stationId,
+              region,
+              gender: payload.gender,
+              employmentStatus: payload.employmentStatus,
+              jabatan: payload.jabatan,
+              onDuty: payload.onDuty,
+              phone: payload.phone || t.phone,
+              avatarDataUrl: payload.avatarDataUrl ?? t.avatarDataUrl ?? null,
+            };
+          }
+          return t;
+        })
+      : [
+          ...db.technicians,
+          {
+            id: payload.id,
+            name: payload.fullName,
+            stationId: payload.stationId,
+            region,
+            gender: payload.gender,
+            employmentStatus: payload.employmentStatus,
+            jabatan: payload.jabatan,
+            onDuty: payload.onDuty,
+            shift: oldUser?.shift ?? 'Pagi (07:00 - 15:00)',
+            phone: payload.phone || '0812-7000-0000',
+            avatarKey: oldUser?.avatarKey ?? 'tech_male_1',
+            avatarDataUrl: payload.avatarDataUrl ?? oldUser?.avatarDataUrl ?? null,
+          },
+        ];
 
     persistDb({
       ...db,
@@ -480,9 +488,13 @@ export default function App() {
 
   const handleDeleteUser = (userId: string) => {
     if (!db || userId === currentUserId) return;
+    const targetUser = db.users.find((u) => u.id === userId);
     persistDb({
       ...db,
       users: db.users.filter((u) => u.id !== userId),
+      technicians: db.technicians.filter(
+        (t) => t.id !== userId && (!targetUser || t.name !== targetUser.fullName)
+      ),
     });
   };
 
@@ -743,6 +755,10 @@ export default function App() {
               devices={db.devices}
               onToggleDeviceCondition={handleToggleDeviceCondition}
             />
+          )}
+
+          {activeNav === 'sarana' && (
+            <SaranaPrasaranaView infrastructure={db.infrastructure} />
           )}
 
           {activeNav === 'teknisi' && (

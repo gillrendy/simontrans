@@ -173,6 +173,18 @@ export function SouthSumatraMap({
     }
   }, [layerMode]);
 
+  // Fit map bounds once when stations are available so all 11 sites are visible
+  const hasFittedBoundsRef = useRef(false);
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || stations.length === 0 || hasFittedBoundsRef.current) return;
+    const bounds = L.latLngBounds(
+      stations.map((s) => [s.latitude, s.longitude] as [number, number])
+    );
+    map.fitBounds(bounds.pad(0.18));
+    hasFittedBoundsRef.current = true;
+  }, [stations]);
+
   // Render & Update Transmitter Station Pins
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -647,7 +659,7 @@ export function SouthSumatraMap({
                                 {tech.name}
                               </div>
                               <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                                {tech.roleStatus} · {tech.education} · {tech.gender}
+                                {tech.jabatan} · {tech.employmentStatus} · Gender: {tech.gender}
                               </div>
                               <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
                                 {tech.shift} · {tech.phone}

@@ -1,4 +1,5 @@
 import {
+  Building2,
   CalendarDays,
   Cpu,
   Download,
@@ -39,6 +40,7 @@ export function Sidebar({
   }> = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'perangkat', label: 'Perangkat', icon: Cpu },
+    { id: 'sarana', label: 'Sarana Prasarana', icon: Building2 },
     { id: 'teknisi', label: 'Teknisi', icon: Users },
     { id: 'jadwal', label: 'Jadwal', icon: CalendarDays },
     {

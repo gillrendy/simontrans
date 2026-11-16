@@ -7,6 +7,7 @@ import {
   MapPin,
   Pencil,
   Plus,
+  Search,
   Trash2,
   Upload,
   UserPlus,
@@ -17,10 +18,10 @@ import {
   DeviceCategory,
   DeviceCondition,
   DeviceItem,
-  GenderType,
+  EmploymentStatus,
+  GenderCode,
   MaintenanceReport,
   Station,
-  TechnicianRoleStatus,
   TicketStatus,
   UserAccount,
   UserRole,
@@ -55,9 +56,9 @@ interface AdminViewProps {
     fullName: string;
     role: UserRole;
     stationId: string;
-    roleStatus: TechnicianRoleStatus | 'Koordinator';
-    education: string;
-    gender: GenderType;
+    gender: GenderCode;
+    employmentStatus: EmploymentStatus;
+    jabatan: string;
     phone: string;
   }) => void;
   onUpdateUser: (payload: {
@@ -67,10 +68,11 @@ interface AdminViewProps {
     fullName: string;
     role: UserRole;
     stationId: string;
-    roleStatus: TechnicianRoleStatus | 'Koordinator';
-    education: string;
-    gender: GenderType;
+    gender: GenderCode;
+    employmentStatus: EmploymentStatus;
+    jabatan: string;
     phone: string;
+    onDuty: boolean;
     avatarDataUrl?: string | null;
   }) => void;
   onDeleteUser: (userId: string) => void;
@@ -152,10 +154,12 @@ export function AdminView({
   const [uFullName, setUFullName] = useState('');
   const [uRole, setURole] = useState<UserRole>('Teknisi');
   const [uStationId, setUStationId] = useState(stations[0]?.id ?? '');
-  const [uRoleStatus, setURoleStatus] = useState<TechnicianRoleStatus | 'Koordinator'>('Operator');
-  const [uEducation, setUEducation] = useState('S1 Teknik Elektro');
-  const [uGender, setUGender] = useState<GenderType>('Laki-laki');
+  const [uEmploymentStatus, setUEmploymentStatus] = useState<EmploymentStatus>('PNS');
+  const [uJabatan, setUJabatan] = useState('Operator');
+  const [uGender, setUGender] = useState<GenderCode>('L');
   const [uPhone, setUPhone] = useState('0812-7000-0000');
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userStationFilter, setUserStationFilter] = useState<string>('all');
 
   // Edit user modal state
   const [editingUser, setEditingUser] = useState<UserAccount | null>(null);
@@ -164,10 +168,11 @@ export function AdminView({
   const [editPassword, setEditPassword] = useState('');
   const [editRole, setEditRole] = useState<UserRole>('Teknisi');
   const [editStationId, setEditStationId] = useState('');
-  const [editRoleStatus, setEditRoleStatus] = useState<TechnicianRoleStatus | 'Koordinator'>('Operator');
-  const [editEducation, setEditEducation] = useState('');
-  const [editGender, setEditGender] = useState<GenderType>('Laki-laki');
+  const [editEmploymentStatus, setEditEmploymentStatus] = useState<EmploymentStatus>('PNS');
+  const [editJabatan, setEditJabatan] = useState('Operator');
+  const [editGender, setEditGender] = useState<GenderCode>('L');
   const [editPhone, setEditPhone] = useState('');
+  const [editOnDuty, setEditOnDuty] = useState(true);
   const [editAvatarDataUrl, setEditAvatarDataUrl] = useState<string | null>(null);
 
   // Station coordinate form state
@@ -223,14 +228,14 @@ export function AdminView({
       fullName: uFullName.trim(),
       role: uRole,
       stationId: uStationId,
-      roleStatus: uRole === 'Admin' ? 'Koordinator' : uRoleStatus,
-      education: uEducation.trim(),
       gender: uGender,
-      phone: uPhone.trim(),
+      employmentStatus: uEmploymentStatus,
+      jabatan: uJabatan.trim() || 'Operator',
+      phone: uPhone.trim() || '0812-7000-0000',
     });
     setUUsername('');
     setUFullName('');
-    showFeedback(`Akun "${uFullName.trim()}" berhasil ditambahkan.`);
+    showFeedback(`Akun & profil teknisi "${uFullName.trim()}" berhasil ditambahkan.`);
   };
 
   const openEditUserModal = (user: UserAccount) => {
@@ -240,10 +245,11 @@ export function AdminView({
     setEditPassword(user.password);
     setEditRole(user.role);
     setEditStationId(user.stationId);
-    setEditRoleStatus(user.roleStatus);
-    setEditEducation(user.education);
+    setEditEmploymentStatus(user.employmentStatus);
+    setEditJabatan(user.jabatan);
     setEditGender(user.gender);
     setEditPhone(user.phone || '0812-7000-0000');
+    setEditOnDuty(user.onDuty);
     setEditAvatarDataUrl(user.avatarDataUrl ?? null);
   };
 
@@ -269,14 +275,15 @@ export function AdminView({
       fullName: editFullName.trim(),
       role: editRole,
       stationId: editStationId,
-      roleStatus: editRole === 'Admin' ? 'Koordinator' : editRoleStatus,
-      education: editEducation.trim(),
       gender: editGender,
+      employmentStatus: editEmploymentStatus,
+      jabatan: editJabatan.trim() || 'Operator',
       phone: editPhone.trim(),
+      onDuty: editOnDuty,
       avatarDataUrl: editAvatarDataUrl,
     });
     setEditingUser(null);
-    showFeedback(`Data user "${editFullName.trim()}" berhasil diperbarui.`);
+    showFeedback(`Data user "${editFullName.trim()}" berhasil diperbarui & disinkronkan.`);
   };
 
   const handleCreateStation = (e: React.FormEvent) => {
@@ -315,6 +322,21 @@ export function AdminView({
   const filteredDevices = devices.filter(
     (d) => devFilterStation === 'all' || d.stationId === devFilterStation
   );
+
+  const filteredUsers = users.filter((u) => {
+    if (userStationFilter !== 'all' && u.stationId !== userStationFilter) return false;
+    if (userSearchQuery.trim()) {
+      const q = userSearchQuery.toLowerCase();
+      return (
+        u.fullName.toLowerCase().includes(q) ||
+        u.username.toLowerCase().includes(q) ||
+        u.jabatan.toLowerCase().includes(q) ||
+        u.employmentStatus.toLowerCase().includes(q) ||
+        u.region.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -768,13 +790,13 @@ export function AdminView({
 
             <div>
               <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                Nama Lengkap &amp; Gelar
+                Nama Lengkap
               </label>
               <input
                 type="text"
                 value={uFullName}
                 onChange={(e) => setUFullName(e.target.value)}
-                placeholder="mis. Arif Darmawan, S.T."
+                placeholder="mis. Arif Darmawan"
                 className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
                 required
               />
@@ -815,31 +837,30 @@ export function AdminView({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  Status Jabatan
+                  Jabatan
                 </label>
                 <select
-                  value={uRoleStatus}
-                  onChange={(e) =>
-                    setURoleStatus(e.target.value as TechnicianRoleStatus)
-                  }
-                  disabled={uRole === 'Admin'}
-                  className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 disabled:opacity-50"
+                  value={uJabatan}
+                  onChange={(e) => setUJabatan(e.target.value)}
+                  className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
                 >
-                  <option value="Koordinator Daerah">Koordinator Daerah</option>
+                  <option value="Koordinator Teknik">Koordinator Teknik</option>
+                  <option value="Ketua Tim Palembang">Ketua Tim Palembang</option>
+                  <option value="Ketua Tim">Ketua Tim</option>
                   <option value="Operator">Operator</option>
                 </select>
               </div>
               <div>
                 <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  Gender
+                  Status Kepegawaian
                 </label>
                 <select
-                  value={uGender}
-                  onChange={(e) => setUGender(e.target.value as GenderType)}
+                  value={uEmploymentStatus}
+                  onChange={(e) => setUEmploymentStatus(e.target.value as EmploymentStatus)}
                   className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
                 >
-                  <option value="Laki-laki">Laki-laki</option>
-                  <option value="Perempuan">Perempuan</option>
+                  <option value="PNS">PNS</option>
+                  <option value="PPPK">PPPK</option>
                 </select>
               </div>
             </div>
@@ -847,19 +868,20 @@ export function AdminView({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  Pendidikan Terakhir
+                  Gender
                 </label>
-                <input
-                  type="text"
-                  value={uEducation}
-                  onChange={(e) => setUEducation(e.target.value)}
-                  className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
-                  required
-                />
+                <select
+                  value={uGender}
+                  onChange={(e) => setUGender(e.target.value as GenderCode)}
+                  className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
+                >
+                  <option value="L">L (Laki-laki)</option>
+                  <option value="P">P (Perempuan)</option>
+                </select>
               </div>
               <div>
                 <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  No. Telepon
+                  No. Telepon / HP
                 </label>
                 <input
                   type="text"
@@ -881,13 +903,38 @@ export function AdminView({
 
           {/* Users table with Edit (Pencil) & Delete (Trash) icons */}
           <div className="xl:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800">
+            <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2.5">
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                Daftar Akun Pengguna Terdaftar
+                Daftar Akun &amp; Teknisi ({filteredUsers.length})
               </h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                    placeholder="Cari nama, jabatan..."
+                    className="h-8 pl-8 pr-2.5 w-44 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
+                  />
+                </div>
+                <select
+                  value={userStationFilter}
+                  onChange={(e) => setUserStationFilter(e.target.value)}
+                  aria-label="Filter lokasi user"
+                  className="h-8 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-800 dark:text-slate-200"
+                >
+                  <option value="all">Semua Lokasi</option>
+                  {stations.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.region}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-            <div className="divide-y divide-slate-200 dark:divide-slate-800">
-              {users.map((u) => (
+            <div className="divide-y divide-slate-200 dark:divide-slate-800 max-h-[600px] overflow-y-auto">
+              {filteredUsers.map((u) => (
                 <div
                   key={u.id}
                   className="p-4 flex items-center justify-between gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
@@ -904,7 +951,7 @@ export function AdminView({
                         {u.fullName}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                        @{u.username} · {u.role} · {u.region} · {u.education}
+                        @{u.username} · {u.role} · {u.region} · {u.employmentStatus} · {u.jabatan} · {u.gender}
                       </div>
                     </div>
                   </div>
@@ -936,6 +983,11 @@ export function AdminView({
                   </div>
                 </div>
               ))}
+              {filteredUsers.length === 0 && (
+                <div className="py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                  Tidak ada user yang sesuai filter.
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1214,7 +1266,7 @@ export function AdminView({
 
               <div>
                 <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  Nama Lengkap &amp; Gelar
+                  Nama Lengkap
                 </label>
                 <input
                   type="text"
@@ -1287,31 +1339,32 @@ export function AdminView({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                    Status Jabatan
+                    Jabatan
                   </label>
                   <select
-                    value={editRoleStatus}
-                    onChange={(e) =>
-                      setEditRoleStatus(e.target.value as TechnicianRoleStatus)
-                    }
-                    disabled={editRole === 'Admin'}
-                    className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 disabled:opacity-50"
+                    value={editJabatan}
+                    onChange={(e) => setEditJabatan(e.target.value)}
+                    className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
                   >
-                    <option value="Koordinator Daerah">Koordinator Daerah</option>
+                    <option value="Koordinator Teknik">Koordinator Teknik</option>
+                    <option value="Ketua Tim Palembang">Ketua Tim Palembang</option>
+                    <option value="Ketua Tim">Ketua Tim</option>
                     <option value="Operator">Operator</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                    Gender
+                    Status Kepegawaian
                   </label>
                   <select
-                    value={editGender}
-                    onChange={(e) => setEditGender(e.target.value as GenderType)}
+                    value={editEmploymentStatus}
+                    onChange={(e) =>
+                      setEditEmploymentStatus(e.target.value as EmploymentStatus)
+                    }
                     className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
                   >
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
+                    <option value="PNS">PNS</option>
+                    <option value="PPPK">PPPK</option>
                   </select>
                 </div>
               </div>
@@ -1319,19 +1372,20 @@ export function AdminView({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                    Pendidikan Terakhir
+                    Gender
                   </label>
-                  <input
-                    type="text"
-                    value={editEducation}
-                    onChange={(e) => setEditEducation(e.target.value)}
-                    className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
-                    required
-                  />
+                  <select
+                    value={editGender}
+                    onChange={(e) => setEditGender(e.target.value as GenderCode)}
+                    className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
+                  >
+                    <option value="L">L (Laki-laki)</option>
+                    <option value="P">P (Perempuan)</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                    No. Telepon
+                    No. Telepon / HP
                   </label>
                   <input
                     type="text"
@@ -1341,6 +1395,16 @@ export function AdminView({
                   />
                 </div>
               </div>
+
+              <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 pt-1">
+                <input
+                  type="checkbox"
+                  checked={editOnDuty}
+                  onChange={(e) => setEditOnDuty(e.target.checked)}
+                  className="rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+                />
+                <span>Status Bertugas (On Duty)</span>
+              </label>
 
               <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-200 dark:border-slate-800">
                 <button

@@ -41,17 +41,17 @@ export interface Station {
   powerHistory: PowerReadingPoint[];
 }
 
-export type TechnicianRoleStatus = 'Koordinator Daerah' | 'Operator';
-export type GenderType = 'Laki-laki' | 'Perempuan';
+export type EmploymentStatus = 'PNS' | 'PPPK';
+export type GenderCode = 'L' | 'P';
 
 export interface Technician {
   id: string;
   name: string;
   stationId: string;
   region: string;
-  roleStatus: TechnicianRoleStatus;
-  education: string;
-  gender: GenderType;
+  gender: GenderCode;
+  employmentStatus: EmploymentStatus;
+  jabatan: string;
   onDuty: boolean;
   shift: string;
   phone: string;
@@ -100,10 +100,12 @@ export interface UserAccount {
   role: UserRole;
   stationId: string;
   region: string;
-  roleStatus: TechnicianRoleStatus | 'Koordinator';
-  education: string;
-  gender: GenderType;
-  phone?: string;
+  gender: GenderCode;
+  employmentStatus: EmploymentStatus;
+  jabatan: string;
+  onDuty: boolean;
+  shift: string;
+  phone: string;
   avatarKey: 'coord_admin' | 'tech_male_1' | 'tech_male_2' | 'tech_female_1';
   avatarDataUrl?: string | null;
 }
@@ -131,6 +133,24 @@ export interface ScheduleAssignment {
   notes?: string;
 }
 
+export interface InfrastructureItem {
+  id: string;
+  stationId: string;
+  stationName: string;
+  landArea: string;
+  landStatus: string;
+  txRoomArea: string;
+  txRoomCondition: string;
+  officialHouseCount: number;
+  officialHouseCondition: string;
+  gensetRoomArea: string;
+  gensetRoomCondition: string;
+  towerHeightM: number;
+  towerCondition: string;
+  antennaInfo: string;
+  coverageArea: string;
+}
+
 export interface TransmisiDatabase {
   stations: Station[];
   devices: DeviceItem[];
@@ -139,11 +159,13 @@ export interface TransmisiDatabase {
   users: UserAccount[];
   notifications: AppNotification[];
   schedules: ScheduleAssignment[];
+  infrastructure: InfrastructureItem[];
 }
 
 export type NavSection =
   | 'home'
   | 'perangkat'
+  | 'sarana'
   | 'teknisi'
   | 'jadwal'
   | 'laporan'

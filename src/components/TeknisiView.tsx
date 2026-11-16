@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { MapPin, Phone, Search } from 'lucide-react';
-import { Station, Technician } from '../types/transmisi';
+import { MapPin, Phone, Search, Users } from 'lucide-react';
+import { EmploymentStatus, Station, Technician } from '../types/transmisi';
 import { TechAvatar } from './TechAvatar';
 
 interface TeknisiViewProps {
@@ -10,30 +10,86 @@ interface TeknisiViewProps {
 
 export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
   const [regionFilter, setRegionFilter] = useState<string>('all');
-  const [roleFilter, setRoleFilter] = useState<'all' | 'Koordinator Daerah' | 'Operator'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | EmploymentStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredTechs = technicians.filter((t) => {
     if (regionFilter !== 'all' && t.stationId !== regionFilter) return false;
-    if (roleFilter !== 'all' && t.roleStatus !== roleFilter) return false;
+    if (statusFilter !== 'all' && t.employmentStatus !== statusFilter) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       return (
         t.name.toLowerCase().includes(q) ||
-        t.education.toLowerCase().includes(q) ||
+        t.jabatan.toLowerCase().includes(q) ||
+        t.employmentStatus.toLowerCase().includes(q) ||
         t.region.toLowerCase().includes(q)
       );
     }
     return true;
   });
 
-  // Group by station/region
   const groupedStations = stations.filter(
     (s) => regionFilter === 'all' || s.id === regionFilter
   );
 
+  const totalPns = technicians.filter((t) => t.employmentStatus === 'PNS').length;
+  const totalPppk = technicians.filter((t) => t.employmentStatus === 'PPPK').length;
+  const totalOnDuty = technicians.filter((t) => t.onDuty).length;
+
   return (
     <div className="space-y-6">
+      {/* Compact KPI summary */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+            <span>Total Personel Transmisi</span>
+          </div>
+          <div className="text-2xl font-semibold font-mono tabular-nums text-slate-900 dark:text-slate-100 mt-1">
+            {technicians.length} Orang
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Tersinkronisasi dengan Kelola User
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-500 dark:text-slate-400">
+            Status PNS
+          </div>
+          <div className="text-2xl font-semibold font-mono tabular-nums text-sky-600 dark:text-sky-400 mt-1">
+            {totalPns} Orang
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Pegawai Negeri Sipil
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-500 dark:text-slate-400">
+            Status PPPK
+          </div>
+          <div className="text-2xl font-semibold font-mono tabular-nums text-slate-900 dark:text-slate-100 mt-1">
+            {totalPppk} Orang
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Pegawai Pemerintah dengan Perjanjian Kerja
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+          <div className="text-xs text-slate-500 dark:text-slate-400">
+            Aktif On Duty
+          </div>
+          <div className="text-2xl font-semibold font-mono tabular-nums text-emerald-600 dark:text-emerald-400 mt-1">
+            {totalOnDuty} Orang
+          </div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Bertugas di {new Set(technicians.map((t) => t.stationId)).size} lokasi satuan
+          </div>
+        </div>
+      </div>
+
       {/* Filter toolbar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
@@ -43,7 +99,7 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari nama, pendidikan, daerah..."
+              placeholder="Cari nama, jabatan, daerah..."
               className="h-9 pl-9 pr-3 w-64 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
           </div>
@@ -64,18 +120,18 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
         </div>
 
         <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
-          {(['all', 'Koordinator Daerah', 'Operator'] as const).map((r) => (
+          {(['all', 'PNS', 'PPPK'] as const).map((st) => (
             <button
-              key={r}
+              key={st}
               type="button"
-              onClick={() => setRoleFilter(r)}
+              onClick={() => setStatusFilter(st)}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                roleFilter === r
+                statusFilter === st
                   ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              {r === 'all' ? 'Semua Status' : r}
+              {st === 'all' ? 'Semua Status' : st}
             </button>
           ))}
         </div>
@@ -85,7 +141,10 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
       <div className="space-y-6">
         {groupedStations.map((station) => {
           const regionTechs = filteredTechs.filter((t) => t.stationId === station.id);
-          if (regionTechs.length === 0 && searchQuery.trim()) return null;
+          const hasAnyStaffInStation = technicians.some((t) => t.stationId === station.id);
+          if (regionTechs.length === 0 && (searchQuery.trim() || statusFilter !== 'all')) {
+            return null;
+          }
 
           return (
             <section
@@ -106,7 +165,9 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
 
               {regionTechs.length === 0 ? (
                 <div className="px-5 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-                  Tidak ada petugas yang sesuai filter di daerah ini.
+                  {hasAnyStaffInStation
+                    ? 'Tidak ada petugas yang sesuai filter di daerah ini.'
+                    : 'Belum ada petugas penempatan tetap pada satuan transmisi ini (pemantauan jarak jauh / off-air).'}
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-y md:divide-y-0 md:gap-px bg-slate-200 dark:bg-slate-800">
@@ -139,13 +200,23 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
 
                         <div className="text-xs text-slate-600 dark:text-slate-300 space-y-0.5">
                           <div>
-                            Status:{' '}
+                            Jabatan:{' '}
                             <span className="font-semibold text-slate-900 dark:text-slate-100">
-                              {tech.roleStatus}
+                              {tech.jabatan}
                             </span>
                           </div>
-                          <div>Pendidikan: {tech.education}</div>
-                          <div>Gender: {tech.gender}</div>
+                          <div>
+                            Status:{' '}
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                              {tech.employmentStatus}
+                            </span>
+                          </div>
+                          <div>
+                            Gender:{' '}
+                            <span>
+                              {tech.gender === 'L' ? 'Laki-laki (L)' : 'Perempuan (P)'}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">

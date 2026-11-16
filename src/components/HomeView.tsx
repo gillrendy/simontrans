@@ -281,7 +281,7 @@ export function HomeView({
                       {tech.name}
                     </div>
                     <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                      {tech.region} · {tech.roleStatus}
+                      {tech.region} · {tech.jabatan} · {tech.employmentStatus}
                     </div>
                   </div>
                 </div>

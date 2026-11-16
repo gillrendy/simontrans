@@ -55,12 +55,42 @@ export function JadwalView({
   };
 
   const handleDownloadTemplate = () => {
+    const csvEscape = (val: string) =>
+      val.includes(',') || val.includes('"') ? `"${val.replace(/"/g, '""')}"` : val;
+
+    const sampleTechs = technicians.slice(0, 6);
+    const dayBuckets: ScheduleDayBucket[] = ['Kemarin', 'Hari Ini', 'Besok'];
+    const dateMap: Record<ScheduleDayBucket, string> = {
+      Kemarin: '15 Agu 2026',
+      'Hari Ini': '16 Agu 2026',
+      Besok: '17 Agu 2026',
+    };
+
+    const sampleRows =
+      sampleTechs.length > 0
+        ? sampleTechs.map((t, idx) => {
+            const bucket = dayBuckets[idx % dayBuckets.length];
+            const st = stations.find((s) => s.id === t.stationId);
+            const loc = st?.region ?? t.region;
+            return [
+              bucket,
+              dateMap[bucket],
+              csvEscape(loc),
+              csvEscape(t.name),
+              csvEscape(t.jabatan),
+              csvEscape(t.shift || 'Pagi (07:00 - 15:00)'),
+              csvEscape(`Monitoring rutin Satuan Transmisi ${loc}`),
+            ].join(',');
+          })
+        : [
+            'Kemarin,15 Agu 2026,Palembang,Agil Yurendi,Operator,Pagi (07:00 - 15:00),Monitoring MUX',
+            'Hari Ini,16 Agu 2026,Palembang,Sutio,Ketua Tim Palembang,Pagi (07:00 - 15:00),Koordinasi TX',
+            'Besok,17 Agu 2026,Prabumulih,Karsim,Ketua Tim,Pagi (07:00 - 15:00),Pengecekan pemancar & genset',
+          ];
+
     const csvLines = [
       'hari,tanggal,lokasi,nama_teknisi,peran,shift,catatan',
-      'Kemarin,15 Nov 2026,Palembang,Andika Putra,Operator,Pagi (07:00 - 15:00),Monitoring MUX',
-      'Hari Ini,16 Nov 2026,Palembang,"Rendra Pratama, S.T.",Koordinator Daerah,Pagi (07:00 - 15:00),Koordinasi TX',
-      'Hari Ini,16 Nov 2026,Lubuklinggau,"Dimas Nugroho, S.T.",Koordinator Daerah,Pagi (07:00 - 15:00),Pengecekan UPS',
-      'Besok,17 Nov 2026,Prabumulih,"Dian Anggraini, A.Md.",Operator,Pagi (07:00 - 15:00),Uji dummy load',
+      ...sampleRows,
     ];
     const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
