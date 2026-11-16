@@ -15,8 +15,8 @@ export function LoginScreen({
   onToggleDarkMode,
   onLoginSuccess,
 }: LoginScreenProps) {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('admin123');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,16 +33,6 @@ export function LoginScreen({
     setError(null);
     onLoginSuccess(matched);
   };
-
-  const quickFill = (u: UserAccount) => {
-    setUsername(u.username);
-    setPassword(u.password);
-    setError(null);
-    onLoginSuccess(u);
-  };
-
-  const adminDemo = users.find((u) => u.role === 'Admin');
-  const techDemo = users.find((u) => u.role === 'Teknisi');
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center items-center p-4">
@@ -90,6 +80,8 @@ export function LoginScreen({
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              placeholder="Masukkan username"
+              autoComplete="username"
               className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
               required
             />
@@ -103,6 +95,8 @@ export function LoginScreen({
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Masukkan password"
+              autoComplete="current-password"
               className="w-full h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
               required
             />
@@ -123,40 +117,8 @@ export function LoginScreen({
           </button>
         </form>
 
-        <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
-          <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Akses Cepat Uji Peran (Data Statis JSON)
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {adminDemo && (
-              <button
-                type="button"
-                onClick={() => quickFill(adminDemo)}
-                className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-              >
-                <div className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-                  Admin / Koordinator
-                </div>
-                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                  {adminDemo.username} · {adminDemo.password}
-                </div>
-              </button>
-            )}
-            {techDemo && (
-              <button
-                type="button"
-                onClick={() => quickFill(techDemo)}
-                className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-left hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-              >
-                <div className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-                  Teknisi Lapangan
-                </div>
-                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                  {techDemo.username} · {techDemo.password}
-                </div>
-              </button>
-            )}
-          </div>
+        <div className="pt-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          Masuk menggunakan akun Administrator / Koordinator atau akun Teknisi Satuan Transmisi TVRI Sumatera Selatan.
         </div>
       </div>
     </div>

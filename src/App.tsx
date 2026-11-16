@@ -29,7 +29,7 @@ import {
 import { formatNowWIB } from './utils/stationHelpers';
 
 const STORAGE_DB_KEY = 'simontrans_tvri_sumsel_db_v2';
-const STORAGE_USER_KEY = 'simontrans_sumsel_user_v1';
+const STORAGE_USER_KEY = 'simontrans_tvri_user_v2';
 const STORAGE_THEME_KEY = 'simontrans_sumsel_theme_v1';
 
 export default function App() {
@@ -38,7 +38,7 @@ export default function App() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(() => {
-    return localStorage.getItem(STORAGE_USER_KEY) || 'usr-admin';
+    return localStorage.getItem(STORAGE_USER_KEY);
   });
   const [activeNav, setActiveNav] = useState<NavSection>('home');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
