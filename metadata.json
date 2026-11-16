@@ -2,5 +2,7 @@
   "name": "SIMONTRANS Sumsel — Monitoring Transmisi & Multipleksing",
   "description": "Web dashboard monitoring kondisi satuan transmisi dan multipleksing wilayah Sumatera Selatan dengan peta interaktif, data daya pemancar, manajemen perangkat, profil teknisi, sistem tiket laporan, dan panel admin berbasis JSON lokal.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
