@@ -200,20 +200,24 @@ export default function App() {
     persistDb({ ...db, stations: nextStations });
   };
 
-  const handleToggleDeviceCondition = (deviceId: string) => {
+  const handleUpdateDeviceCondition = (
+    deviceId: string,
+    nextCondition: DeviceCondition
+  ) => {
     if (!db) return;
     const nowLabel = formatNowWIB().replace(' WIB', '');
     const nextDevices: DeviceItem[] = db.devices.map((d) => {
       if (d.id !== deviceId) return d;
-      const nextCond = d.condition === 'Normal' ? 'Rusak' : 'Normal';
       return {
         ...d,
-        condition: nextCond,
-        active: nextCond === 'Normal',
+        condition: nextCondition,
+        active: nextCondition !== 'Rusak',
         lastChecked: nowLabel,
         notes:
-          nextCond === 'Normal'
+          nextCondition === 'Normal'
             ? 'Perangkat dipulihkan dan beroperasi normal'
+            : nextCondition === 'Proses Perbaikan'
+            ? 'Dalam proses perbaikan oleh tim teknis'
             : 'Ditandai rusak oleh petugas monitoring',
       };
     });
@@ -237,7 +241,7 @@ export default function App() {
       category: payload.category,
       brandModel: payload.brandModel,
       condition: payload.condition,
-      active: payload.condition === 'Normal',
+      active: payload.condition !== 'Rusak',
       lastChecked: nowLabel,
       notes: payload.notes,
     };
@@ -793,7 +797,8 @@ export default function App() {
             <PerangkatView
               stations={db.stations}
               devices={db.devices}
-              onToggleDeviceCondition={handleToggleDeviceCondition}
+              userRole={currentUser.role}
+              onUpdateDeviceCondition={handleUpdateDeviceCondition}
             />
           )}
 
@@ -832,12 +837,15 @@ export default function App() {
             <AdminView
               stations={db.stations}
               devices={db.devices}
+              technicians={db.technicians}
+              infrastructure={db.infrastructure}
               reports={db.reports}
               users={db.users}
               currentUser={currentUser}
               onUpdateReportStatus={handleUpdateReportStatus}
               onDeleteReport={handleDeleteReport}
               onAddDevice={handleAddDevice}
+              onUpdateDeviceCondition={handleUpdateDeviceCondition}
               onDeleteDevice={handleDeleteDevice}
               onAddUser={handleAddUser}
               onUpdateUser={handleUpdateUser}

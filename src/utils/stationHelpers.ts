@@ -1,6 +1,6 @@
 import { DeviceItem, Station } from '../types/transmisi';
 
-export type StationHealth = 'Normal' | 'Gangguan Parsial' | 'Kritis';
+export type StationHealth = 'Normal' | 'Aktif Parsial' | 'Kritis';
 
 export function getStationHealth(
   station: Station,
@@ -8,30 +8,32 @@ export function getStationHealth(
 ): {
   health: StationHealth;
   normalCount: number;
+  repairCount: number;
   faultCount: number;
   totalCount: number;
 } {
   const stationDevices = devices.filter((d) => d.stationId === station.id);
   const faultCount = stationDevices.filter((d) => d.condition === 'Rusak').length;
-  const normalCount = stationDevices.length - faultCount;
+  const repairCount = stationDevices.filter(
+    (d) => d.condition === 'Proses Perbaikan'
+  ).length;
+  const normalCount = stationDevices.filter((d) => d.condition === 'Normal').length;
 
   const transmitterFault = stationDevices.some(
     (d) => d.category === 'Pemancar' && d.condition === 'Rusak'
   );
 
   let health: StationHealth = 'Normal';
-  if (transmitterFault || station.forwardPowerKw <= 0 || faultCount >= 2) {
-    health = faultCount > 0 && transmitterFault ? 'Kritis' : faultCount >= 2 ? 'Gangguan Parsial' : 'Kritis';
-    if (!transmitterFault && station.forwardPowerKw > 0 && faultCount >= 1) {
-      health = 'Gangguan Parsial';
-    }
-  } else if (faultCount > 0) {
-    health = 'Gangguan Parsial';
+  if (transmitterFault || (station.forwardPowerKw <= 0 && repairCount === 0)) {
+    health = 'Kritis';
+  } else if (repairCount > 0 || faultCount > 0) {
+    health = 'Aktif Parsial';
   }
 
   return {
     health,
     normalCount,
+    repairCount,
     faultCount,
     totalCount: stationDevices.length,
   };

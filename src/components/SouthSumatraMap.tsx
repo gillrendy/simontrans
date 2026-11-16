@@ -200,14 +200,14 @@ export function SouthSumatraMap({
       const pinBg =
         health === 'Normal'
           ? '#16A34A'
-          : health === 'Gangguan Parsial'
-          ? '#D97706'
+          : health === 'Aktif Parsial'
+          ? '#F97316'
           : '#DC2626';
 
       const innerGlyph =
         health === 'Normal'
           ? '<span style="width:8px;height:8px;border-radius:9999px;background:#fff;display:block;"></span>'
-          : health === 'Gangguan Parsial'
+          : health === 'Aktif Parsial'
           ? '<span style="color:#fff;font-size:11px;font-weight:700;line-height:1;">!</span>'
           : '<span style="color:#fff;font-size:11px;font-weight:700;line-height:1;">&times;</span>';
 
@@ -304,9 +304,9 @@ export function SouthSumatraMap({
             <CheckCircle2 className="w-3.5 h-3.5" />
             <span>Normal</span>
           </span>
-          <span className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-medium">
+          <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-medium">
             <AlertTriangle className="w-3.5 h-3.5" />
-            <span>Gangguan Parsial</span>
+            <span>Aktif Parsial</span>
           </span>
           <span className="flex items-center gap-1.5 text-red-700 dark:text-red-400 font-medium">
             <XCircle className="w-3.5 h-3.5" />
@@ -383,8 +383,8 @@ export function SouthSumatraMap({
                       className={`text-[11px] font-medium ${
                         health === 'Normal'
                           ? 'text-emerald-600 dark:text-emerald-400'
-                          : health === 'Gangguan Parsial'
-                          ? 'text-amber-600 dark:text-amber-400'
+                          : health === 'Aktif Parsial'
+                          ? 'text-orange-600 dark:text-orange-400'
                           : 'text-red-600 dark:text-red-400'
                       }`}
                     >
@@ -696,6 +696,10 @@ export function SouthSumatraMap({
                           {stationDevices.filter((d) => d.condition === 'Normal').length} Normal
                         </span>
                         {' · '}
+                        <span className="text-orange-600 dark:text-orange-400 font-medium">
+                          {stationDevices.filter((d) => d.condition === 'Proses Perbaikan').length} Perbaikan
+                        </span>
+                        {' · '}
                         <span className="text-red-600 dark:text-red-400 font-medium">
                           {stationDevices.filter((d) => d.condition === 'Rusak').length} Rusak
                         </span>
@@ -704,6 +708,7 @@ export function SouthSumatraMap({
                     <div className="divide-y divide-slate-200 dark:divide-slate-800">
                       {stationDevices.map((dev) => {
                         const isNormal = dev.condition === 'Normal';
+                        const isRepair = dev.condition === 'Proses Perbaikan';
                         return (
                           <div key={dev.id} className="py-2.5 first:pt-0 last:pb-0 flex items-start justify-between gap-3">
                             <div className="min-w-0">
@@ -721,16 +726,24 @@ export function SouthSumatraMap({
                               className={`text-xs font-semibold whitespace-nowrap shrink-0 flex items-center gap-1 ${
                                 isNormal
                                   ? 'text-emerald-600 dark:text-emerald-400'
+                                  : isRepair
+                                  ? 'text-orange-600 dark:text-orange-400'
                                   : 'text-red-600 dark:text-red-400'
                               }`}
                             >
                               {isNormal ? (
                                 <CheckCircle2 className="w-3.5 h-3.5" />
+                              ) : isRepair ? (
+                                <AlertTriangle className="w-3.5 h-3.5" />
                               ) : (
                                 <XCircle className="w-3.5 h-3.5" />
                               )}
                               <span>
-                                {dev.condition} - {dev.active ? 'Aktif' : 'Tidak Aktif'}
+                                {isNormal
+                                  ? 'Normal - Aktif'
+                                  : isRepair
+                                  ? 'Proses Perbaikan - Aktif Parsial'
+                                  : 'Rusak - Tidak Aktif'}
                               </span>
                             </div>
                           </div>

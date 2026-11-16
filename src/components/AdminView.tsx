@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
-  CheckCircle2,
   Cpu,
   Download,
+  FileBarChart2,
   FileCheck2,
   MapPin,
   Pencil,
@@ -12,7 +12,6 @@ import {
   Upload,
   UserPlus,
   X,
-  XCircle,
 } from 'lucide-react';
 import {
   DeviceCategory,
@@ -20,18 +19,23 @@ import {
   DeviceItem,
   EmploymentStatus,
   GenderCode,
+  InfrastructureItem,
   MaintenanceReport,
   Station,
+  Technician,
   TicketStatus,
   UserAccount,
   UserRole,
 } from '../types/transmisi';
 import { ConfirmModal } from './ConfirmModal';
+import { MonthlyReportModal } from './MonthlyReportModal';
 import { TechAvatar } from './TechAvatar';
 
 interface AdminViewProps {
   stations: Station[];
   devices: DeviceItem[];
+  technicians: Technician[];
+  infrastructure: InfrastructureItem[];
   reports: MaintenanceReport[];
   users: UserAccount[];
   currentUser: UserAccount;
@@ -49,6 +53,7 @@ interface AdminViewProps {
     notes: string;
     condition: DeviceCondition;
   }) => void;
+  onUpdateDeviceCondition: (deviceId: string, condition: DeviceCondition) => void;
   onDeleteDevice: (deviceId: string) => void;
   onAddUser: (payload: {
     username: string;
@@ -123,12 +128,15 @@ const SHIFT_OPTIONS = [
 export function AdminView({
   stations,
   devices,
+  technicians,
+  infrastructure,
   reports,
   users,
   currentUser,
   onUpdateReportStatus,
   onDeleteReport,
   onAddDevice,
+  onUpdateDeviceCondition,
   onDeleteDevice,
   onAddUser,
   onUpdateUser,
@@ -139,6 +147,7 @@ export function AdminView({
   onResetLocalData,
 }: AdminViewProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>('laporan');
+  const [monthlyReportOpen, setMonthlyReportOpen] = useState(false);
 
   // Report processing & delete confirmation state
   const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>({});
@@ -219,7 +228,13 @@ export function AdminView({
       category: devCategory,
       stationId: devStationId,
       brandModel: devBrandModel.trim(),
-      notes: devNotes.trim() || (devCondition === 'Normal' ? 'Beroperasi normal' : 'Memerlukan perbaikan'),
+      notes:
+        devNotes.trim() ||
+        (devCondition === 'Normal'
+          ? 'Beroperasi normal'
+          : devCondition === 'Proses Perbaikan'
+          ? 'Sedang dalam proses perbaikan teknis'
+          : 'Memerlukan perbaikan'),
       condition: devCondition,
     });
     setDevName('');
@@ -406,7 +421,7 @@ export function AdminView({
           </button>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={onResetLocalData}
@@ -421,6 +436,14 @@ export function AdminView({
           >
             <Download className="w-3.5 h-3.5" />
             <span>Ekspor transmisi.json</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMonthlyReportOpen(true)}
+            className="px-3.5 py-2 rounded-lg bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 text-xs font-semibold flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0"
+          >
+            <FileBarChart2 className="w-3.5 h-3.5" />
+            <span>Buat Laporan Bulanan</span>
           </button>
         </div>
       </div>
@@ -644,6 +667,7 @@ export function AdminView({
                 className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
               >
                 <option value="Normal">Normal - Aktif</option>
+                <option value="Proses Perbaikan">Proses Perbaikan - Aktif Parsial</option>
                 <option value="Rusak">Rusak - Tidak Aktif</option>
               </select>
             </div>
@@ -694,6 +718,7 @@ export function AdminView({
                   {filteredDevices.map((dev) => {
                     const st = stations.find((s) => s.id === dev.stationId);
                     const isNormal = dev.condition === 'Normal';
+                    const isRepair = dev.condition === 'Proses Perbaikan';
                     return (
                       <tr key={dev.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
                         <td className="py-3 px-4">
@@ -714,22 +739,30 @@ export function AdminView({
                           {dev.brandModel}
                         </td>
                         <td className="py-3 px-3 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1 font-semibold ${
+                          <select
+                            value={dev.condition}
+                            onChange={(e) => {
+                              const nextCond = e.target.value as DeviceCondition;
+                              onUpdateDeviceCondition(dev.id, nextCond);
+                              showFeedback(
+                                `Status "${dev.name}" diubah menjadi "${nextCond}".`
+                              );
+                            }}
+                            aria-label={`Status perangkat ${dev.name}`}
+                            className={`h-8 px-2 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500 ${
                               isNormal
                                 ? 'text-emerald-600 dark:text-emerald-400'
+                                : isRepair
+                                ? 'text-orange-600 dark:text-orange-400'
                                 : 'text-red-600 dark:text-red-400'
                             }`}
                           >
-                            {isNormal ? (
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                            ) : (
-                              <XCircle className="w-3.5 h-3.5" />
-                            )}
-                            <span>
-                              {dev.condition} - {dev.active ? 'Aktif' : 'Tidak Aktif'}
-                            </span>
-                          </span>
+                            <option value="Normal">Normal - Aktif</option>
+                            <option value="Proses Perbaikan">
+                              Proses Perbaikan - Aktif Parsial
+                            </option>
+                            <option value="Rusak">Rusak - Tidak Aktif</option>
+                          </select>
                         </td>
                         <td className="py-3 px-4 text-right whitespace-nowrap">
                           <button
@@ -1501,6 +1534,16 @@ export function AdminView({
           }
           setConfirmDeleteReportId(null);
         }}
+      />
+
+      {/* Modal Buat Laporan Bulanan */}
+      <MonthlyReportModal
+        open={monthlyReportOpen}
+        onClose={() => setMonthlyReportOpen(false)}
+        stations={stations}
+        devices={devices}
+        infrastructure={infrastructure}
+        technicians={technicians}
       />
     </div>
   );

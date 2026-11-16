@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  AlertTriangle,
   ArrowRight,
   CheckCircle2,
   ClipboardList,
@@ -51,6 +52,11 @@ export function HomeView({
     (d) =>
       (chartStationFilter === 'all' || d.stationId === chartStationFilter) &&
       d.condition === 'Normal'
+  ).length;
+  const totalRepairDevices = devices.filter(
+    (d) =>
+      (chartStationFilter === 'all' || d.stationId === chartStationFilter) &&
+      d.condition === 'Proses Perbaikan'
   ).length;
   const totalFaultDevices = devices.filter(
     (d) =>
@@ -116,12 +122,16 @@ export function HomeView({
               {devices.filter((d) => d.condition === 'Normal').length}
             </span>
             <span className="text-slate-400 mx-1">/</span>
+            <span className="text-orange-600 dark:text-orange-400">
+              {devices.filter((d) => d.condition === 'Proses Perbaikan').length}
+            </span>
+            <span className="text-slate-400 mx-1">/</span>
             <span className="text-red-600 dark:text-red-400">
               {devices.filter((d) => d.condition === 'Rusak').length}
             </span>
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Normal / Rusak
+            Normal / Perbaikan / Rusak
           </div>
         </div>
 
@@ -178,10 +188,14 @@ export function HomeView({
             </select>
           </div>
 
-          <div className="flex items-center gap-4 text-xs pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex flex-wrap items-center gap-4 text-xs pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
             <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span className="font-mono tabular-nums">{totalNormalDevices}</span> Normal
+            </span>
+            <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-medium">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              <span className="font-mono tabular-nums">{totalRepairDevices}</span> Perbaikan
             </span>
             <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-medium">
               <XCircle className="w-3.5 h-3.5" />
@@ -209,8 +223,8 @@ export function HomeView({
                         className={
                           health === 'Normal'
                             ? 'text-emerald-600 dark:text-emerald-400'
-                            : health === 'Gangguan Parsial'
-                            ? 'text-amber-600 dark:text-amber-400'
+                            : health === 'Aktif Parsial'
+                            ? 'text-orange-600 dark:text-orange-400'
                             : 'text-red-600 dark:text-red-400'
                         }
                       >
@@ -223,8 +237,8 @@ export function HomeView({
                       className={`h-full transition-all duration-300 ${
                         health === 'Normal'
                           ? 'bg-emerald-500'
-                          : health === 'Gangguan Parsial'
-                          ? 'bg-amber-500'
+                          : health === 'Aktif Parsial'
+                          ? 'bg-orange-500'
                           : 'bg-red-500'
                       }`}
                       style={{ width: `${Math.max(powerPct, devicePct > 0 ? 8 : 0)}%` }}

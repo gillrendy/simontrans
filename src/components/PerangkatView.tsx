@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  AlertTriangle,
   BatteryCharging,
   CheckCircle2,
   Cpu,
@@ -13,12 +14,14 @@ import {
   DeviceCondition,
   DeviceItem,
   Station,
+  UserRole,
 } from '../types/transmisi';
 
 interface PerangkatViewProps {
   stations: Station[];
   devices: DeviceItem[];
-  onToggleDeviceCondition: (deviceId: string) => void;
+  userRole: UserRole;
+  onUpdateDeviceCondition: (deviceId: string, nextCondition: DeviceCondition) => void;
 }
 
 const CATEGORIES: Array<{
@@ -56,7 +59,8 @@ const CATEGORIES: Array<{
 export function PerangkatView({
   stations,
   devices,
-  onToggleDeviceCondition,
+  userRole,
+  onUpdateDeviceCondition,
 }: PerangkatViewProps) {
   const [selectedCategory, setSelectedCategory] = useState<DeviceCategory | 'all'>('all');
   const [selectedStation, setSelectedStation] = useState<string>('all');
@@ -95,6 +99,9 @@ export function PerangkatView({
               (selectedStation === 'all' || d.stationId === selectedStation)
           );
           const normalCount = catDevices.filter((d) => d.condition === 'Normal').length;
+          const repairCount = catDevices.filter(
+            (d) => d.condition === 'Proses Perbaikan'
+          ).length;
           const faultCount = catDevices.filter((d) => d.condition === 'Rusak').length;
           const isSelected = selectedCategory === cat.id;
 
@@ -120,9 +127,18 @@ export function PerangkatView({
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-1">
                 {cat.desc}
               </p>
-              <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-mono tabular-nums">
+              <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 text-xs font-mono tabular-nums">
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">
                   {normalCount} Normal
+                </span>
+                <span
+                  className={`font-medium ${
+                    repairCount > 0
+                      ? 'text-orange-600 dark:text-orange-400'
+                      : 'text-slate-400 dark:text-slate-500'
+                  }`}
+                >
+                  {repairCount} Perbaikan
                 </span>
                 <span
                   className={`font-medium ${
@@ -169,8 +185,8 @@ export function PerangkatView({
         </div>
 
         {/* Segmented condition filter */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
-          {(['all', 'Normal', 'Rusak'] as const).map((cond) => (
+        <div className="flex flex-wrap items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
+          {(['all', 'Normal', 'Proses Perbaikan', 'Rusak'] as const).map((cond) => (
             <button
               key={cond}
               type="button"
@@ -224,13 +240,14 @@ export function PerangkatView({
                         <th className="py-2.5 px-4">Merek / Tipe</th>
                         <th className="py-2.5 px-4">Catatan Teknis</th>
                         <th className="py-2.5 px-4">Status Kondisi</th>
-                        <th className="py-2.5 px-5 text-right">Uji / Ubah Status</th>
+                        <th className="py-2.5 px-5 text-right">Ubah Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-xs">
                       {rows.map((dev) => {
                         const st = stations.find((s) => s.id === dev.stationId);
                         const isNormal = dev.condition === 'Normal';
+                        const isRepair = dev.condition === 'Proses Perbaikan';
                         return (
                           <tr
                             key={dev.id}
@@ -253,27 +270,58 @@ export function PerangkatView({
                                 className={`inline-flex items-center gap-1.5 font-semibold ${
                                   isNormal
                                     ? 'text-emerald-600 dark:text-emerald-400'
+                                    : isRepair
+                                    ? 'text-orange-600 dark:text-orange-400'
                                     : 'text-red-600 dark:text-red-400'
                                 }`}
                               >
                                 {isNormal ? (
                                   <CheckCircle2 className="w-3.5 h-3.5" />
+                                ) : isRepair ? (
+                                  <AlertTriangle className="w-3.5 h-3.5" />
                                 ) : (
                                   <XCircle className="w-3.5 h-3.5" />
                                 )}
                                 <span>
-                                  {dev.condition} - {dev.active ? 'Aktif' : 'Tidak Aktif'}
+                                  {isNormal
+                                    ? 'Normal - Aktif'
+                                    : isRepair
+                                    ? 'Proses Perbaikan - Aktif Parsial'
+                                    : 'Rusak - Tidak Aktif'}
                                 </span>
                               </span>
                             </td>
                             <td className="py-3 px-5 text-right whitespace-nowrap">
-                              <button
-                                type="button"
-                                onClick={() => onToggleDeviceCondition(dev.id)}
-                                className="px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 text-[11px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                              >
-                                {isNormal ? 'Tandai Rusak' : 'Pulihkan Normal'}
-                              </button>
+                              {userRole === 'Admin' ? (
+                                <select
+                                  value={dev.condition}
+                                  onChange={(e) =>
+                                    onUpdateDeviceCondition(
+                                      dev.id,
+                                      e.target.value as DeviceCondition
+                                    )
+                                  }
+                                  aria-label={`Ubah status ${dev.name}`}
+                                  className="h-8 px-2.5 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-[11px] font-medium text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                                >
+                                  <option value="Normal">Normal</option>
+                                  <option value="Proses Perbaikan">Proses Perbaikan</option>
+                                  <option value="Rusak">Rusak</option>
+                                </select>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    onUpdateDeviceCondition(
+                                      dev.id,
+                                      isNormal ? 'Rusak' : 'Normal'
+                                    )
+                                  }
+                                  className="px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700 text-[11px] font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                  {isNormal ? 'Tandai Rusak' : 'Pulihkan Normal'}
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );

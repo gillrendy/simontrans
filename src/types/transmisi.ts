@@ -4,7 +4,7 @@ export type DeviceCategory =
   | 'Pendukung'
   | 'Kelistrikan';
 
-export type DeviceCondition = 'Normal' | 'Rusak';
+export type DeviceCondition = 'Normal' | 'Proses Perbaikan' | 'Rusak';
 
 export interface DeviceItem {
   id: string;
