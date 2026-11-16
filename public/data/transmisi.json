@@ -1,0 +1,560 @@
+{
+  "stations": [
+    {
+      "id": "st-plg",
+      "code": "TX-PLG-01",
+      "name": "Satuan Transmisi Palembang",
+      "region": "Palembang",
+      "address": "Jl. Gubernur H.A. Bastari, Jakabaring, Kota Palembang",
+      "latitude": -3.0165,
+      "longitude": 104.7812,
+      "channelFreq": "MUX Ch 29 UHF · 538 MHz",
+      "maxCapacityKw": 10.0,
+      "forwardPowerKw": 8.65,
+      "reflectedPowerW": 42,
+      "lastPowerInputBy": "Rendra Pratama",
+      "lastPowerUpdatedAt": "2026-11-16 07:45 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 8.5, "reflectedW": 38 },
+        { "time": "03:00", "powerKw": 8.55, "reflectedW": 40 },
+        { "time": "04:00", "powerKw": 8.6, "reflectedW": 41 },
+        { "time": "05:00", "powerKw": 8.62, "reflectedW": 40 },
+        { "time": "06:00", "powerKw": 8.64, "reflectedW": 43 },
+        { "time": "07:00", "powerKw": 8.65, "reflectedW": 42 }
+      ]
+    },
+    {
+      "id": "st-pbm",
+      "code": "TX-PBM-02",
+      "name": "Satuan Transmisi Prabumulih",
+      "region": "Prabumulih",
+      "address": "Kel. Cambai, Kec. Cambai, Kota Prabumulih",
+      "latitude": -3.4188,
+      "longitude": 104.2425,
+      "channelFreq": "MUX Ch 32 UHF · 562 MHz",
+      "maxCapacityKw": 5.0,
+      "forwardPowerKw": 4.25,
+      "reflectedPowerW": 28,
+      "lastPowerInputBy": "Bagus Saputra",
+      "lastPowerUpdatedAt": "2026-11-16 07:30 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 4.2, "reflectedW": 26 },
+        { "time": "03:00", "powerKw": 4.22, "reflectedW": 27 },
+        { "time": "04:00", "powerKw": 4.21, "reflectedW": 28 },
+        { "time": "05:00", "powerKw": 4.24, "reflectedW": 27 },
+        { "time": "06:00", "powerKw": 4.26, "reflectedW": 29 },
+        { "time": "07:00", "powerKw": 4.25, "reflectedW": 28 }
+      ]
+    },
+    {
+      "id": "st-llg",
+      "code": "TX-LLG-03",
+      "name": "Satuan Transmisi Lubuklinggau",
+      "region": "Lubuklinggau",
+      "address": "Kawasan Bukit Sulap, Kec. Lubuklinggau Utara II",
+      "latitude": -3.2856,
+      "longitude": 102.8619,
+      "channelFreq": "MUX Ch 27 UHF · 522 MHz",
+      "maxCapacityKw": 5.0,
+      "forwardPowerKw": 3.85,
+      "reflectedPowerW": 64,
+      "lastPowerInputBy": "Dimas Nugroho",
+      "lastPowerUpdatedAt": "2026-11-16 07:15 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 4.4, "reflectedW": 32 },
+        { "time": "03:00", "powerKw": 4.35, "reflectedW": 35 },
+        { "time": "04:00", "powerKw": 4.1, "reflectedW": 49 },
+        { "time": "05:00", "powerKw": 3.9, "reflectedW": 61 },
+        { "time": "06:00", "powerKw": 3.88, "reflectedW": 63 },
+        { "time": "07:00", "powerKw": 3.85, "reflectedW": 64 }
+      ]
+    },
+    {
+      "id": "st-btr",
+      "code": "TX-BTR-04",
+      "name": "Satuan Transmisi Baturaja",
+      "region": "Ogan Komering Ulu",
+      "address": "Bukit Kemiling, Kec. Baturaja Timur, OKU",
+      "latitude": -4.1292,
+      "longitude": 104.1674,
+      "channelFreq": "MUX Ch 35 UHF · 586 MHz",
+      "maxCapacityKw": 3.0,
+      "forwardPowerKw": 2.68,
+      "reflectedPowerW": 19,
+      "lastPowerInputBy": "Fajar Kurniawan",
+      "lastPowerUpdatedAt": "2026-11-16 07:40 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 2.65, "reflectedW": 18 },
+        { "time": "03:00", "powerKw": 2.66, "reflectedW": 19 },
+        { "time": "04:00", "powerKw": 2.68, "reflectedW": 19 },
+        { "time": "05:00", "powerKw": 2.67, "reflectedW": 20 },
+        { "time": "06:00", "powerKw": 2.68, "reflectedW": 19 },
+        { "time": "07:00", "powerKw": 2.68, "reflectedW": 19 }
+      ]
+    },
+    {
+      "id": "st-lht",
+      "code": "TX-LHT-05",
+      "name": "Satuan Transmisi Lahat",
+      "region": "Lahat",
+      "address": "Desa Bukit Besar, Kec. Merapi Barat, Kab. Lahat",
+      "latitude": -3.7945,
+      "longitude": 103.5411,
+      "channelFreq": "MUX Ch 31 UHF · 554 MHz",
+      "maxCapacityKw": 3.0,
+      "forwardPowerKw": 0.0,
+      "reflectedPowerW": 0,
+      "lastPowerInputBy": "Hendra Wijaya",
+      "lastPowerUpdatedAt": "2026-11-16 06:50 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 2.55, "reflectedW": 24 },
+        { "time": "03:00", "powerKw": 2.54, "reflectedW": 25 },
+        { "time": "04:00", "powerKw": 2.52, "reflectedW": 29 },
+        { "time": "05:00", "powerKw": 1.2, "reflectedW": 88 },
+        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
+        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 }
+      ]
+    },
+    {
+      "id": "st-sky",
+      "code": "TX-SKY-06",
+      "name": "Satuan Transmisi Sekayu",
+      "region": "Musi Banyuasin",
+      "address": "Kel. Balai Agung, Kec. Sekayu, Musi Banyuasin",
+      "latitude": -2.8859,
+      "longitude": 103.8414,
+      "channelFreq": "MUX Ch 34 UHF · 578 MHz",
+      "maxCapacityKw": 2.5,
+      "forwardPowerKw": 2.18,
+      "reflectedPowerW": 15,
+      "lastPowerInputBy": "Nadia Permata",
+      "lastPowerUpdatedAt": "2026-11-16 07:38 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 2.15, "reflectedW": 15 },
+        { "time": "03:00", "powerKw": 2.16, "reflectedW": 16 },
+        { "time": "04:00", "powerKw": 2.17, "reflectedW": 15 },
+        { "time": "05:00", "powerKw": 2.18, "reflectedW": 15 },
+        { "time": "06:00", "powerKw": 2.18, "reflectedW": 15 },
+        { "time": "07:00", "powerKw": 2.18, "reflectedW": 15 }
+      ]
+    },
+    {
+      "id": "st-pga",
+      "code": "TX-PGA-07",
+      "name": "Satuan Transmisi Pagar Alam",
+      "region": "Pagar Alam",
+      "address": "Lereng Gunung Dempo, Kec. Pagar Alam Utara",
+      "latitude": -4.0219,
+      "longitude": 103.2498,
+      "channelFreq": "MUX Ch 38 UHF · 610 MHz",
+      "maxCapacityKw": 2.0,
+      "forwardPowerKw": 1.82,
+      "reflectedPowerW": 14,
+      "lastPowerInputBy": "Ilham Ramadhan",
+      "lastPowerUpdatedAt": "2026-11-16 07:20 WIB",
+      "powerHistory": [
+        { "time": "02:00", "powerKw": 1.8, "reflectedW": 13 },
+        { "time": "03:00", "powerKw": 1.81, "reflectedW": 14 },
+        { "time": "04:00", "powerKw": 1.82, "reflectedW": 14 },
+        { "time": "05:00", "powerKw": 1.81, "reflectedW": 14 },
+        { "time": "06:00", "powerKw": 1.82, "reflectedW": 14 },
+        { "time": "07:00", "powerKw": 1.82, "reflectedW": 14 }
+      ]
+    }
+  ],
+  "devices": [
+    { "id": "dev-plg-1", "stationId": "st-plg", "name": "Multiplexer DVB-T2", "category": "Input / Headend", "brandModel": "Harmonic ProStream X", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:30", "notes": "Bitrate MUX stabil 34.2 Mbps" },
+    { "id": "dev-plg-2", "stationId": "st-plg", "name": "Encoder HD/SD", "category": "Input / Headend", "brandModel": "Ateme TITAN Live", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:30", "notes": "12 layanan program aktif" },
+    { "id": "dev-plg-3", "stationId": "st-plg", "name": "STL Fiber & IP Receiver", "category": "Input / Headend", "brandModel": "Cisco ASR 920", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:30", "notes": "Link utama & backup sinkron" },
+    { "id": "dev-plg-4", "stationId": "st-plg", "name": "Pemancar Utama UHF 10 kW", "category": "Pemancar", "brandModel": "Rohde & Schwarz THU9evo", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:45", "notes": "Output 8.65 kW, MER 34.8 dB" },
+    { "id": "dev-plg-5", "stationId": "st-plg", "name": "Liquid Cooling System", "category": "Pendukung", "brandModel": "R&S Pump Unit Dual", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:40", "notes": "Suhu coolant 36.4°C" },
+    { "id": "dev-plg-6", "stationId": "st-plg", "name": "AC Presisi Ruang TX", "category": "Pendukung", "brandModel": "Stulz CyberAir 20 kW", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:40", "notes": "Suhu ruang 21.5°C, RH 48%" },
+    { "id": "dev-plg-7", "stationId": "st-plg", "name": "Dehydrator & Antena Panel", "category": "Pendukung", "brandModel": "Spinner 8-Bay UHF", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:40", "notes": "Tekanan feeder 0.25 bar" },
+    { "id": "dev-plg-8", "stationId": "st-plg", "name": "UPS 40 kVA Online", "category": "Kelistrikan", "brandModel": "APC Symmetra PX", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Beban 54%, baterai 100%" },
+    { "id": "dev-plg-9", "stationId": "st-plg", "name": "Genset 100 kVA + ATS", "category": "Kelistrikan", "brandModel": "Perkins 1104C", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Standby auto, solar 82%" },
+    { "id": "dev-plg-10", "stationId": "st-plg", "name": "Gardu PLN & Grounding", "category": "Kelistrikan", "brandModel": "TM 20 kV · R < 1.2 Ohm", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Tegangan 380V seimbang" },
+
+    { "id": "dev-pbm-1", "stationId": "st-pbm", "name": "IRD & Remux Input", "category": "Input / Headend", "brandModel": "Appear TV XC5000", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:25", "notes": "Lock satelit & FO aman" },
+    { "id": "dev-pbm-2", "stationId": "st-pbm", "name": "Pemancar Solid-State 5 kW", "category": "Pemancar", "brandModel": "GatesAir Maxiva ULXTE", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:30", "notes": "Output 4.25 kW, VSWR 1.12" },
+    { "id": "dev-pbm-3", "stationId": "st-pbm", "name": "Cooling & Blower Rack", "category": "Pendukung", "brandModel": "GatesAir Liquid Loop", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:25", "notes": "Aliran normal 18 L/min" },
+    { "id": "dev-pbm-4", "stationId": "st-pbm", "name": "Dummy Load 5 kW", "category": "Pendukung", "brandModel": "Bird 8931A", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:25", "notes": "Siap uji beban" },
+    { "id": "dev-pbm-5", "stationId": "st-pbm", "name": "UPS 20 kVA", "category": "Kelistrikan", "brandModel": "Eaton 93E", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:20", "notes": "Normal, backup time 35 mnt" },
+    { "id": "dev-pbm-6", "stationId": "st-pbm", "name": "Genset 60 kVA + ATS", "category": "Kelistrikan", "brandModel": "Cummins 4BTA", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:20", "notes": "Normal - aktif standby" },
+
+    { "id": "dev-llg-1", "stationId": "st-llg", "name": "Encoder & IP Multiplexer", "category": "Input / Headend", "brandModel": "Harmonic Electra", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:10", "notes": "Transport stream sinkron" },
+    { "id": "dev-llg-2", "stationId": "st-llg", "name": "Pemancar UHF 5 kW", "category": "Pemancar", "brandModel": "Plisch T5000", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:15", "notes": "Daya diturunkan ke 3.85 kW" },
+    { "id": "dev-llg-3", "stationId": "st-llg", "name": "Dehydrator Coax Line", "category": "Pendukung", "brandModel": "Andrew MT050", "condition": "Rusak", "active": false, "lastChecked": "2026-11-16 07:15", "notes": "Kompresor alarm tekanan rendah" },
+    { "id": "dev-llg-4", "stationId": "st-llg", "name": "AC Ruang Pemancar Unit 1", "category": "Pendukung", "brandModel": "Daikin Split Duct 5 PK", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:10", "notes": "Suhu ruang 23.8°C" },
+    { "id": "dev-llg-5", "stationId": "st-llg", "name": "UPS 20 kVA", "category": "Kelistrikan", "brandModel": "Riello Multi Sentry", "condition": "Rusak", "active": false, "lastChecked": "2026-11-16 07:12", "notes": "Modul inverter fault, bypass PLN" },
+    { "id": "dev-llg-6", "stationId": "st-llg", "name": "Genset 50 kVA", "category": "Kelistrikan", "brandModel": "Yanmar 4TNV98", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:12", "notes": "Normal - aktif standby" },
+
+    { "id": "dev-btr-1", "stationId": "st-btr", "name": "Receiver Satelit & Remux", "category": "Input / Headend", "brandModel": "Ericsson RX8200", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Eb/N0 11.4 dB stabil" },
+    { "id": "dev-btr-2", "stationId": "st-btr", "name": "Pemancar DVB-T2 3 kW", "category": "Pemancar", "brandModel": "DB Elettronica MozArt", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:40", "notes": "Output 2.68 kW normal" },
+    { "id": "dev-btr-3", "stationId": "st-btr", "name": "Cooling & Antena 4-Bay", "category": "Pendukung", "brandModel": "Kathrein UHF Panel", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Reflected power 19 W" },
+    { "id": "dev-btr-4", "stationId": "st-btr", "name": "UPS 15 kVA & Genset 40 kVA", "category": "Kelistrikan", "brandModel": "Socomec + Perkins", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Gardu PLN & ATS normal" },
+
+    { "id": "dev-lht-1", "stationId": "st-lht", "name": "STL & Headend Receiver", "category": "Input / Headend", "brandModel": "Appear TV XC", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 06:50", "notes": "Input sinyal tersedia via backup" },
+    { "id": "dev-lht-2", "stationId": "st-lht", "name": "Pemancar Utama 3 kW", "category": "Pemancar", "brandModel": "Vigintos VTX-3000", "condition": "Rusak", "active": false, "lastChecked": "2026-11-16 06:50", "notes": "PA Module 2 overheat proteksi trip" },
+    { "id": "dev-lht-3", "stationId": "st-lht", "name": "AC Ruang Pemancar", "category": "Pendukung", "brandModel": "Mitsubishi Inverter 3 PK", "condition": "Rusak", "active": false, "lastChecked": "2026-11-16 06:50", "notes": "Kontaktor outdoor rusak, suhu naik 34°C" },
+    { "id": "dev-lht-4", "stationId": "st-lht", "name": "UPS 15 kVA", "category": "Kelistrikan", "brandModel": "APC Smart-UPS RT", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 06:50", "notes": "Normal mensuplai rack headend" },
+    { "id": "dev-lht-5", "stationId": "st-lht", "name": "Genset 40 kVA & Gardu PLN", "category": "Kelistrikan", "brandModel": "Kubota + Panel ATS", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 06:50", "notes": "Suplai listrik PLN normal" },
+
+    { "id": "dev-sky-1", "stationId": "st-sky", "name": "Headend IRD & TS Adapter", "category": "Input / Headend", "brandModel": "Sencore MRD 7000", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Sinyal DVB-S2X lock 100%" },
+    { "id": "dev-sky-2", "stationId": "st-sky", "name": "Pemancar UHF 2.5 kW", "category": "Pemancar", "brandModel": "Rohde & Schwarz TMV9", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:38", "notes": "Output 2.18 kW stabil" },
+    { "id": "dev-sky-3", "stationId": "st-sky", "name": "Cooling Fan & Dummy Load", "category": "Pendukung", "brandModel": "R&S Air Cooled", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Temperatur modul 41°C" },
+    { "id": "dev-sky-4", "stationId": "st-sky", "name": "UPS 10 kVA & Grounding", "category": "Kelistrikan", "brandModel": "Eaton 9PX", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:35", "notes": "Normal - aktif" },
+
+    { "id": "dev-pga-1", "stationId": "st-pga", "name": "Receiver Microwave & STL", "category": "Input / Headend", "brandModel": "Ceragon IP-20", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:20", "notes": "RSL -48 dBm stabil" },
+    { "id": "dev-pga-2", "stationId": "st-pga", "name": "Pemancar UHF 2 kW", "category": "Pemancar", "brandModel": "GatesAir Maxiva VAXT", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:20", "notes": "Output 1.82 kW normal" },
+    { "id": "dev-pga-3", "stationId": "st-pga", "name": "Antena & Obstacle Light", "category": "Pendukung", "brandModel": "RFS 4-Bay + LED Beacon", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:20", "notes": "Sensor cahaya & proteksi petir aman" },
+    { "id": "dev-pga-4", "stationId": "st-pga", "name": "Genset 30 kVA & ATS", "category": "Kelistrikan", "brandModel": "Isuzu 4JB1", "condition": "Normal", "active": true, "lastChecked": "2026-11-16 07:20", "notes": "Normal - aktif" }
+  ],
+  "technicians": [
+    { "id": "tec-01", "name": "Rendra Pratama, S.T.", "stationId": "st-plg", "region": "Palembang", "roleStatus": "Koordinator Daerah", "education": "S1 Teknik Elektro", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7104-8821", "avatarKey": "tech_male_1" },
+    { "id": "tec-02", "name": "Siti Rahma Sari, A.Md.T.", "stationId": "st-plg", "region": "Palembang", "roleStatus": "Operator", "education": "D3 Teknik Telekomunikasi", "gender": "Perempuan", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-6782-1190", "avatarKey": "tech_female_1" },
+    { "id": "tec-03", "name": "Andika Putra", "stationId": "st-plg", "region": "Palembang", "roleStatus": "Operator", "education": "D3 Teknik Elektronika", "gender": "Laki-laki", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0852-6891-4430", "avatarKey": "tech_male_2" },
+
+    { "id": "tec-04", "name": "Bagus Saputra, S.T.", "stationId": "st-pbm", "region": "Prabumulih", "roleStatus": "Koordinator Daerah", "education": "S1 Teknik Telekomunikasi", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7341-0922", "avatarKey": "tech_male_1" },
+    { "id": "tec-05", "name": "Dian Anggraini, A.Md.", "stationId": "st-pbm", "region": "Prabumulih", "roleStatus": "Operator", "education": "D3 Teknik Komputer", "gender": "Perempuan", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0821-8100-5567", "avatarKey": "tech_female_1" },
+
+    { "id": "tec-06", "name": "Dimas Nugroho, S.T.", "stationId": "st-llg", "region": "Lubuklinggau", "roleStatus": "Koordinator Daerah", "education": "S1 Teknik Elektro", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-7392-4410", "avatarKey": "tech_male_2" },
+    { "id": "tec-07", "name": "Yoga Prasetyo", "stationId": "st-llg", "region": "Lubuklinggau", "roleStatus": "Operator", "education": "SMK Teknik Elektronika Industri", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0853-8410-2219", "avatarKey": "tech_male_1" },
+
+    { "id": "tec-08", "name": "Fajar Kurniawan, A.Md.T.", "stationId": "st-btr", "region": "Ogan Komering Ulu", "roleStatus": "Koordinator Daerah", "education": "D3 Teknik Telekomunikasi", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7890-3321", "avatarKey": "tech_male_1" },
+    { "id": "tec-09", "name": "Rizky Maulana", "stationId": "st-btr", "region": "Ogan Komering Ulu", "roleStatus": "Operator", "education": "SMK Teknik Jaringan", "gender": "Laki-laki", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0822-7911-8834", "avatarKey": "tech_male_2" },
+
+    { "id": "tec-10", "name": "Hendra Wijaya, S.T.", "stationId": "st-lht", "region": "Lahat", "roleStatus": "Koordinator Daerah", "education": "S1 Teknik Elektro", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7199-6601", "avatarKey": "tech_male_1" },
+    { "id": "tec-11", "name": "Taufik Hidayat", "stationId": "st-lht", "region": "Lahat", "roleStatus": "Operator", "education": "D3 Teknik Listrik", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-6655-9082", "avatarKey": "tech_male_2" },
+
+    { "id": "tec-12", "name": "Nadia Permata, S.T.", "stationId": "st-sky", "region": "Musi Banyuasin", "roleStatus": "Koordinator Daerah", "education": "S1 Teknik Telekomunikasi", "gender": "Perempuan", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0811-7840-1129", "avatarKey": "tech_female_1" },
+    { "id": "tec-13", "name": "Arif Budiman", "stationId": "st-sky", "region": "Musi Banyuasin", "roleStatus": "Operator", "education": "SMK Teknik Elektro", "gender": "Laki-laki", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0852-7312-9904", "avatarKey": "tech_male_2" },
+
+    { "id": "tec-14", "name": "Ilham Ramadhan, A.Md.", "stationId": "st-pga", "region": "Pagar Alam", "roleStatus": "Koordinator Daerah", "education": "D3 Teknik Elektronika", "gender": "Laki-laki", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7765-3091", "avatarKey": "tech_male_2" }
+  ],
+  "reports": [
+    {
+      "id": "TIK-2026-041",
+      "stationId": "st-lht",
+      "subject": "Pemancar Utama Trip Overheat & AC Ruang TX Mati",
+      "description": "Pada pukul 05:15 WIB kontaktor unit outdoor AC ruang pemancar putus akibat lonjakan tegangan, menyebabkan suhu ruangan naik hingga 34°C dan PA Module 2 pemancar Vigintos melakukan proteksi trip. Saat ini transmisi off-air menunggu penggantian kontaktor.",
+      "attachmentName": "foto_panel_ac_lahat.jpg",
+      "priority": "Urgent",
+      "status": "Laporan diproses",
+      "submittedBy": "Hendra Wijaya, S.T.",
+      "createdAt": "2026-11-16 05:30 WIB",
+      "updatedAt": "2026-11-16 06:45 WIB",
+      "adminNote": "Tim mekanik & suku cadang kontaktor 3 phase sudah diberangkatkan dari Palembang menuju Lahat.",
+      "history": [
+        { "status": "Pengajuan", "timestamp": "2026-11-16 05:30 WIB", "actor": "Hendra Wijaya, S.T.", "note": "Laporan insiden dikirim dari lokasi Lahat." },
+        { "status": "Laporan diterima", "timestamp": "2026-11-16 05:42 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Tiket diverifikasi prioritas Urgent." },
+        { "status": "Laporan diproses", "timestamp": "2026-11-16 06:45 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Tim teknisi kelistrikan dikirim dengan suku cadang pengganti." }
+      ]
+    },
+    {
+      "id": "TIK-2026-040",
+      "stationId": "st-llg",
+      "subject": "Alarm Inverter UPS 20 kVA & Kompresor Dehydrator",
+      "description": "UPS Riello mengalami alarm inverter fault sejak pukul 04:00 WIB sehingga otomatis berpindah ke mode bypass PLN. Bersamaan dengan itu dehydrator coax line tekanan turun di bawah 0.1 bar. Daya pemancar sementara diturunkan ke 3.85 kW untuk menjaga keamanan feeder.",
+      "attachmentName": "log_alarm_ups_llg.pdf",
+      "priority": "Urgent",
+      "status": "Laporan diterima",
+      "submittedBy": "Dimas Nugroho, S.T.",
+      "createdAt": "2026-11-16 04:20 WIB",
+      "updatedAt": "2026-11-16 05:10 WIB",
+      "adminNote": "Menunggu hasil pengukuran modul IGBT UPS oleh teknisi lokal sebelum penjadwalan perbaikan.",
+      "history": [
+        { "status": "Pengajuan", "timestamp": "2026-11-16 04:20 WIB", "actor": "Dimas Nugroho, S.T.", "note": "Laporan anomali UPS & dehydrator." },
+        { "status": "Laporan diterima", "timestamp": "2026-11-16 05:10 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Laporan diterima, instruksi penurunan daya TX sementara disetujui." }
+      ]
+    },
+    {
+      "id": "TIK-2026-039",
+      "stationId": "st-plg",
+      "subject": "Pemeliharaan Rutin Liquid Cooling & Kalibrasi Daya",
+      "description": "Pembersihan strainer pompa cooling R&S dan penggantian cairan coolant 20 liter serta kalibrasi wattmeter directional coupler pada saluran MUX 29 UHF.",
+      "attachmentName": "berita_acara_kalibrasi_plg.pdf",
+      "priority": "Biasa",
+      "status": "Selesai",
+      "submittedBy": "Rendra Pratama, S.T.",
+      "createdAt": "2026-11-14 09:00 WIB",
+      "updatedAt": "2026-11-14 14:20 WIB",
+      "adminNote": "Pemeliharaan selesai sesuai SOP, output daya kembali optimal 8.65 kW.",
+      "history": [
+        { "status": "Pengajuan", "timestamp": "2026-11-14 09:00 WIB", "actor": "Rendra Pratama, S.T.", "note": "Pengajuan jadwal pemeliharaan preventif." },
+        { "status": "Laporan diterima", "timestamp": "2026-11-14 09:15 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Jadwal disetujui." },
+        { "status": "Laporan diproses", "timestamp": "2026-11-14 10:00 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Eksekusi pemeliharaan oleh tim Jakabaring." },
+        { "status": "Selesai", "timestamp": "2026-11-14 14:20 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Tiket ditutup, seluruh parameter normal." }
+      ]
+    },
+    {
+      "id": "TIK-2026-038",
+      "stationId": "st-btr",
+      "subject": "Penggantian Filter Udara Shelter & Pengecekan Grounding",
+      "description": "Pengukuran resistansi grounding tower pasca hujan lebat dan pembersihan filter udara shelter Baturaja. Hasil pengukuran R = 1.1 Ohm (memenuhi standar).",
+      "attachmentName": "hasil_ukur_grounding_btr.jpg",
+      "priority": "Biasa",
+      "status": "Selesai",
+      "submittedBy": "Fajar Kurniawan, A.Md.T.",
+      "createdAt": "2026-11-12 10:15 WIB",
+      "updatedAt": "2026-11-12 15:00 WIB",
+      "adminNote": "Dokumentasi lengkap dan hasil ukur sangat baik.",
+      "history": [
+        { "status": "Pengajuan", "timestamp": "2026-11-12 10:15 WIB", "actor": "Fajar Kurniawan, A.Md.T.", "note": "Laporan hasil pemeliharaan grounding." },
+        { "status": "Laporan diterima", "timestamp": "2026-11-12 10:40 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Diterima." },
+        { "status": "Laporan diproses", "timestamp": "2026-11-12 13:00 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Verifikasi data ukur." },
+        { "status": "Selesai", "timestamp": "2026-11-12 15:00 WIB", "actor": "Agil Rendy (Koordinator)", "note": "Ditutup." }
+      ]
+    },
+    {
+      "id": "TIK-2026-042",
+      "stationId": "st-pga",
+      "subject": "Permintaan Pengecekan Level Bahan Bakar Genset Bulanan",
+      "description": "Stok solar tangki harian genset 30 kVA saat ini tersisa 45% (sekitar 90 liter). Mengajukan pengisian ulang rutin 150 liter untuk antisipasi cuaca ekstrem di kawasan Dempo.",
+      "attachmentName": null,
+      "priority": "Biasa",
+      "status": "Pengajuan",
+      "submittedBy": "Ilham Ramadhan, A.Md.",
+      "createdAt": "2026-11-16 07:10 WIB",
+      "updatedAt": "2026-11-16 07:10 WIB",
+      "adminNote": "",
+      "history": [
+        { "status": "Pengajuan", "timestamp": "2026-11-16 07:10 WIB", "actor": "Ilham Ramadhan, A.Md.", "note": "Pengajuan pengisian BBM genset Pagar Alam." }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-admin",
+      "username": "admin",
+      "password": "admin123",
+      "fullName": "Agil Rendy",
+      "role": "Admin",
+      "stationId": "st-plg",
+      "region": "Palembang (Pusat Wilayah)",
+      "roleStatus": "Koordinator",
+      "education": "S1 Teknik Elektro",
+      "gender": "Laki-laki",
+      "avatarKey": "coord_admin"
+    },
+    {
+      "id": "usr-tek-plg",
+      "username": "teknisi",
+      "password": "teknisi123",
+      "fullName": "Rendra Pratama, S.T.",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "roleStatus": "Koordinator Daerah",
+      "education": "S1 Teknik Elektro",
+      "gender": "Laki-laki",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-tek-llg",
+      "username": "dimas",
+      "password": "teknisi123",
+      "fullName": "Dimas Nugroho, S.T.",
+      "role": "Teknisi",
+      "stationId": "st-llg",
+      "region": "Lubuklinggau",
+      "roleStatus": "Koordinator Daerah",
+      "education": "S1 Teknik Elektro",
+      "gender": "Laki-laki",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-tek-sky",
+      "username": "nadia",
+      "password": "teknisi123",
+      "fullName": "Nadia Permata, S.T.",
+      "role": "Teknisi",
+      "stationId": "st-sky",
+      "region": "Musi Banyuasin",
+      "roleStatus": "Koordinator Daerah",
+      "education": "S1 Teknik Telekomunikasi",
+      "gender": "Perempuan",
+      "avatarKey": "tech_female_1"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "reportId": "TIK-2026-042",
+      "title": "Pengajuan Baru · Pagar Alam",
+      "message": "Ilham Ramadhan mengajukan TIK-2026-042: Permintaan Pengecekan Level Bahan Bakar Genset Bulanan.",
+      "status": "Pengajuan",
+      "timestamp": "2026-11-16 07:10 WIB",
+      "read": false
+    },
+    {
+      "id": "notif-2",
+      "reportId": "TIK-2026-041",
+      "title": "Status Diperbarui · Lahat",
+      "message": "Tiket TIK-2026-041 berubah menjadi 'Laporan diproses' — Tim mekanik sedang menuju lokasi.",
+      "status": "Laporan diproses",
+      "timestamp": "2026-11-16 06:45 WIB",
+      "read": false
+    },
+    {
+      "id": "notif-3",
+      "reportId": "TIK-2026-040",
+      "title": "Status Diperbarui · Lubuklinggau",
+      "message": "Tiket TIK-2026-040 berstatus 'Laporan diterima' — Penurunan daya sementara disetujui.",
+      "status": "Laporan diterima",
+      "timestamp": "2026-11-16 05:10 WIB",
+      "read": true
+    }
+  ],
+  "schedules": [
+    {
+      "id": "sch-k1",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Andika Putra",
+      "roleStatus": "Operator",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Monitoring rutin MUX 29 UHF"
+    },
+    {
+      "id": "sch-k2",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Prabumulih",
+      "technicianName": "Dian Anggraini, A.Md.",
+      "roleStatus": "Operator",
+      "shift": "Sore (15:00 - 23:00)",
+      "notes": "Pengecekan genset & UPS"
+    },
+    {
+      "id": "sch-k3",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Lubuklinggau",
+      "technicianName": "Yoga Prasetyo",
+      "roleStatus": "Operator",
+      "shift": "Malam (23:00 - 07:00)",
+      "notes": "Pencatatan daya malam"
+    },
+    {
+      "id": "sch-k4",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Baturaja",
+      "technicianName": "Rizky Maulana",
+      "roleStatus": "Operator",
+      "shift": "Malam (23:00 - 07:00)",
+      "notes": "Standby pemancar 3 kW"
+    },
+    {
+      "id": "sch-h1",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Rendra Pratama, S.T.",
+      "roleStatus": "Koordinator Daerah",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Koordinasi transmisi & input daya"
+    },
+    {
+      "id": "sch-h2",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Siti Rahma Sari, A.Md.T.",
+      "roleStatus": "Operator",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Monitoring headend & STL"
+    },
+    {
+      "id": "sch-h3",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Prabumulih",
+      "technicianName": "Bagus Saputra, S.T.",
+      "roleStatus": "Koordinator Daerah",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Operasional TX Cambai"
+    },
+    {
+      "id": "sch-h4",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Lubuklinggau",
+      "technicianName": "Dimas Nugroho, S.T.",
+      "roleStatus": "Koordinator Daerah",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Penanganan alarm UPS & dehydrator"
+    },
+    {
+      "id": "sch-h5",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Lahat",
+      "technicianName": "Hendra Wijaya, S.T.",
+      "roleStatus": "Koordinator Daerah",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Pendampingan perbaikan AC & PA"
+    },
+    {
+      "id": "sch-h6",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Musi Banyuasin",
+      "technicianName": "Nadia Permata, S.T.",
+      "roleStatus": "Koordinator Daerah",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Operasional TX Sekayu"
+    },
+    {
+      "id": "sch-h7",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Pagar Alam",
+      "technicianName": "Ilham Ramadhan, A.Md.",
+      "roleStatus": "Koordinator Daerah",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Inspeksi tangki BBM genset"
+    },
+    {
+      "id": "sch-b1",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Andika Putra",
+      "roleStatus": "Operator",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Shift reguler TX Jakabaring"
+    },
+    {
+      "id": "sch-b2",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Prabumulih",
+      "technicianName": "Dian Anggraini, A.Md.",
+      "roleStatus": "Operator",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Uji dummy load bulanan"
+    },
+    {
+      "id": "sch-b3",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Lahat",
+      "technicianName": "Taufik Hidayat",
+      "roleStatus": "Operator",
+      "shift": "Pagi (07:00 - 15:00)",
+      "notes": "Verifikasi suhu ruang pasca perbaikan"
+    },
+    {
+      "id": "sch-b4",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Musi Banyuasin",
+      "technicianName": "Arif Budiman",
+      "roleStatus": "Operator",
+      "shift": "Sore (15:00 - 23:00)",
+      "notes": "Pemantauan kestabilan tegangan PLN"
+    }
+  ]
+}
