@@ -59,6 +59,7 @@ interface AdminViewProps {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
+    shift: string;
     phone: string;
   }) => void;
   onUpdateUser: (payload: {
@@ -71,6 +72,7 @@ interface AdminViewProps {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
+    shift: string;
     phone: string;
     onDuty: boolean;
     avatarDataUrl?: string | null;
@@ -110,6 +112,12 @@ const DEVICE_CATEGORIES: DeviceCategory[] = [
   'Pemancar',
   'Pendukung',
   'Kelistrikan',
+];
+
+const SHIFT_OPTIONS = [
+  'Shift 1 (00.00 - 08.00)',
+  'Shift 2 (08.00 - 16.00)',
+  'Shift 3 (16.00 - 24.00)',
 ];
 
 export function AdminView({
@@ -157,6 +165,7 @@ export function AdminView({
   const [uEmploymentStatus, setUEmploymentStatus] = useState<EmploymentStatus>('PNS');
   const [uJabatan, setUJabatan] = useState('Operator');
   const [uGender, setUGender] = useState<GenderCode>('L');
+  const [uShift, setUShift] = useState(SHIFT_OPTIONS[1]);
   const [uPhone, setUPhone] = useState('0812-7000-0000');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userStationFilter, setUserStationFilter] = useState<string>('all');
@@ -171,6 +180,7 @@ export function AdminView({
   const [editEmploymentStatus, setEditEmploymentStatus] = useState<EmploymentStatus>('PNS');
   const [editJabatan, setEditJabatan] = useState('Operator');
   const [editGender, setEditGender] = useState<GenderCode>('L');
+  const [editShift, setEditShift] = useState(SHIFT_OPTIONS[1]);
   const [editPhone, setEditPhone] = useState('');
   const [editOnDuty, setEditOnDuty] = useState(true);
   const [editAvatarDataUrl, setEditAvatarDataUrl] = useState<string | null>(null);
@@ -231,6 +241,7 @@ export function AdminView({
       gender: uGender,
       employmentStatus: uEmploymentStatus,
       jabatan: uJabatan.trim() || 'Operator',
+      shift: uShift,
       phone: uPhone.trim() || '0812-7000-0000',
     });
     setUUsername('');
@@ -248,6 +259,7 @@ export function AdminView({
     setEditEmploymentStatus(user.employmentStatus);
     setEditJabatan(user.jabatan);
     setEditGender(user.gender);
+    setEditShift(SHIFT_OPTIONS.includes(user.shift) ? user.shift : SHIFT_OPTIONS[1]);
     setEditPhone(user.phone || '0812-7000-0000');
     setEditOnDuty(user.onDuty);
     setEditAvatarDataUrl(user.avatarDataUrl ?? null);
@@ -278,6 +290,7 @@ export function AdminView({
       gender: editGender,
       employmentStatus: editEmploymentStatus,
       jabatan: editJabatan.trim() || 'Operator',
+      shift: editShift,
       phone: editPhone.trim(),
       onDuty: editOnDuty,
       avatarDataUrl: editAvatarDataUrl,
@@ -892,6 +905,23 @@ export function AdminView({
               </div>
             </div>
 
+            <div>
+              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                Jam Kerja Shift
+              </label>
+              <select
+                value={uShift}
+                onChange={(e) => setUShift(e.target.value)}
+                className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
+              >
+                {SHIFT_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <button
               type="submit"
               className="w-full h-10 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
@@ -1394,6 +1424,23 @@ export function AdminView({
                     className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs font-mono text-slate-900 dark:text-slate-100"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
+                  Jam Kerja Shift
+                </label>
+                <select
+                  value={editShift}
+                  onChange={(e) => setEditShift(e.target.value)}
+                  className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
+                >
+                  {SHIFT_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 pt-1">

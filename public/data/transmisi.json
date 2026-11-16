@@ -9,18 +9,42 @@
       "latitude": -2.97625,
       "longitude": 104.73889,
       "channelFreq": "Ch 29 UHF Digital",
-      "maxCapacityKw": 5.0,
+      "maxCapacityKw": 5,
       "forwardPowerKw": 4.997,
       "reflectedPowerW": 28,
       "lastPowerInputBy": "Sutio",
       "lastPowerUpdatedAt": "2026-08-31 08:00 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 4.98, "reflectedW": 26 },
-        { "time": "04:00", "powerKw": 4.99, "reflectedW": 27 },
-        { "time": "05:00", "powerKw": 4.995, "reflectedW": 28 },
-        { "time": "06:00", "powerKw": 4.996, "reflectedW": 28 },
-        { "time": "07:00", "powerKw": 4.997, "reflectedW": 28 },
-        { "time": "08:00", "powerKw": 4.997, "reflectedW": 28 }
+        {
+          "time": "03:00",
+          "powerKw": 4.98,
+          "reflectedW": 26
+        },
+        {
+          "time": "04:00",
+          "powerKw": 4.99,
+          "reflectedW": 27
+        },
+        {
+          "time": "05:00",
+          "powerKw": 4.995,
+          "reflectedW": 28
+        },
+        {
+          "time": "06:00",
+          "powerKw": 4.996,
+          "reflectedW": 28
+        },
+        {
+          "time": "07:00",
+          "powerKw": 4.997,
+          "reflectedW": 28
+        },
+        {
+          "time": "08:00",
+          "powerKw": 4.997,
+          "reflectedW": 28
+        }
       ]
     },
     {
@@ -32,18 +56,42 @@
       "latitude": -3.41594,
       "longitude": 104.24192,
       "channelFreq": "Ch 30 UHF Digital",
-      "maxCapacityKw": 3.0,
+      "maxCapacityKw": 3,
       "forwardPowerKw": 2.57,
       "reflectedPowerW": 22,
       "lastPowerInputBy": "Karsim",
       "lastPowerUpdatedAt": "2026-08-31 08:00 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 2.55, "reflectedW": 21 },
-        { "time": "04:00", "powerKw": 2.56, "reflectedW": 22 },
-        { "time": "05:00", "powerKw": 2.57, "reflectedW": 22 },
-        { "time": "06:00", "powerKw": 2.57, "reflectedW": 22 },
-        { "time": "07:00", "powerKw": 2.57, "reflectedW": 22 },
-        { "time": "08:00", "powerKw": 2.57, "reflectedW": 22 }
+        {
+          "time": "03:00",
+          "powerKw": 2.55,
+          "reflectedW": 21
+        },
+        {
+          "time": "04:00",
+          "powerKw": 2.56,
+          "reflectedW": 22
+        },
+        {
+          "time": "05:00",
+          "powerKw": 2.57,
+          "reflectedW": 22
+        },
+        {
+          "time": "06:00",
+          "powerKw": 2.57,
+          "reflectedW": 22
+        },
+        {
+          "time": "07:00",
+          "powerKw": 2.57,
+          "reflectedW": 22
+        },
+        {
+          "time": "08:00",
+          "powerKw": 2.57,
+          "reflectedW": 22
+        }
       ]
     },
     {
@@ -56,17 +104,41 @@
       "longitude": 104.13111,
       "channelFreq": "Ch 27 UHF Digital (Ex Ch 39)",
       "maxCapacityKw": 1.2,
-      "forwardPowerKw": 0.0,
+      "forwardPowerKw": 0,
       "reflectedPowerW": 0,
       "lastPowerInputBy": "Yance",
       "lastPowerUpdatedAt": "2026-08-31 07:30 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "04:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "05:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "08:00", "powerKw": 0.0, "reflectedW": 0 }
+        {
+          "time": "03:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        }
       ]
     },
     {
@@ -78,18 +150,42 @@
       "latitude": -2.85622,
       "longitude": 103.83478,
       "channelFreq": "Ch 31 UHF Digital",
-      "maxCapacityKw": 2.0,
-      "forwardPowerKw": 2.0,
+      "maxCapacityKw": 2,
+      "forwardPowerKw": 2,
       "reflectedPowerW": 15,
       "lastPowerInputBy": "Ahmad Lauta",
       "lastPowerUpdatedAt": "2026-08-31 08:00 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 1.98, "reflectedW": 15 },
-        { "time": "04:00", "powerKw": 2.0, "reflectedW": 15 },
-        { "time": "05:00", "powerKw": 2.0, "reflectedW": 15 },
-        { "time": "06:00", "powerKw": 2.0, "reflectedW": 15 },
-        { "time": "07:00", "powerKw": 2.0, "reflectedW": 15 },
-        { "time": "08:00", "powerKw": 2.0, "reflectedW": 15 }
+        {
+          "time": "03:00",
+          "powerKw": 1.98,
+          "reflectedW": 15
+        },
+        {
+          "time": "04:00",
+          "powerKw": 2,
+          "reflectedW": 15
+        },
+        {
+          "time": "05:00",
+          "powerKw": 2,
+          "reflectedW": 15
+        },
+        {
+          "time": "06:00",
+          "powerKw": 2,
+          "reflectedW": 15
+        },
+        {
+          "time": "07:00",
+          "powerKw": 2,
+          "reflectedW": 15
+        },
+        {
+          "time": "08:00",
+          "powerKw": 2,
+          "reflectedW": 15
+        }
       ]
     },
     {
@@ -101,18 +197,42 @@
       "latitude": -3.26033,
       "longitude": 102.93678,
       "channelFreq": "Ch 27 UHF Digital",
-      "maxCapacityKw": 3.0,
-      "forwardPowerKw": 3.0,
+      "maxCapacityKw": 3,
+      "forwardPowerKw": 3,
       "reflectedPowerW": 18,
       "lastPowerInputBy": "Zamzam",
       "lastPowerUpdatedAt": "2026-08-31 08:00 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 2.98, "reflectedW": 18 },
-        { "time": "04:00", "powerKw": 3.0, "reflectedW": 18 },
-        { "time": "05:00", "powerKw": 3.0, "reflectedW": 18 },
-        { "time": "06:00", "powerKw": 3.0, "reflectedW": 18 },
-        { "time": "07:00", "powerKw": 3.0, "reflectedW": 18 },
-        { "time": "08:00", "powerKw": 3.0, "reflectedW": 18 }
+        {
+          "time": "03:00",
+          "powerKw": 2.98,
+          "reflectedW": 18
+        },
+        {
+          "time": "04:00",
+          "powerKw": 3,
+          "reflectedW": 18
+        },
+        {
+          "time": "05:00",
+          "powerKw": 3,
+          "reflectedW": 18
+        },
+        {
+          "time": "06:00",
+          "powerKw": 3,
+          "reflectedW": 18
+        },
+        {
+          "time": "07:00",
+          "powerKw": 3,
+          "reflectedW": 18
+        },
+        {
+          "time": "08:00",
+          "powerKw": 3,
+          "reflectedW": 18
+        }
       ]
     },
     {
@@ -124,18 +244,42 @@
       "latitude": -3.77247,
       "longitude": 103.53864,
       "channelFreq": "Ch 37 UHF Analog (OFF ASO)",
-      "maxCapacityKw": 5.0,
-      "forwardPowerKw": 0.0,
+      "maxCapacityKw": 5,
+      "forwardPowerKw": 0,
       "reflectedPowerW": 0,
       "lastPowerInputBy": "Zakaria",
       "lastPowerUpdatedAt": "2026-08-31 07:45 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "04:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "05:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "08:00", "powerKw": 0.0, "reflectedW": 0 }
+        {
+          "time": "03:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        }
       ]
     },
     {
@@ -147,18 +291,42 @@
       "latitude": -3.66831,
       "longitude": 103.75669,
       "channelFreq": "Ch 4 VHF Analog (Off - ISR)",
-      "maxCapacityKw": 1.0,
-      "forwardPowerKw": 0.0,
+      "maxCapacityKw": 1,
+      "forwardPowerKw": 0,
       "reflectedPowerW": 0,
       "lastPowerInputBy": "Abdur Rahman",
       "lastPowerUpdatedAt": "2026-08-31 07:45 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "04:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "05:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "08:00", "powerKw": 0.0, "reflectedW": 0 }
+        {
+          "time": "03:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        }
       ]
     },
     {
@@ -170,18 +338,42 @@
       "latitude": -3.60814,
       "longitude": 103.09667,
       "channelFreq": "Ch 41 UHF Analog (OFF ASO)",
-      "maxCapacityKw": 1.0,
-      "forwardPowerKw": 0.0,
+      "maxCapacityKw": 1,
+      "forwardPowerKw": 0,
       "reflectedPowerW": 0,
       "lastPowerInputBy": "Danil",
       "lastPowerUpdatedAt": "2026-08-31 07:40 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "04:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "05:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "08:00", "powerKw": 0.0, "reflectedW": 0 }
+        {
+          "time": "03:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        }
       ]
     },
     {
@@ -193,18 +385,42 @@
       "latitude": -4.87217,
       "longitude": 104.05247,
       "channelFreq": "Ch 41 UHF Analog (Relokasi ke Muara Dua)",
-      "maxCapacityKw": 1.0,
-      "forwardPowerKw": 0.0,
+      "maxCapacityKw": 1,
+      "forwardPowerKw": 0,
       "reflectedPowerW": 0,
       "lastPowerInputBy": "Muslim",
       "lastPowerUpdatedAt": "2026-08-31 07:30 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "04:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "05:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "08:00", "powerKw": 0.0, "reflectedW": 0 }
+        {
+          "time": "03:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        }
       ]
     },
     {
@@ -216,18 +432,42 @@
       "latitude": -4.53201,
       "longitude": 104.10333,
       "channelFreq": "Site Relokasi OKU Selatan",
-      "maxCapacityKw": 1.0,
-      "forwardPowerKw": 0.0,
+      "maxCapacityKw": 1,
+      "forwardPowerKw": 0,
       "reflectedPowerW": 0,
       "lastPowerInputBy": "Muslim",
       "lastPowerUpdatedAt": "2026-08-31 07:35 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "04:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "05:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "06:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "07:00", "powerKw": 0.0, "reflectedW": 0 },
-        { "time": "08:00", "powerKw": 0.0, "reflectedW": 0 }
+        {
+          "time": "03:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0,
+          "reflectedW": 0
+        }
       ]
     },
     {
@@ -245,182 +485,1864 @@
       "lastPowerInputBy": "Dahlan",
       "lastPowerUpdatedAt": "2026-08-31 08:00 WIB",
       "powerHistory": [
-        { "time": "03:00", "powerKw": 0.49, "reflectedW": 8 },
-        { "time": "04:00", "powerKw": 0.5, "reflectedW": 8 },
-        { "time": "05:00", "powerKw": 0.5, "reflectedW": 8 },
-        { "time": "06:00", "powerKw": 0.5, "reflectedW": 8 },
-        { "time": "07:00", "powerKw": 0.5, "reflectedW": 8 },
-        { "time": "08:00", "powerKw": 0.5, "reflectedW": 8 }
+        {
+          "time": "03:00",
+          "powerKw": 0.49,
+          "reflectedW": 8
+        },
+        {
+          "time": "04:00",
+          "powerKw": 0.5,
+          "reflectedW": 8
+        },
+        {
+          "time": "05:00",
+          "powerKw": 0.5,
+          "reflectedW": 8
+        },
+        {
+          "time": "06:00",
+          "powerKw": 0.5,
+          "reflectedW": 8
+        },
+        {
+          "time": "07:00",
+          "powerKw": 0.5,
+          "reflectedW": 8
+        },
+        {
+          "time": "08:00",
+          "powerKw": 0.5,
+          "reflectedW": 8
+        }
       ]
     }
   ],
   "devices": [
-    { "id": "dev-plg-1", "stationId": "st-plg", "name": "Encoder TIERNAN SE 4000", "category": "Input / Headend", "brandModel": "TIERNAN SE 4000 (2013)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-plg-2", "stationId": "st-plg", "name": "Encoder HARMONIC ELLIPSE & KYRION CM5000E", "category": "Input / Headend", "brandModel": "Harmonic / Kyrion", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Pengadaan TVRI Pusat 2024" },
-    { "id": "dev-plg-3", "stationId": "st-plg", "name": "IRD HARMONIC Pro View 8100 (MPEG 4 HD)", "category": "Input / Headend", "brandModel": "HARMONIC Pro View 8100 (2013)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak (tidak ada program)" },
-    { "id": "dev-plg-4", "stationId": "st-plg", "name": "IRD Ericsson RX8200 / Tiernan / Matrix / Kyrion DR 5000", "category": "Input / Headend", "brandModel": "Multi-unit IRD Rack", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · 1 unit Pro View 7100 status Alarm Baik" },
-    { "id": "dev-plg-5", "stationId": "st-plg", "name": "Multiplexer TITAN MUX & ProStream X (16 Port)", "category": "Input / Headend", "brandModel": "TITAN MUX / Harmonic ProStream", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Pengadaan MUX TVRI Pusat" },
-    { "id": "dev-plg-6", "stationId": "st-plg", "name": "Multiplexer Harmonic A8800-AC-L-1", "category": "Input / Headend", "brandModel": "Harmonic A8800-AC-L-1 (2013)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak Berat" },
-    { "id": "dev-plg-7", "stationId": "st-plg", "name": "Pemancar UHF Digital Ch 29 (5 kW)", "category": "Pemancar", "brandModel": "NEC / DTU-H10/U8P4 (2021)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "ON AIR · Nominal 5.000 W, Real 4.997 W · 5 HPA Baik" },
-    { "id": "dev-plg-8", "stationId": "st-plg", "name": "Pemancar UHF Digital Ch 29 (Backup 5 kW)", "category": "Pemancar", "brandModel": "Electrosys / TL16PSK (2013)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Nominal 5.000 W, Real 4.520 W · 6 HPA Baik, Excit A/B OK" },
-    { "id": "dev-plg-9", "stationId": "st-plg", "name": "Pemancar UHF Analog Ch 46 (30 kW)", "category": "Pemancar", "brandModel": "Btesa BTE 53 (2009)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "13 HPA Rusak Berat · Sudah proses lelang" },
-    { "id": "dev-plg-10", "stationId": "st-plg", "name": "FPU Btesa & FPU Hitachi", "category": "Pemancar", "brandModel": "Btesa (2009) & Hitachi (2001)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "FPU Btesa Rusak Berat, FPU Hitachi Rusak Ringan" },
-    { "id": "dev-plg-11", "stationId": "st-plg", "name": "Parabola 16 Feet & 9 Feet + Antena RYMSA 12P318", "category": "Pendukung", "brandModel": "Parabola + Spinner Dummy Load 5kW", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Menara 150m Baik, Gain 12 dBd" },
-    { "id": "dev-plg-12", "stationId": "st-plg", "name": "Network Switch CISCO & DVB-T2 Monitor Gesertel", "category": "Pendukung", "brandModel": "CISCO + Gesertel + Black Magic", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (catatan: 4 port switch rusak: port 2,3,4,16)" },
-    { "id": "dev-plg-13", "stationId": "st-plg", "name": "Gardu PLN 630 KVA & AVR Salicru/Matsuyama", "category": "Kelistrikan", "brandModel": "PLN 630 KVA + AVR 225/80/45 KVA", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · 3 Phase normal" },
-    { "id": "dev-plg-14", "stationId": "st-plg", "name": "Genset HIMOINSA 250 KVA & Volvo 100 KVA", "category": "Kelistrikan", "brandModel": "HIMOINSA / Volvo TAD 531 GE / Denyo", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (unit utama cadangan daya)" },
-    { "id": "dev-plg-15", "stationId": "st-plg", "name": "Genset Deutz BA8M816 (347 KVA)", "category": "Kelistrikan", "brandModel": "Deutz/BA8M816 (1982)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak Berat" },
-    { "id": "dev-plg-16", "stationId": "st-plg", "name": "UPS ABB Power Wave 33 (60 KVA) & Newave (40 KVA)", "category": "Kelistrikan", "brandModel": "ABB 60 KVA & Newave 40 KVA", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-plg-17", "stationId": "st-plg", "name": "UPS Salicru SLC-160-CUBE 3 BI (160 KVA)", "category": "Kelistrikan", "brandModel": "Salicru 160 KVA", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak" },
-
-    { "id": "dev-pbm-1", "stationId": "st-pbm", "name": "Encoder MULTICHANNEL MEDIAKIND & MUX 12 IN + 2 OUT", "category": "Input / Headend", "brandModel": "Mediaind AVP / MUX (2022)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Peplink 24 Port Baik" },
-    { "id": "dev-pbm-2", "stationId": "st-pbm", "name": "IRD TIERNAN TDR 1000 (Unit 2)", "category": "Input / Headend", "brandModel": "TIERNAN TDR 1000", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak (Tandberg, Ericsson, Matrix, Mediakind RX8200 Baik)" },
-    { "id": "dev-pbm-3", "stationId": "st-pbm", "name": "Pemancar UHF Digital Ch 30 (3 kW)", "category": "Pemancar", "brandModel": "Rohde & Schwarz THV9 evo (2022)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "ON AIR 10-Sep-22 · Nominal 3.000 W, Real 2.570 W" },
-    { "id": "dev-pbm-4", "stationId": "st-pbm", "name": "Parabola 15 Feet & Antena RFS / Dipole", "category": "Pendukung", "brandModel": "RFS / Dipole (Menara 85m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 10,7 dBd" },
-    { "id": "dev-pbm-5", "stationId": "st-pbm", "name": "PLN 82,5 KVA, Genset LEEGA 45 KVA & AVR YORITSU", "category": "Kelistrikan", "brandModel": "LEEGA LG5OP + YORITSU + Power Care B77H MS", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-pbm-6", "stationId": "st-pbm", "name": "UPS RIELLO S3T 40 ACT A0 (40 KVA)", "category": "Kelistrikan", "brandModel": "RIELLO S3T 40 ACT A0", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak" },
-
-    { "id": "dev-btr-1", "stationId": "st-btr", "name": "IRD Tiernan / Matrix / Harmonic II Proview 8100", "category": "Input / Headend", "brandModel": "TIERNAN / HARMONIC II (2020)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (1 unit IRD Diamond Word AK 369 Rusak)" },
-    { "id": "dev-btr-2", "stationId": "st-btr", "name": "Pemancar UHF Digital Ch 27 (1,2 kW)", "category": "Pemancar", "brandModel": "Rohde & Schwarz (2022)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Saat ini TX OFF · 1 Jan 2023 Exciter tidak dapat ON" },
-    { "id": "dev-btr-3", "stationId": "st-btr", "name": "Parabola 8 Feet & Antena OMB Four Dipole PD 2000", "category": "Pendukung", "brandModel": "OMB / PD 2000 (Menara 85m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 12 dBd" },
-    { "id": "dev-btr-4", "stationId": "st-btr", "name": "PLN 82,5 KVA & Genset Deutz BF4L-913 (85 KVA)", "category": "Kelistrikan", "brandModel": "Deutz BF4L-913", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-btr-5", "stationId": "st-btr", "name": "UPS POWER SCALE (30 KVA) & AVR MATSUSHITA (30 KVA)", "category": "Kelistrikan", "brandModel": "POWER SCALE + MATSUSHITA", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "UPS & AVR dalam kondisi Rusak" },
-
-    { "id": "dev-sky-1", "stationId": "st-sky", "name": "Encoder, IRD RX8200 & MUX MEDIAKIND 12 IN + 2 OUT", "category": "Input / Headend", "brandModel": "MEDIAKIND (2022) + Tiernan/Matrix", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Bridge Technologies & Peplink 24 Port Baik" },
-    { "id": "dev-sky-2", "stationId": "st-sky", "name": "Pemancar UHF Digital Ch 31 (2 kW)", "category": "Pemancar", "brandModel": "Rohde & Schwarz TMU9evo (2022)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "ON AIR 11-Sep-22 · Nominal 2.000 W, Real 2.000 W · Excit A baik" },
-    { "id": "dev-sky-3", "stationId": "st-sky", "name": "Parabola 15 Feet & Antena Solit Dish / Dipole", "category": "Pendukung", "brandModel": "Solit Dish / Dipole (Menara 92m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 12 dBd" },
-    { "id": "dev-sky-4", "stationId": "st-sky", "name": "PLN 53 KVA, UPS RIELLO SENTRYUM 30 KVA & Genset LEEGA", "category": "Kelistrikan", "brandModel": "LEEGA LG33P + RIELLO + YORITSU + Power Care", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (catatan: Genset tidak bisa hidup otomatis)" },
-
-    { "id": "dev-llg-1", "stationId": "st-llg", "name": "Encoder, IRD RX8200 & MUX MEDIAKIND 12 IN + 2 OUT", "category": "Input / Headend", "brandModel": "MEDIAKIND (2022) + Bridge Tech VB120", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Peplink 24 Port Baik" },
-    { "id": "dev-llg-2", "stationId": "st-llg", "name": "Pemancar UHF Digital Ch 27 (3 kW)", "category": "Pemancar", "brandModel": "Rohde & Schwarz THV9 evo (2022)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "ON AIR 30-Sep-22 · Nominal 3.000 W, Real 3.000 W · HPA no 2 sudah diperbaiki" },
-    { "id": "dev-llg-3", "stationId": "st-llg", "name": "Parabola 15 Feet & Antena Solit Dish / Dipole", "category": "Pendukung", "brandModel": "Solit Dish / Dipole (Menara 65m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 12 dBd" },
-    { "id": "dev-llg-4", "stationId": "st-llg", "name": "PLN 53 KVA, Genset LEEGA 45 KVA, UPS RIELLO & PLC PLUS", "category": "Kelistrikan", "brandModel": "LEEGA LG54P + RIELLO 40KVA + Power Care", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik semua unit kelistrikan" },
-
-    { "id": "dev-lht-1", "stationId": "st-lht", "name": "IRD TIERNAN TDR 1000 / MATRIX / DIAMOND WORD", "category": "Input / Headend", "brandModel": "TIERNAN / MATRIX / AK 369", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (catatan: IRD Vu+Uno Rusak)" },
-    { "id": "dev-lht-2", "stationId": "st-lht", "name": "Pemancar UHF Analog Ch 37 (5 kW)", "category": "Pemancar", "brandModel": "Ellettronika UP 5000LD (2009)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "HPA No.3 Rusak · OFF ASO 2 NOV 2022" },
-    { "id": "dev-lht-3", "stationId": "st-lht", "name": "Parabola 16 & 8 Feet + Antena Four Dipole", "category": "Pendukung", "brandModel": "Four Dipole (Menara 65m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 12 dBd" },
-    { "id": "dev-lht-4", "stationId": "st-lht", "name": "PLN 82,5 KVA & Genset Deutz F6L-912 (80 KVA)", "category": "Kelistrikan", "brandModel": "Deutz F6L-912", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-lht-5", "stationId": "st-lht", "name": "UPS ARGO DSP (20 KVA) & AVR KRISBOW PRO (45 KVA)", "category": "Kelistrikan", "brandModel": "ARGO DSP + KRISBOW PRO", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "UPS & AVR Rusak" },
-
-    { "id": "dev-me-1", "stationId": "st-me", "name": "IRD VIVA SAT / MATRIX / DIAMOND WORD / Vu+Uno", "category": "Input / Headend", "brandModel": "VIVA SAT PREMIER HD 66 / AK 369", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-me-2", "stationId": "st-me", "name": "Pemancar VHF Analog Ch 4 (1 kW)", "category": "Pemancar", "brandModel": "LEN Solite MOT 15 FL (1998)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Pemancar Off (Terkait ISR per 25 Okt 2021) · HPA Rusak Tingkat Driver" },
-    { "id": "dev-me-3", "stationId": "st-me", "name": "Parabola 6 Feet", "category": "Pendukung", "brandModel": "Parabola 6 Feet", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Rusak (Parabola 8 Feet & Menara 65m Baik)" },
-    { "id": "dev-me-4", "stationId": "st-me", "name": "PLN 23 KVA & Genset Deutz F4L-912 (35 KVA)", "category": "Kelistrikan", "brandModel": "Deutz F4L-912", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (AVR Claude Lyons 7.92 KVA Rusak)" },
-
-    { "id": "dev-tt-1", "stationId": "st-tt", "name": "IRD GOLDSAT / ERICSSON / AK 369 / Vu+Uno", "category": "Input / Headend", "brandModel": "GOLDSAT GSR 8100 / RX 8200", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (catatan: IRD Matrix Burger S2 Rusak)" },
-    { "id": "dev-tt-2", "stationId": "st-tt", "name": "Pemancar UHF Analog Ch 41 (1 kW)", "category": "Pemancar", "brandModel": "OMB (2008)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Amplifikasi berkurang · OFF ASO 2 NOV 2022" },
-    { "id": "dev-tt-3", "stationId": "st-tt", "name": "Parabola 8 Feet & Antena Lokal Four Dipole", "category": "Pendukung", "brandModel": "Four Dipole (Menara 65m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 11 dBd" },
-    { "id": "dev-tt-4", "stationId": "st-tt", "name": "PLN 23 KVA & Genset Deutz F4L-912 Unit 1 (35 KVA)", "category": "Kelistrikan", "brandModel": "Deutz F4L-912", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Unit 1 Baik · Unit 2 Deutz 35 KVA Rusak Berat · AVR Matsunaga Rusak" },
-
-    { "id": "dev-gr-1", "stationId": "st-gr", "name": "IRD MATRIX DM 963 / BURGER S2 / AK 369", "category": "Input / Headend", "brandModel": "MATRIX / DIAMOND WORD", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (IRD Vu+Uno Rusak)" },
-    { "id": "dev-gr-2", "stationId": "st-gr", "name": "Pemancar UHF Analog Ch 41 (1 kW)", "category": "Pemancar", "brandModel": "Ellettronika (2009)", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Pemancar Off · Relokasi ke Muara Dua" },
-    { "id": "dev-gr-3", "stationId": "st-gr", "name": "Parabola 16 Feet & Menara 40m", "category": "Pendukung", "brandModel": "LOKAL / Four Dipole", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik" },
-    { "id": "dev-gr-4", "stationId": "st-gr", "name": "Genset Deutz (27.5 & 15 KVA), Perkins & AVR Alfa Teknik", "category": "Kelistrikan", "brandModel": "Deutz + Perkins + Alfa Teknik", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Seluruh unit genset & AVR dalam kondisi Rusak / Rusak Berat" },
-
-    { "id": "dev-md-1", "stationId": "st-md", "name": "Menara Self Support 75m (Site Relokasi)", "category": "Pendukung", "brandModel": "Self Support 75m", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Persiapan relokasi dari Gunung Raya" },
-
-    { "id": "dev-pga-1", "stationId": "st-pga", "name": "Encoder MEDIAKIND AVP4000 & IRD Multi-Unit", "category": "Input / Headend", "brandModel": "MEDIAKIND AVP4000 / PROVIEW 8100", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · DVB-T2 Monitor Plisch DVE 4600 & Cisco 3850 Baik" },
-    { "id": "dev-pga-2", "stationId": "st-pga", "name": "Multiplexer Media Kind MX8400", "category": "Input / Headend", "brandModel": "Media Kind MX8400", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "RUSAK" },
-    { "id": "dev-pga-3", "stationId": "st-pga", "name": "Pemancar UHF Digital Ch 29 (500 W)", "category": "Pemancar", "brandModel": "PLISCH T2V4602 DIGITAL (2020)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Nominal 500 W, Real 500 W · Penggantian HPA dari TVRI Pusat per 6 Nov 2024" },
-    { "id": "dev-pga-4", "stationId": "st-pga", "name": "Parabola 8, 9, 18 Feet & Antena Two Dipole Array", "category": "Pendukung", "brandModel": "Two Dipole Array (Menara 65m)", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik · Gain 11 dBd" },
-    { "id": "dev-pga-5", "stationId": "st-pga", "name": "PLN 23 KVA & UPS VEKTOR ABB Power Scale (50 KVA)", "category": "Kelistrikan", "brandModel": "VEKTOR ABB Power Scale 50 KVA", "condition": "Normal", "active": true, "lastChecked": "2026-08-31", "notes": "Baik (diperlukan pergantian fuse)" },
-    { "id": "dev-pga-6", "stationId": "st-pga", "name": "Genset Deutz (2x25 KVA), FG Wilson (20 & 15 KVA) & AVR LEN", "category": "Kelistrikan", "brandModel": "Deutz + FG Wilson + AVR LEN 30 KVA", "condition": "Rusak", "active": false, "lastChecked": "2026-08-31", "notes": "Genset & AVR LEN dalam kondisi Rusak / Rusak Berat" }
+    {
+      "id": "dev-plg-1",
+      "stationId": "st-plg",
+      "name": "Encoder TIERNAN SE 4000",
+      "category": "Input / Headend",
+      "brandModel": "TIERNAN SE 4000 (2013)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-plg-2",
+      "stationId": "st-plg",
+      "name": "Encoder HARMONIC ELLIPSE & KYRION CM5000E",
+      "category": "Input / Headend",
+      "brandModel": "Harmonic / Kyrion",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Pengadaan TVRI Pusat 2024"
+    },
+    {
+      "id": "dev-plg-3",
+      "stationId": "st-plg",
+      "name": "IRD HARMONIC Pro View 8100 (MPEG 4 HD)",
+      "category": "Input / Headend",
+      "brandModel": "HARMONIC Pro View 8100 (2013)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak (tidak ada program)"
+    },
+    {
+      "id": "dev-plg-4",
+      "stationId": "st-plg",
+      "name": "IRD Ericsson RX8200 / Tiernan / Matrix / Kyrion DR 5000",
+      "category": "Input / Headend",
+      "brandModel": "Multi-unit IRD Rack",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · 1 unit Pro View 7100 status Alarm Baik"
+    },
+    {
+      "id": "dev-plg-5",
+      "stationId": "st-plg",
+      "name": "Multiplexer TITAN MUX & ProStream X (16 Port)",
+      "category": "Input / Headend",
+      "brandModel": "TITAN MUX / Harmonic ProStream",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Pengadaan MUX TVRI Pusat"
+    },
+    {
+      "id": "dev-plg-6",
+      "stationId": "st-plg",
+      "name": "Multiplexer Harmonic A8800-AC-L-1",
+      "category": "Input / Headend",
+      "brandModel": "Harmonic A8800-AC-L-1 (2013)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak Berat"
+    },
+    {
+      "id": "dev-plg-7",
+      "stationId": "st-plg",
+      "name": "Pemancar UHF Digital Ch 29 (5 kW)",
+      "category": "Pemancar",
+      "brandModel": "NEC / DTU-H10/U8P4 (2021)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "ON AIR · Nominal 5.000 W, Real 4.997 W · 5 HPA Baik"
+    },
+    {
+      "id": "dev-plg-8",
+      "stationId": "st-plg",
+      "name": "Pemancar UHF Digital Ch 29 (Backup 5 kW)",
+      "category": "Pemancar",
+      "brandModel": "Electrosys / TL16PSK (2013)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Nominal 5.000 W, Real 4.520 W · 6 HPA Baik, Excit A/B OK"
+    },
+    {
+      "id": "dev-plg-9",
+      "stationId": "st-plg",
+      "name": "Pemancar UHF Analog Ch 46 (30 kW)",
+      "category": "Pemancar",
+      "brandModel": "Btesa BTE 53 (2009)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "13 HPA Rusak Berat · Sudah proses lelang"
+    },
+    {
+      "id": "dev-plg-10",
+      "stationId": "st-plg",
+      "name": "FPU Btesa & FPU Hitachi",
+      "category": "Pemancar",
+      "brandModel": "Btesa (2009) & Hitachi (2001)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "FPU Btesa Rusak Berat, FPU Hitachi Rusak Ringan"
+    },
+    {
+      "id": "dev-plg-11",
+      "stationId": "st-plg",
+      "name": "Parabola 16 Feet & 9 Feet + Antena RYMSA 12P318",
+      "category": "Pendukung",
+      "brandModel": "Parabola + Spinner Dummy Load 5kW",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Menara 150m Baik, Gain 12 dBd"
+    },
+    {
+      "id": "dev-plg-12",
+      "stationId": "st-plg",
+      "name": "Network Switch CISCO & DVB-T2 Monitor Gesertel",
+      "category": "Pendukung",
+      "brandModel": "CISCO + Gesertel + Black Magic",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (catatan: 4 port switch rusak: port 2,3,4,16)"
+    },
+    {
+      "id": "dev-plg-13",
+      "stationId": "st-plg",
+      "name": "Gardu PLN 630 KVA & AVR Salicru/Matsuyama",
+      "category": "Kelistrikan",
+      "brandModel": "PLN 630 KVA + AVR 225/80/45 KVA",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · 3 Phase normal"
+    },
+    {
+      "id": "dev-plg-14",
+      "stationId": "st-plg",
+      "name": "Genset HIMOINSA 250 KVA & Volvo 100 KVA",
+      "category": "Kelistrikan",
+      "brandModel": "HIMOINSA / Volvo TAD 531 GE / Denyo",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (unit utama cadangan daya)"
+    },
+    {
+      "id": "dev-plg-15",
+      "stationId": "st-plg",
+      "name": "Genset Deutz BA8M816 (347 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz/BA8M816 (1982)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak Berat"
+    },
+    {
+      "id": "dev-plg-16",
+      "stationId": "st-plg",
+      "name": "UPS ABB Power Wave 33 (60 KVA) & Newave (40 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "ABB 60 KVA & Newave 40 KVA",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-plg-17",
+      "stationId": "st-plg",
+      "name": "UPS Salicru SLC-160-CUBE 3 BI (160 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "Salicru 160 KVA",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak"
+    },
+    {
+      "id": "dev-pbm-1",
+      "stationId": "st-pbm",
+      "name": "Encoder MULTICHANNEL MEDIAKIND & MUX 12 IN + 2 OUT",
+      "category": "Input / Headend",
+      "brandModel": "Mediaind AVP / MUX (2022)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Peplink 24 Port Baik"
+    },
+    {
+      "id": "dev-pbm-2",
+      "stationId": "st-pbm",
+      "name": "IRD TIERNAN TDR 1000 (Unit 2)",
+      "category": "Input / Headend",
+      "brandModel": "TIERNAN TDR 1000",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak (Tandberg, Ericsson, Matrix, Mediakind RX8200 Baik)"
+    },
+    {
+      "id": "dev-pbm-3",
+      "stationId": "st-pbm",
+      "name": "Pemancar UHF Digital Ch 30 (3 kW)",
+      "category": "Pemancar",
+      "brandModel": "Rohde & Schwarz THV9 evo (2022)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "ON AIR 10-Sep-22 · Nominal 3.000 W, Real 2.570 W"
+    },
+    {
+      "id": "dev-pbm-4",
+      "stationId": "st-pbm",
+      "name": "Parabola 15 Feet & Antena RFS / Dipole",
+      "category": "Pendukung",
+      "brandModel": "RFS / Dipole (Menara 85m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 10,7 dBd"
+    },
+    {
+      "id": "dev-pbm-5",
+      "stationId": "st-pbm",
+      "name": "PLN 82,5 KVA, Genset LEEGA 45 KVA & AVR YORITSU",
+      "category": "Kelistrikan",
+      "brandModel": "LEEGA LG5OP + YORITSU + Power Care B77H MS",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-pbm-6",
+      "stationId": "st-pbm",
+      "name": "UPS RIELLO S3T 40 ACT A0 (40 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "RIELLO S3T 40 ACT A0",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak"
+    },
+    {
+      "id": "dev-btr-1",
+      "stationId": "st-btr",
+      "name": "IRD Tiernan / Matrix / Harmonic II Proview 8100",
+      "category": "Input / Headend",
+      "brandModel": "TIERNAN / HARMONIC II (2020)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (1 unit IRD Diamond Word AK 369 Rusak)"
+    },
+    {
+      "id": "dev-btr-2",
+      "stationId": "st-btr",
+      "name": "Pemancar UHF Digital Ch 27 (1,2 kW)",
+      "category": "Pemancar",
+      "brandModel": "Rohde & Schwarz (2022)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Saat ini TX OFF · 1 Jan 2023 Exciter tidak dapat ON"
+    },
+    {
+      "id": "dev-btr-3",
+      "stationId": "st-btr",
+      "name": "Parabola 8 Feet & Antena OMB Four Dipole PD 2000",
+      "category": "Pendukung",
+      "brandModel": "OMB / PD 2000 (Menara 85m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 12 dBd"
+    },
+    {
+      "id": "dev-btr-4",
+      "stationId": "st-btr",
+      "name": "PLN 82,5 KVA & Genset Deutz BF4L-913 (85 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz BF4L-913",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-btr-5",
+      "stationId": "st-btr",
+      "name": "UPS POWER SCALE (30 KVA) & AVR MATSUSHITA (30 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "POWER SCALE + MATSUSHITA",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "UPS & AVR dalam kondisi Rusak"
+    },
+    {
+      "id": "dev-sky-1",
+      "stationId": "st-sky",
+      "name": "Encoder, IRD RX8200 & MUX MEDIAKIND 12 IN + 2 OUT",
+      "category": "Input / Headend",
+      "brandModel": "MEDIAKIND (2022) + Tiernan/Matrix",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Bridge Technologies & Peplink 24 Port Baik"
+    },
+    {
+      "id": "dev-sky-2",
+      "stationId": "st-sky",
+      "name": "Pemancar UHF Digital Ch 31 (2 kW)",
+      "category": "Pemancar",
+      "brandModel": "Rohde & Schwarz TMU9evo (2022)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "ON AIR 11-Sep-22 · Nominal 2.000 W, Real 2.000 W · Excit A baik"
+    },
+    {
+      "id": "dev-sky-3",
+      "stationId": "st-sky",
+      "name": "Parabola 15 Feet & Antena Solit Dish / Dipole",
+      "category": "Pendukung",
+      "brandModel": "Solit Dish / Dipole (Menara 92m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 12 dBd"
+    },
+    {
+      "id": "dev-sky-4",
+      "stationId": "st-sky",
+      "name": "PLN 53 KVA, UPS RIELLO SENTRYUM 30 KVA & Genset LEEGA",
+      "category": "Kelistrikan",
+      "brandModel": "LEEGA LG33P + RIELLO + YORITSU + Power Care",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (catatan: Genset tidak bisa hidup otomatis)"
+    },
+    {
+      "id": "dev-llg-1",
+      "stationId": "st-llg",
+      "name": "Encoder, IRD RX8200 & MUX MEDIAKIND 12 IN + 2 OUT",
+      "category": "Input / Headend",
+      "brandModel": "MEDIAKIND (2022) + Bridge Tech VB120",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Peplink 24 Port Baik"
+    },
+    {
+      "id": "dev-llg-2",
+      "stationId": "st-llg",
+      "name": "Pemancar UHF Digital Ch 27 (3 kW)",
+      "category": "Pemancar",
+      "brandModel": "Rohde & Schwarz THV9 evo (2022)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "ON AIR 30-Sep-22 · Nominal 3.000 W, Real 3.000 W · HPA no 2 sudah diperbaiki"
+    },
+    {
+      "id": "dev-llg-3",
+      "stationId": "st-llg",
+      "name": "Parabola 15 Feet & Antena Solit Dish / Dipole",
+      "category": "Pendukung",
+      "brandModel": "Solit Dish / Dipole (Menara 65m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 12 dBd"
+    },
+    {
+      "id": "dev-llg-4",
+      "stationId": "st-llg",
+      "name": "PLN 53 KVA, Genset LEEGA 45 KVA, UPS RIELLO & PLC PLUS",
+      "category": "Kelistrikan",
+      "brandModel": "LEEGA LG54P + RIELLO 40KVA + Power Care",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik semua unit kelistrikan"
+    },
+    {
+      "id": "dev-lht-1",
+      "stationId": "st-lht",
+      "name": "IRD TIERNAN TDR 1000 / MATRIX / DIAMOND WORD",
+      "category": "Input / Headend",
+      "brandModel": "TIERNAN / MATRIX / AK 369",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (catatan: IRD Vu+Uno Rusak)"
+    },
+    {
+      "id": "dev-lht-2",
+      "stationId": "st-lht",
+      "name": "Pemancar UHF Analog Ch 37 (5 kW)",
+      "category": "Pemancar",
+      "brandModel": "Ellettronika UP 5000LD (2009)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "HPA No.3 Rusak · OFF ASO 2 NOV 2022"
+    },
+    {
+      "id": "dev-lht-3",
+      "stationId": "st-lht",
+      "name": "Parabola 16 & 8 Feet + Antena Four Dipole",
+      "category": "Pendukung",
+      "brandModel": "Four Dipole (Menara 65m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 12 dBd"
+    },
+    {
+      "id": "dev-lht-4",
+      "stationId": "st-lht",
+      "name": "PLN 82,5 KVA & Genset Deutz F6L-912 (80 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz F6L-912",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-lht-5",
+      "stationId": "st-lht",
+      "name": "UPS ARGO DSP (20 KVA) & AVR KRISBOW PRO (45 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "ARGO DSP + KRISBOW PRO",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "UPS & AVR Rusak"
+    },
+    {
+      "id": "dev-me-1",
+      "stationId": "st-me",
+      "name": "IRD VIVA SAT / MATRIX / DIAMOND WORD / Vu+Uno",
+      "category": "Input / Headend",
+      "brandModel": "VIVA SAT PREMIER HD 66 / AK 369",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-me-2",
+      "stationId": "st-me",
+      "name": "Pemancar VHF Analog Ch 4 (1 kW)",
+      "category": "Pemancar",
+      "brandModel": "LEN Solite MOT 15 FL (1998)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Pemancar Off (Terkait ISR per 25 Okt 2021) · HPA Rusak Tingkat Driver"
+    },
+    {
+      "id": "dev-me-3",
+      "stationId": "st-me",
+      "name": "Parabola 6 Feet",
+      "category": "Pendukung",
+      "brandModel": "Parabola 6 Feet",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Rusak (Parabola 8 Feet & Menara 65m Baik)"
+    },
+    {
+      "id": "dev-me-4",
+      "stationId": "st-me",
+      "name": "PLN 23 KVA & Genset Deutz F4L-912 (35 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz F4L-912",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (AVR Claude Lyons 7.92 KVA Rusak)"
+    },
+    {
+      "id": "dev-tt-1",
+      "stationId": "st-tt",
+      "name": "IRD GOLDSAT / ERICSSON / AK 369 / Vu+Uno",
+      "category": "Input / Headend",
+      "brandModel": "GOLDSAT GSR 8100 / RX 8200",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (catatan: IRD Matrix Burger S2 Rusak)"
+    },
+    {
+      "id": "dev-tt-2",
+      "stationId": "st-tt",
+      "name": "Pemancar UHF Analog Ch 41 (1 kW)",
+      "category": "Pemancar",
+      "brandModel": "OMB (2008)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Amplifikasi berkurang · OFF ASO 2 NOV 2022"
+    },
+    {
+      "id": "dev-tt-3",
+      "stationId": "st-tt",
+      "name": "Parabola 8 Feet & Antena Lokal Four Dipole",
+      "category": "Pendukung",
+      "brandModel": "Four Dipole (Menara 65m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 11 dBd"
+    },
+    {
+      "id": "dev-tt-4",
+      "stationId": "st-tt",
+      "name": "PLN 23 KVA & Genset Deutz F4L-912 Unit 1 (35 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz F4L-912",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Unit 1 Baik · Unit 2 Deutz 35 KVA Rusak Berat · AVR Matsunaga Rusak"
+    },
+    {
+      "id": "dev-gr-1",
+      "stationId": "st-gr",
+      "name": "IRD MATRIX DM 963 / BURGER S2 / AK 369",
+      "category": "Input / Headend",
+      "brandModel": "MATRIX / DIAMOND WORD",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (IRD Vu+Uno Rusak)"
+    },
+    {
+      "id": "dev-gr-2",
+      "stationId": "st-gr",
+      "name": "Pemancar UHF Analog Ch 41 (1 kW)",
+      "category": "Pemancar",
+      "brandModel": "Ellettronika (2009)",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Pemancar Off · Relokasi ke Muara Dua"
+    },
+    {
+      "id": "dev-gr-3",
+      "stationId": "st-gr",
+      "name": "Parabola 16 Feet & Menara 40m",
+      "category": "Pendukung",
+      "brandModel": "LOKAL / Four Dipole",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik"
+    },
+    {
+      "id": "dev-gr-4",
+      "stationId": "st-gr",
+      "name": "Genset Deutz (27.5 & 15 KVA), Perkins & AVR Alfa Teknik",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz + Perkins + Alfa Teknik",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Seluruh unit genset & AVR dalam kondisi Rusak / Rusak Berat"
+    },
+    {
+      "id": "dev-md-1",
+      "stationId": "st-md",
+      "name": "Menara Self Support 75m (Site Relokasi)",
+      "category": "Pendukung",
+      "brandModel": "Self Support 75m",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Persiapan relokasi dari Gunung Raya"
+    },
+    {
+      "id": "dev-pga-1",
+      "stationId": "st-pga",
+      "name": "Encoder MEDIAKIND AVP4000 & IRD Multi-Unit",
+      "category": "Input / Headend",
+      "brandModel": "MEDIAKIND AVP4000 / PROVIEW 8100",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · DVB-T2 Monitor Plisch DVE 4600 & Cisco 3850 Baik"
+    },
+    {
+      "id": "dev-pga-2",
+      "stationId": "st-pga",
+      "name": "Multiplexer Media Kind MX8400",
+      "category": "Input / Headend",
+      "brandModel": "Media Kind MX8400",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "RUSAK"
+    },
+    {
+      "id": "dev-pga-3",
+      "stationId": "st-pga",
+      "name": "Pemancar UHF Digital Ch 29 (500 W)",
+      "category": "Pemancar",
+      "brandModel": "PLISCH T2V4602 DIGITAL (2020)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Nominal 500 W, Real 500 W · Penggantian HPA dari TVRI Pusat per 6 Nov 2024"
+    },
+    {
+      "id": "dev-pga-4",
+      "stationId": "st-pga",
+      "name": "Parabola 8, 9, 18 Feet & Antena Two Dipole Array",
+      "category": "Pendukung",
+      "brandModel": "Two Dipole Array (Menara 65m)",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik · Gain 11 dBd"
+    },
+    {
+      "id": "dev-pga-5",
+      "stationId": "st-pga",
+      "name": "PLN 23 KVA & UPS VEKTOR ABB Power Scale (50 KVA)",
+      "category": "Kelistrikan",
+      "brandModel": "VEKTOR ABB Power Scale 50 KVA",
+      "condition": "Normal",
+      "active": true,
+      "lastChecked": "2026-08-31",
+      "notes": "Baik (diperlukan pergantian fuse)"
+    },
+    {
+      "id": "dev-pga-6",
+      "stationId": "st-pga",
+      "name": "Genset Deutz (2x25 KVA), FG Wilson (20 & 15 KVA) & AVR LEN",
+      "category": "Kelistrikan",
+      "brandModel": "Deutz + FG Wilson + AVR LEN 30 KVA",
+      "condition": "Rusak",
+      "active": false,
+      "lastChecked": "2026-08-31",
+      "notes": "Genset & AVR LEN dalam kondisi Rusak / Rusak Berat"
+    }
   ],
   "technicians": [
-    { "id": "usr-01", "name": "Abdur Rahman", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Koordinator Teknik", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-2211-2009", "avatarKey": "coord_admin" },
-    { "id": "usr-02", "name": "Sutio", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim Palembang", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7326-519", "avatarKey": "tech_male_1" },
-    { "id": "usr-03", "name": "Agil Yurendi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7969-0241", "avatarKey": "tech_male_2" },
-    { "id": "usr-04", "name": "Saleh Alkabiir", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0897-3003-434", "avatarKey": "tech_male_1" },
-    { "id": "usr-05", "name": "Dwi Sapto Widodo", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7546-3419", "avatarKey": "tech_male_2" },
-    { "id": "usr-06", "name": "Ricki Ramdani", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0857-7267-2388", "avatarKey": "tech_male_1" },
-    { "id": "usr-07", "name": "Rendi Dwi Yulian", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0852-0800-8404", "avatarKey": "tech_male_2" },
-    { "id": "usr-08", "name": "Ali Usman", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0823-0625-3238", "avatarKey": "tech_male_1" },
-    { "id": "usr-09", "name": "M Febriansyah", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0812-7473-4775", "avatarKey": "tech_male_2" },
-    { "id": "usr-10", "name": "Dewantara", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0895-2669-3961", "avatarKey": "tech_male_1" },
-    { "id": "usr-11", "name": "Belbi Candra", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0821-7710-4056", "avatarKey": "tech_male_2" },
-    { "id": "usr-12", "name": "Annisa Aziziyah", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0882-1508-6506", "avatarKey": "tech_female_1" },
-    { "id": "usr-13", "name": "Nadia Wahyu", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0811-1416-88", "avatarKey": "tech_female_1" },
-    { "id": "usr-14", "name": "Siwi Asri", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0853-6965-2583", "avatarKey": "tech_female_1" },
-    { "id": "usr-15", "name": "Widia Salsabila", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0819-9264-3551", "avatarKey": "tech_female_1" },
-    { "id": "usr-16", "name": "M Bagoes", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0813-9575-0052", "avatarKey": "tech_male_1" },
-    { "id": "usr-17", "name": "M Amin", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0853-6906-5857", "avatarKey": "tech_male_2" },
-    { "id": "usr-18", "name": "Shafiyah", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7474-3715", "avatarKey": "tech_female_1" },
-    { "id": "usr-19", "name": "Winda Andea", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0896-9854-4965", "avatarKey": "tech_female_1" },
-    { "id": "usr-20", "name": "Ummu Aiman", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0822-8262-8407", "avatarKey": "tech_female_1" },
-    { "id": "usr-21", "name": "Aqila Shifa", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0878-9780-6733", "avatarKey": "tech_female_1" },
-
-    { "id": "usr-22", "name": "Karsim", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0852-6797-4191", "avatarKey": "tech_male_1" },
-    { "id": "usr-23", "name": "Ferryzal", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0852-0065-1277", "avatarKey": "tech_male_2" },
-    { "id": "usr-24", "name": "R.M Fadli", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0853-6326-3501", "avatarKey": "tech_male_1" },
-    { "id": "usr-25", "name": "M Aldo", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0877-4189-4559", "avatarKey": "tech_male_2" },
-
-    { "id": "usr-26", "name": "Zamzam", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0822-7831-7533", "avatarKey": "tech_male_1" },
-    { "id": "usr-27", "name": "Bambang", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0823-7386-1868", "avatarKey": "tech_male_2" },
-    { "id": "usr-28", "name": "M Doni", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0895-1879-7171", "avatarKey": "tech_male_1" },
-    { "id": "usr-29", "name": "Al Zikri", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0821-5776-1092", "avatarKey": "tech_male_2" },
-
-    { "id": "usr-30", "name": "Ahmad Lauta", "stationId": "st-sky", "region": "Sekayu", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0859-5406-3150", "avatarKey": "tech_male_1" },
-    { "id": "usr-31", "name": "Sutopo", "stationId": "st-sky", "region": "Sekayu", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7665-4554", "avatarKey": "tech_male_2" },
-    { "id": "usr-32", "name": "M Fajri", "stationId": "st-sky", "region": "Sekayu", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0831-7191-2939", "avatarKey": "tech_male_1" },
-
-    { "id": "usr-33", "name": "Dahlan", "stationId": "st-pga", "region": "Pagar Alam", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-6865-3927", "avatarKey": "tech_male_1" },
-    { "id": "usr-34", "name": "Agus Salim", "stationId": "st-pga", "region": "Pagar Alam", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7815-0180", "avatarKey": "tech_male_2" },
-    { "id": "usr-35", "name": "M Arya", "stationId": "st-pga", "region": "Pagar Alam", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0857-5857-4742", "avatarKey": "tech_male_1" },
-
-    { "id": "usr-36", "name": "Zakaria", "stationId": "st-lht", "region": "Lahat", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7950-2767", "avatarKey": "tech_male_1" },
-    { "id": "usr-37", "name": "Zaini", "stationId": "st-lht", "region": "Lahat", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0831-6368-8600", "avatarKey": "tech_male_2" },
-
-    { "id": "usr-38", "name": "Danil", "stationId": "st-tt", "region": "Tebing Tinggi", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0853-6701-0902", "avatarKey": "tech_male_1" },
-    { "id": "usr-39", "name": "Muslim", "stationId": "st-md", "region": "Muara Dua", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7463-2280", "avatarKey": "tech_male_2" },
-    { "id": "usr-40", "name": "Yance", "stationId": "st-btr", "region": "Baturaja", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0877-9685-7288", "avatarKey": "tech_male_1" }
+    {
+      "id": "usr-01",
+      "name": "Abdur Rahman",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Koordinator Teknik",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0813-2211-2009",
+      "avatarKey": "coord_admin"
+    },
+    {
+      "id": "usr-02",
+      "name": "Sutio",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim Palembang",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7326-519",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-03",
+      "name": "Agil Yurendi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7969-0241",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-04",
+      "name": "Saleh Alkabiir",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0897-3003-434",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-05",
+      "name": "Dwi Sapto Widodo",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0821-7546-3419",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-06",
+      "name": "Ricki Ramdani",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0857-7267-2388",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-07",
+      "name": "Rendi Dwi Yulian",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0852-0800-8404",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-08",
+      "name": "Ali Usman",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0823-0625-3238",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-09",
+      "name": "M Febriansyah",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0812-7473-4775",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-10",
+      "name": "Dewantara",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0895-2669-3961",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-11",
+      "name": "Belbi Candra",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0821-7710-4056",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-12",
+      "name": "Annisa Aziziyah",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0882-1508-6506",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-13",
+      "name": "Nadia Wahyu",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0811-1416-88",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-14",
+      "name": "Siwi Asri",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0853-6965-2583",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-15",
+      "name": "Widia Salsabila",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0819-9264-3551",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-16",
+      "name": "M Bagoes",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0813-9575-0052",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-17",
+      "name": "M Amin",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0853-6906-5857",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-18",
+      "name": "Shafiyah",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7474-3715",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-19",
+      "name": "Winda Andea",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0896-9854-4965",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-20",
+      "name": "Ummu Aiman",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0822-8262-8407",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-21",
+      "name": "Aqila Shifa",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0878-9780-6733",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-22",
+      "name": "Karsim",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0852-6797-4191",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-23",
+      "name": "Ferryzal",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0852-0065-1277",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-24",
+      "name": "R.M Fadli",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0853-6326-3501",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-25",
+      "name": "M Aldo",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0877-4189-4559",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-26",
+      "name": "Zamzam",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0822-7831-7533",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-27",
+      "name": "Bambang",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0823-7386-1868",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-28",
+      "name": "M Doni",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0895-1879-7171",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-29",
+      "name": "Al Zikri",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0821-5776-1092",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-30",
+      "name": "Ahmad Lauta",
+      "stationId": "st-sky",
+      "region": "Sekayu",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0859-5406-3150",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-31",
+      "name": "Sutopo",
+      "stationId": "st-sky",
+      "region": "Sekayu",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0821-7665-4554",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-32",
+      "name": "M Fajri",
+      "stationId": "st-sky",
+      "region": "Sekayu",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0831-7191-2939",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-33",
+      "name": "Dahlan",
+      "stationId": "st-pga",
+      "region": "Pagar Alam",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0813-6865-3927",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-34",
+      "name": "Agus Salim",
+      "stationId": "st-pga",
+      "region": "Pagar Alam",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7815-0180",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-35",
+      "name": "M Arya",
+      "stationId": "st-pga",
+      "region": "Pagar Alam",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0857-5857-4742",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-36",
+      "name": "Zakaria",
+      "stationId": "st-lht",
+      "region": "Lahat",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0821-7950-2767",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-37",
+      "name": "Zaini",
+      "stationId": "st-lht",
+      "region": "Lahat",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0831-6368-8600",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-38",
+      "name": "Danil",
+      "stationId": "st-tt",
+      "region": "Tebing Tinggi",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0853-6701-0902",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-39",
+      "name": "Muslim",
+      "stationId": "st-md",
+      "region": "Muara Dua",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7463-2280",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-40",
+      "name": "Yance",
+      "stationId": "st-btr",
+      "region": "Baturaja",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0877-9685-7288",
+      "avatarKey": "tech_male_1"
+    }
   ],
   "users": [
-    { "id": "usr-01", "username": "abdurrahman", "password": "admin123", "fullName": "Abdur Rahman", "role": "Admin", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Koordinator Teknik", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-2211-2009", "avatarKey": "coord_admin" },
-    { "id": "usr-02", "username": "sutio", "password": "admin123", "fullName": "Sutio", "role": "Admin", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim Palembang", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7326-519", "avatarKey": "tech_male_1" },
-    { "id": "usr-03", "username": "agil", "password": "admin123", "fullName": "Agil Yurendi", "role": "Admin", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7969-0241", "avatarKey": "tech_male_2" },
-    { "id": "usr-04", "username": "saleh", "password": "teknisi123", "fullName": "Saleh Alkabiir", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0897-3003-434", "avatarKey": "tech_male_1" },
-    { "id": "usr-05", "username": "dwisapto", "password": "teknisi123", "fullName": "Dwi Sapto Widodo", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7546-3419", "avatarKey": "tech_male_2" },
-    { "id": "usr-06", "username": "ricki", "password": "teknisi123", "fullName": "Ricki Ramdani", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0857-7267-2388", "avatarKey": "tech_male_1" },
-    { "id": "usr-07", "username": "rendi", "password": "teknisi123", "fullName": "Rendi Dwi Yulian", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0852-0800-8404", "avatarKey": "tech_male_2" },
-    { "id": "usr-08", "username": "aliusman", "password": "teknisi123", "fullName": "Ali Usman", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0823-0625-3238", "avatarKey": "tech_male_1" },
-    { "id": "usr-09", "username": "mfebriansyah", "password": "teknisi123", "fullName": "M Febriansyah", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0812-7473-4775", "avatarKey": "tech_male_2" },
-    { "id": "usr-10", "username": "dewantara", "password": "teknisi123", "fullName": "Dewantara", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0895-2669-3961", "avatarKey": "tech_male_1" },
-    { "id": "usr-11", "username": "belbi", "password": "teknisi123", "fullName": "Belbi Candra", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0821-7710-4056", "avatarKey": "tech_male_2" },
-    { "id": "usr-12", "username": "annisa", "password": "teknisi123", "fullName": "Annisa Aziziyah", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0882-1508-6506", "avatarKey": "tech_female_1" },
-    { "id": "usr-13", "username": "nadia", "password": "teknisi123", "fullName": "Nadia Wahyu", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0811-1416-88", "avatarKey": "tech_female_1" },
-    { "id": "usr-14", "username": "siwi", "password": "teknisi123", "fullName": "Siwi Asri", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0853-6965-2583", "avatarKey": "tech_female_1" },
-    { "id": "usr-15", "username": "widia", "password": "teknisi123", "fullName": "Widia Salsabila", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0819-9264-3551", "avatarKey": "tech_female_1" },
-    { "id": "usr-16", "username": "mbagoes", "password": "teknisi123", "fullName": "M Bagoes", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0813-9575-0052", "avatarKey": "tech_male_1" },
-    { "id": "usr-17", "username": "mamin", "password": "teknisi123", "fullName": "M Amin", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "L", "employmentStatus": "PPPK", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0853-6906-5857", "avatarKey": "tech_male_2" },
-    { "id": "usr-18", "username": "shafiyah", "password": "teknisi123", "fullName": "Shafiyah", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7474-3715", "avatarKey": "tech_female_1" },
-    { "id": "usr-19", "username": "winda", "password": "teknisi123", "fullName": "Winda Andea", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0896-9854-4965", "avatarKey": "tech_female_1" },
-    { "id": "usr-20", "username": "ummu", "password": "teknisi123", "fullName": "Ummu Aiman", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0822-8262-8407", "avatarKey": "tech_female_1" },
-    { "id": "usr-21", "username": "aqila", "password": "teknisi123", "fullName": "Aqila Shifa", "role": "Teknisi", "stationId": "st-plg", "region": "Palembang", "gender": "P", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0878-9780-6733", "avatarKey": "tech_female_1" },
-
-    { "id": "usr-22", "username": "karsim", "password": "teknisi123", "fullName": "Karsim", "role": "Teknisi", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0852-6797-4191", "avatarKey": "tech_male_1" },
-    { "id": "usr-23", "username": "ferryzal", "password": "teknisi123", "fullName": "Ferryzal", "role": "Teknisi", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0852-0065-1277", "avatarKey": "tech_male_2" },
-    { "id": "usr-24", "username": "rmfadli", "password": "teknisi123", "fullName": "R.M Fadli", "role": "Teknisi", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0853-6326-3501", "avatarKey": "tech_male_1" },
-    { "id": "usr-25", "username": "maldo", "password": "teknisi123", "fullName": "M Aldo", "role": "Teknisi", "stationId": "st-pbm", "region": "Prabumulih", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0877-4189-4559", "avatarKey": "tech_male_2" },
-
-    { "id": "usr-26", "username": "zamzam", "password": "teknisi123", "fullName": "Zamzam", "role": "Teknisi", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0822-7831-7533", "avatarKey": "tech_male_1" },
-    { "id": "usr-27", "username": "bambang", "password": "teknisi123", "fullName": "Bambang", "role": "Teknisi", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0823-7386-1868", "avatarKey": "tech_male_2" },
-    { "id": "usr-28", "username": "mdoni", "password": "teknisi123", "fullName": "M Doni", "role": "Teknisi", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0895-1879-7171", "avatarKey": "tech_male_1" },
-    { "id": "usr-29", "username": "alzikri", "password": "teknisi123", "fullName": "Al Zikri", "role": "Teknisi", "stationId": "st-llg", "region": "Lubuk Linggau", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Malam (23:00 - 07:00)", "phone": "0821-5776-1092", "avatarKey": "tech_male_2" },
-
-    { "id": "usr-30", "username": "ahmadlauta", "password": "teknisi123", "fullName": "Ahmad Lauta", "role": "Teknisi", "stationId": "st-sky", "region": "Sekayu", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0859-5406-3150", "avatarKey": "tech_male_1" },
-    { "id": "usr-31", "username": "sutopo", "password": "teknisi123", "fullName": "Sutopo", "role": "Teknisi", "stationId": "st-sky", "region": "Sekayu", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7665-4554", "avatarKey": "tech_male_2" },
-    { "id": "usr-32", "username": "mfajri", "password": "teknisi123", "fullName": "M Fajri", "role": "Teknisi", "stationId": "st-sky", "region": "Sekayu", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0831-7191-2939", "avatarKey": "tech_male_1" },
-
-    { "id": "usr-33", "username": "dahlan", "password": "teknisi123", "fullName": "Dahlan", "role": "Teknisi", "stationId": "st-pga", "region": "Pagar Alam", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0813-6865-3927", "avatarKey": "tech_male_1" },
-    { "id": "usr-34", "username": "agussalim", "password": "teknisi123", "fullName": "Agus Salim", "role": "Teknisi", "stationId": "st-pga", "region": "Pagar Alam", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7815-0180", "avatarKey": "tech_male_2" },
-    { "id": "usr-35", "username": "marya", "password": "teknisi123", "fullName": "M Arya", "role": "Teknisi", "stationId": "st-pga", "region": "Pagar Alam", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": false, "shift": "Sore (15:00 - 23:00)", "phone": "0857-5857-4742", "avatarKey": "tech_male_1" },
-
-    { "id": "usr-36", "username": "zakaria", "password": "teknisi123", "fullName": "Zakaria", "role": "Teknisi", "stationId": "st-lht", "region": "Lahat", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0821-7950-2767", "avatarKey": "tech_male_1" },
-    { "id": "usr-37", "username": "zaini", "password": "teknisi123", "fullName": "Zaini", "role": "Teknisi", "stationId": "st-lht", "region": "Lahat", "gender": "L", "employmentStatus": "PNS", "jabatan": "Operator", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0831-6368-8600", "avatarKey": "tech_male_2" },
-
-    { "id": "usr-38", "username": "danil", "password": "teknisi123", "fullName": "Danil", "role": "Teknisi", "stationId": "st-tt", "region": "Tebing Tinggi", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0853-6701-0902", "avatarKey": "tech_male_1" },
-    { "id": "usr-39", "username": "muslim", "password": "teknisi123", "fullName": "Muslim", "role": "Teknisi", "stationId": "st-md", "region": "Muara Dua", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0812-7463-2280", "avatarKey": "tech_male_2" },
-    { "id": "usr-40", "username": "yance", "password": "teknisi123", "fullName": "Yance", "role": "Teknisi", "stationId": "st-btr", "region": "Baturaja", "gender": "L", "employmentStatus": "PNS", "jabatan": "Ketua Tim", "onDuty": true, "shift": "Pagi (07:00 - 15:00)", "phone": "0877-9685-7288", "avatarKey": "tech_male_1" }
+    {
+      "id": "usr-01",
+      "username": "abdurrahman",
+      "password": "admin123",
+      "fullName": "Abdur Rahman",
+      "role": "Admin",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Koordinator Teknik",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0813-2211-2009",
+      "avatarKey": "coord_admin"
+    },
+    {
+      "id": "usr-02",
+      "username": "sutio",
+      "password": "admin123",
+      "fullName": "Sutio",
+      "role": "Admin",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim Palembang",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7326-519",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-03",
+      "username": "agil",
+      "password": "admin123",
+      "fullName": "Agil Yurendi",
+      "role": "Admin",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7969-0241",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-04",
+      "username": "saleh",
+      "password": "teknisi123",
+      "fullName": "Saleh Alkabiir",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0897-3003-434",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-05",
+      "username": "dwisapto",
+      "password": "teknisi123",
+      "fullName": "Dwi Sapto Widodo",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0821-7546-3419",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-06",
+      "username": "ricki",
+      "password": "teknisi123",
+      "fullName": "Ricki Ramdani",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0857-7267-2388",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-07",
+      "username": "rendi",
+      "password": "teknisi123",
+      "fullName": "Rendi Dwi Yulian",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0852-0800-8404",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-08",
+      "username": "aliusman",
+      "password": "teknisi123",
+      "fullName": "Ali Usman",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0823-0625-3238",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-09",
+      "username": "mfebriansyah",
+      "password": "teknisi123",
+      "fullName": "M Febriansyah",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0812-7473-4775",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-10",
+      "username": "dewantara",
+      "password": "teknisi123",
+      "fullName": "Dewantara",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0895-2669-3961",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-11",
+      "username": "belbi",
+      "password": "teknisi123",
+      "fullName": "Belbi Candra",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0821-7710-4056",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-12",
+      "username": "annisa",
+      "password": "teknisi123",
+      "fullName": "Annisa Aziziyah",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0882-1508-6506",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-13",
+      "username": "nadia",
+      "password": "teknisi123",
+      "fullName": "Nadia Wahyu",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0811-1416-88",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-14",
+      "username": "siwi",
+      "password": "teknisi123",
+      "fullName": "Siwi Asri",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0853-6965-2583",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-15",
+      "username": "widia",
+      "password": "teknisi123",
+      "fullName": "Widia Salsabila",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0819-9264-3551",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-16",
+      "username": "mbagoes",
+      "password": "teknisi123",
+      "fullName": "M Bagoes",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0813-9575-0052",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-17",
+      "username": "mamin",
+      "password": "teknisi123",
+      "fullName": "M Amin",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "L",
+      "employmentStatus": "PPPK",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0853-6906-5857",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-18",
+      "username": "shafiyah",
+      "password": "teknisi123",
+      "fullName": "Shafiyah",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7474-3715",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-19",
+      "username": "winda",
+      "password": "teknisi123",
+      "fullName": "Winda Andea",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0896-9854-4965",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-20",
+      "username": "ummu",
+      "password": "teknisi123",
+      "fullName": "Ummu Aiman",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0822-8262-8407",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-21",
+      "username": "aqila",
+      "password": "teknisi123",
+      "fullName": "Aqila Shifa",
+      "role": "Teknisi",
+      "stationId": "st-plg",
+      "region": "Palembang",
+      "gender": "P",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0878-9780-6733",
+      "avatarKey": "tech_female_1"
+    },
+    {
+      "id": "usr-22",
+      "username": "karsim",
+      "password": "teknisi123",
+      "fullName": "Karsim",
+      "role": "Teknisi",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0852-6797-4191",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-23",
+      "username": "ferryzal",
+      "password": "teknisi123",
+      "fullName": "Ferryzal",
+      "role": "Teknisi",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0852-0065-1277",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-24",
+      "username": "rmfadli",
+      "password": "teknisi123",
+      "fullName": "R.M Fadli",
+      "role": "Teknisi",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0853-6326-3501",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-25",
+      "username": "maldo",
+      "password": "teknisi123",
+      "fullName": "M Aldo",
+      "role": "Teknisi",
+      "stationId": "st-pbm",
+      "region": "Prabumulih",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0877-4189-4559",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-26",
+      "username": "zamzam",
+      "password": "teknisi123",
+      "fullName": "Zamzam",
+      "role": "Teknisi",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0822-7831-7533",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-27",
+      "username": "bambang",
+      "password": "teknisi123",
+      "fullName": "Bambang",
+      "role": "Teknisi",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0823-7386-1868",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-28",
+      "username": "mdoni",
+      "password": "teknisi123",
+      "fullName": "M Doni",
+      "role": "Teknisi",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0895-1879-7171",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-29",
+      "username": "alzikri",
+      "password": "teknisi123",
+      "fullName": "Al Zikri",
+      "role": "Teknisi",
+      "stationId": "st-llg",
+      "region": "Lubuk Linggau",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 1 (00.00 - 08.00)",
+      "phone": "0821-5776-1092",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-30",
+      "username": "ahmadlauta",
+      "password": "teknisi123",
+      "fullName": "Ahmad Lauta",
+      "role": "Teknisi",
+      "stationId": "st-sky",
+      "region": "Sekayu",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0859-5406-3150",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-31",
+      "username": "sutopo",
+      "password": "teknisi123",
+      "fullName": "Sutopo",
+      "role": "Teknisi",
+      "stationId": "st-sky",
+      "region": "Sekayu",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0821-7665-4554",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-32",
+      "username": "mfajri",
+      "password": "teknisi123",
+      "fullName": "M Fajri",
+      "role": "Teknisi",
+      "stationId": "st-sky",
+      "region": "Sekayu",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0831-7191-2939",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-33",
+      "username": "dahlan",
+      "password": "teknisi123",
+      "fullName": "Dahlan",
+      "role": "Teknisi",
+      "stationId": "st-pga",
+      "region": "Pagar Alam",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0813-6865-3927",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-34",
+      "username": "agussalim",
+      "password": "teknisi123",
+      "fullName": "Agus Salim",
+      "role": "Teknisi",
+      "stationId": "st-pga",
+      "region": "Pagar Alam",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7815-0180",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-35",
+      "username": "marya",
+      "password": "teknisi123",
+      "fullName": "M Arya",
+      "role": "Teknisi",
+      "stationId": "st-pga",
+      "region": "Pagar Alam",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": false,
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "phone": "0857-5857-4742",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-36",
+      "username": "zakaria",
+      "password": "teknisi123",
+      "fullName": "Zakaria",
+      "role": "Teknisi",
+      "stationId": "st-lht",
+      "region": "Lahat",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0821-7950-2767",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-37",
+      "username": "zaini",
+      "password": "teknisi123",
+      "fullName": "Zaini",
+      "role": "Teknisi",
+      "stationId": "st-lht",
+      "region": "Lahat",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Operator",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0831-6368-8600",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-38",
+      "username": "danil",
+      "password": "teknisi123",
+      "fullName": "Danil",
+      "role": "Teknisi",
+      "stationId": "st-tt",
+      "region": "Tebing Tinggi",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0853-6701-0902",
+      "avatarKey": "tech_male_1"
+    },
+    {
+      "id": "usr-39",
+      "username": "muslim",
+      "password": "teknisi123",
+      "fullName": "Muslim",
+      "role": "Teknisi",
+      "stationId": "st-md",
+      "region": "Muara Dua",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0812-7463-2280",
+      "avatarKey": "tech_male_2"
+    },
+    {
+      "id": "usr-40",
+      "username": "yance",
+      "password": "teknisi123",
+      "fullName": "Yance",
+      "role": "Teknisi",
+      "stationId": "st-btr",
+      "region": "Baturaja",
+      "gender": "L",
+      "employmentStatus": "PNS",
+      "jabatan": "Ketua Tim",
+      "onDuty": true,
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "phone": "0877-9685-7288",
+      "avatarKey": "tech_male_1"
+    }
   ],
   "infrastructure": [
     {
@@ -625,9 +2547,24 @@
       "updatedAt": "2026-09-01 08:30 WIB",
       "adminNote": "Sudah masuk rekap data transmisi Agustus 2026 untuk pengajuan perbaikan exciter dan rehabilitasi bangunan.",
       "history": [
-        { "status": "Pengajuan", "timestamp": "2026-08-29 09:15 WIB", "actor": "Yance", "note": "Laporan kondisi TX Baturaja dan sarana bangunan." },
-        { "status": "Laporan diterima", "timestamp": "2026-08-30 10:00 WIB", "actor": "Abdur Rahman (Admin)", "note": "Diverifikasi bersama tim teknik Palembang." },
-        { "status": "Laporan diproses", "timestamp": "2026-09-01 08:30 WIB", "actor": "Sutio (Admin)", "note": "Masuk prioritas perbaikan dan pengamanan aset." }
+        {
+          "status": "Pengajuan",
+          "timestamp": "2026-08-29 09:15 WIB",
+          "actor": "Yance",
+          "note": "Laporan kondisi TX Baturaja dan sarana bangunan."
+        },
+        {
+          "status": "Laporan diterima",
+          "timestamp": "2026-08-30 10:00 WIB",
+          "actor": "Abdur Rahman (Admin)",
+          "note": "Diverifikasi bersama tim teknik Palembang."
+        },
+        {
+          "status": "Laporan diproses",
+          "timestamp": "2026-09-01 08:30 WIB",
+          "actor": "Sutio (Admin)",
+          "note": "Masuk prioritas perbaikan dan pengamanan aset."
+        }
       ]
     },
     {
@@ -643,8 +2580,18 @@
       "updatedAt": "2026-09-01 08:15 WIB",
       "adminNote": "Penggantian fuse UPS dijadwalkan dalam pemeliharaan berkala bulan berjalan.",
       "history": [
-        { "status": "Pengajuan", "timestamp": "2026-08-30 11:00 WIB", "actor": "Dahlan", "note": "Pengajuan suku cadang fuse UPS dan laporan MX8400." },
-        { "status": "Laporan diterima", "timestamp": "2026-09-01 08:15 WIB", "actor": "Sutio (Admin)", "note": "Laporan diterima koordinator transmisi." }
+        {
+          "status": "Pengajuan",
+          "timestamp": "2026-08-30 11:00 WIB",
+          "actor": "Dahlan",
+          "note": "Pengajuan suku cadang fuse UPS dan laporan MX8400."
+        },
+        {
+          "status": "Laporan diterima",
+          "timestamp": "2026-09-01 08:15 WIB",
+          "actor": "Sutio (Admin)",
+          "note": "Laporan diterima koordinator transmisi."
+        }
       ]
     },
     {
@@ -660,9 +2607,24 @@
       "updatedAt": "2026-09-01 09:00 WIB",
       "adminNote": "Layanan MUX tetap aman dialihkan ke TITAN MUX & ProStream X (16 Port) serta UPS ABB 60 KVA.",
       "history": [
-        { "status": "Pengajuan", "timestamp": "2026-08-25 08:30 WIB", "actor": "Sutio", "note": "Audit peralatan headend dan kelistrikan Palembang." },
-        { "status": "Laporan diterima", "timestamp": "2026-08-26 09:00 WIB", "actor": "Abdur Rahman (Admin)", "note": "Diterima untuk pencatatan aset." },
-        { "status": "Selesai", "timestamp": "2026-09-01 09:00 WIB", "actor": "Abdur Rahman (Admin)", "note": "Operasional MUX dan daya tetap stabil 4.997 W." }
+        {
+          "status": "Pengajuan",
+          "timestamp": "2026-08-25 08:30 WIB",
+          "actor": "Sutio",
+          "note": "Audit peralatan headend dan kelistrikan Palembang."
+        },
+        {
+          "status": "Laporan diterima",
+          "timestamp": "2026-08-26 09:00 WIB",
+          "actor": "Abdur Rahman (Admin)",
+          "note": "Diterima untuk pencatatan aset."
+        },
+        {
+          "status": "Selesai",
+          "timestamp": "2026-09-01 09:00 WIB",
+          "actor": "Abdur Rahman (Admin)",
+          "note": "Operasional MUX dan daya tetap stabil 4.997 W."
+        }
       ]
     },
     {
@@ -678,7 +2640,12 @@
       "updatedAt": "2026-09-01 07:45 WIB",
       "adminNote": "",
       "history": [
-        { "status": "Pengajuan", "timestamp": "2026-09-01 07:45 WIB", "actor": "Danil", "note": "Laporan kondisi sarpras Tebing Tinggi." }
+        {
+          "status": "Pengajuan",
+          "timestamp": "2026-09-01 07:45 WIB",
+          "actor": "Danil",
+          "note": "Laporan kondisi sarpras Tebing Tinggi."
+        }
       ]
     }
   ],
@@ -712,27 +2679,205 @@
     }
   ],
   "schedules": [
-    { "id": "sch-k1", "dayBucket": "Kemarin", "dateLabel": "15 Nov 2026", "stationRegion": "Palembang", "technicianName": "Ricki Ramdani", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Monitoring TX NEC 29 UHF" },
-    { "id": "sch-k2", "dayBucket": "Kemarin", "dateLabel": "15 Nov 2026", "stationRegion": "Palembang", "technicianName": "Nadia Wahyu", "roleStatus": "Operator", "shift": "Sore (15:00 - 23:00)", "notes": "Monitoring Headend & MUX" },
-    { "id": "sch-k3", "dayBucket": "Kemarin", "dateLabel": "15 Nov 2026", "stationRegion": "Prabumulih", "technicianName": "R.M Fadli", "roleStatus": "Operator", "shift": "Sore (15:00 - 23:00)", "notes": "Pengecekan genset LEEGA" },
-    { "id": "sch-k4", "dayBucket": "Kemarin", "dateLabel": "15 Nov 2026", "stationRegion": "Lubuk Linggau", "technicianName": "M Doni", "roleStatus": "Operator", "shift": "Sore (15:00 - 23:00)", "notes": "Monitoring daya R&S 3 kW" },
-
-    { "id": "sch-h1", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Palembang", "technicianName": "Sutio", "roleStatus": "Ketua Tim Palembang", "shift": "Pagi (07:00 - 15:00)", "notes": "Koordinasi transmisi & multipleksing" },
-    { "id": "sch-h2", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Palembang", "technicianName": "Agil Yurendi", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Pencatatan daya & sistem monitoring" },
-    { "id": "sch-h3", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Palembang", "technicianName": "Annisa Aziziyah", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Monitoring MUX & IRD" },
-    { "id": "sch-h4", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Prabumulih", "technicianName": "Karsim", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Operasional TX Ch 30 UHF" },
-    { "id": "sch-h5", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Lubuk Linggau", "technicianName": "Zamzam", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Operasional TX Ch 27 UHF" },
-    { "id": "sch-h6", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Sekayu", "technicianName": "Ahmad Lauta", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Operasional TX Ch 31 UHF" },
-    { "id": "sch-h7", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Pagar Alam", "technicianName": "Dahlan", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Operasional TX Ch 29 UHF" },
-    { "id": "sch-h8", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Lahat", "technicianName": "Zakaria", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Penjagaan aset & sarpras Lahat" },
-    { "id": "sch-h9", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Tebing Tinggi", "technicianName": "Danil", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Pemantauan aset Tebing Tinggi" },
-    { "id": "sch-h10", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Muara Dua", "technicianName": "Muslim", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Persiapan site relokasi Muara Dua" },
-    { "id": "sch-h11", "dayBucket": "Hari Ini", "dateLabel": "16 Nov 2026", "stationRegion": "Baturaja", "technicianName": "Yance", "roleStatus": "Ketua Tim", "shift": "Pagi (07:00 - 15:00)", "notes": "Pengamanan & pengecekan Baturaja" },
-
-    { "id": "sch-b1", "dayBucket": "Besok", "dateLabel": "17 Nov 2026", "stationRegion": "Palembang", "technicianName": "Saleh Alkabiir", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Pengecekan grounding & daya" },
-    { "id": "sch-b2", "dayBucket": "Besok", "dateLabel": "17 Nov 2026", "stationRegion": "Palembang", "technicianName": "Dwi Sapto Widodo", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Pemeliharaan headend" },
-    { "id": "sch-b3", "dayBucket": "Besok", "dateLabel": "17 Nov 2026", "stationRegion": "Prabumulih", "technicianName": "Ferryzal", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Shift pagi TX Cambai" },
-    { "id": "sch-b4", "dayBucket": "Besok", "dateLabel": "17 Nov 2026", "stationRegion": "Sekayu", "technicianName": "Sutopo", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Shift pagi TX Sekayu" },
-    { "id": "sch-b5", "dayBucket": "Besok", "dateLabel": "17 Nov 2026", "stationRegion": "Pagar Alam", "technicianName": "Agus Salim", "roleStatus": "Operator", "shift": "Pagi (07:00 - 15:00)", "notes": "Pengecekan UPS ABB" }
+    {
+      "id": "sch-k1",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Ricki Ramdani",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Monitoring TX NEC 29 UHF"
+    },
+    {
+      "id": "sch-k2",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Nadia Wahyu",
+      "roleStatus": "Operator",
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "notes": "Monitoring Headend & MUX"
+    },
+    {
+      "id": "sch-k3",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Prabumulih",
+      "technicianName": "R.M Fadli",
+      "roleStatus": "Operator",
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "notes": "Pengecekan genset LEEGA"
+    },
+    {
+      "id": "sch-k4",
+      "dayBucket": "Kemarin",
+      "dateLabel": "15 Nov 2026",
+      "stationRegion": "Lubuk Linggau",
+      "technicianName": "M Doni",
+      "roleStatus": "Operator",
+      "shift": "Shift 3 (16.00 - 24.00)",
+      "notes": "Monitoring daya R&S 3 kW"
+    },
+    {
+      "id": "sch-h1",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Sutio",
+      "roleStatus": "Ketua Tim Palembang",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Koordinasi transmisi & multipleksing"
+    },
+    {
+      "id": "sch-h2",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Agil Yurendi",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Pencatatan daya & sistem monitoring"
+    },
+    {
+      "id": "sch-h3",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Annisa Aziziyah",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Monitoring MUX & IRD"
+    },
+    {
+      "id": "sch-h4",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Prabumulih",
+      "technicianName": "Karsim",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Operasional TX Ch 30 UHF"
+    },
+    {
+      "id": "sch-h5",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Lubuk Linggau",
+      "technicianName": "Zamzam",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Operasional TX Ch 27 UHF"
+    },
+    {
+      "id": "sch-h6",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Sekayu",
+      "technicianName": "Ahmad Lauta",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Operasional TX Ch 31 UHF"
+    },
+    {
+      "id": "sch-h7",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Pagar Alam",
+      "technicianName": "Dahlan",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Operasional TX Ch 29 UHF"
+    },
+    {
+      "id": "sch-h8",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Lahat",
+      "technicianName": "Zakaria",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Penjagaan aset & sarpras Lahat"
+    },
+    {
+      "id": "sch-h9",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Tebing Tinggi",
+      "technicianName": "Danil",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Pemantauan aset Tebing Tinggi"
+    },
+    {
+      "id": "sch-h10",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Muara Dua",
+      "technicianName": "Muslim",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Persiapan site relokasi Muara Dua"
+    },
+    {
+      "id": "sch-h11",
+      "dayBucket": "Hari Ini",
+      "dateLabel": "16 Nov 2026",
+      "stationRegion": "Baturaja",
+      "technicianName": "Yance",
+      "roleStatus": "Ketua Tim",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Pengamanan & pengecekan Baturaja"
+    },
+    {
+      "id": "sch-b1",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Saleh Alkabiir",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Pengecekan grounding & daya"
+    },
+    {
+      "id": "sch-b2",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Palembang",
+      "technicianName": "Dwi Sapto Widodo",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Pemeliharaan headend"
+    },
+    {
+      "id": "sch-b3",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Prabumulih",
+      "technicianName": "Ferryzal",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Shift 2 TX Cambai"
+    },
+    {
+      "id": "sch-b4",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Sekayu",
+      "technicianName": "Sutopo",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Shift 2 TX Sekayu"
+    },
+    {
+      "id": "sch-b5",
+      "dayBucket": "Besok",
+      "dateLabel": "17 Nov 2026",
+      "stationRegion": "Pagar Alam",
+      "technicianName": "Agus Salim",
+      "roleStatus": "Operator",
+      "shift": "Shift 2 (08.00 - 16.00)",
+      "notes": "Pengecekan UPS ABB"
+    }
   ]
 }

@@ -16,6 +16,7 @@ import {
   DeviceItem,
   EmploymentStatus,
   GenderCode,
+  InfrastructureItem,
   MaintenanceReport,
   NavSection,
   ReportPriority,
@@ -32,6 +33,20 @@ import { formatNowWIB } from './utils/stationHelpers';
 const STORAGE_DB_KEY = 'simontrans_tvri_sumsel_db_v3';
 const STORAGE_USER_KEY = 'simontrans_tvri_user_v3';
 const STORAGE_THEME_KEY = 'simontrans_sumsel_theme_v1';
+
+const normalizeShiftLabel = (shift?: string): string => {
+  if (!shift) return 'Shift 2 (08.00 - 16.00)';
+  if (shift.startsWith('Malam') || shift.includes('23:00 - 07:00')) {
+    return 'Shift 1 (00.00 - 08.00)';
+  }
+  if (shift.startsWith('Pagi') || shift.includes('07:00 - 15:00')) {
+    return 'Shift 2 (08.00 - 16.00)';
+  }
+  if (shift.startsWith('Sore') || shift.includes('15:00 - 23:00')) {
+    return 'Shift 3 (16.00 - 24.00)';
+  }
+  return shift;
+};
 
 export default function App() {
   const [db, setDb] = useState<TransmisiDatabase | null>(null);
@@ -65,7 +80,18 @@ export default function App() {
           const parsed = JSON.parse(cached) as TransmisiDatabase;
           setDb({
             ...parsed,
-            schedules: parsed.schedules ?? [],
+            technicians: parsed.technicians.map((t) => ({
+              ...t,
+              shift: normalizeShiftLabel(t.shift),
+            })),
+            users: parsed.users.map((u) => ({
+              ...u,
+              shift: normalizeShiftLabel(u.shift),
+            })),
+            schedules: (parsed.schedules ?? []).map((s) => ({
+              ...s,
+              shift: normalizeShiftLabel(s.shift),
+            })),
             infrastructure: parsed.infrastructure ?? [],
           });
           setLoading(false);
@@ -349,6 +375,7 @@ export default function App() {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
+    shift: string;
     phone: string;
   }) => {
     if (!db) return;
@@ -374,7 +401,7 @@ export default function App() {
       employmentStatus: payload.employmentStatus,
       jabatan: payload.jabatan,
       onDuty: true,
-      shift: 'Pagi (07:00 - 15:00)',
+      shift: payload.shift || 'Shift 2 (08.00 - 16.00)',
       phone: payload.phone || '0812-7000-0000',
       avatarKey,
     };
@@ -388,7 +415,7 @@ export default function App() {
       employmentStatus: payload.employmentStatus,
       jabatan: payload.jabatan,
       onDuty: true,
-      shift: 'Pagi (07:00 - 15:00)',
+      shift: payload.shift || 'Shift 2 (08.00 - 16.00)',
       phone: payload.phone || '0812-7000-0000',
       avatarKey,
     };
@@ -410,6 +437,7 @@ export default function App() {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
+    shift: string;
     phone: string;
     onDuty: boolean;
     avatarDataUrl?: string | null;
@@ -432,6 +460,7 @@ export default function App() {
             gender: payload.gender,
             employmentStatus: payload.employmentStatus,
             jabatan: payload.jabatan,
+            shift: payload.shift || u.shift,
             onDuty: payload.onDuty,
             phone: payload.phone,
             avatarDataUrl: payload.avatarDataUrl ?? u.avatarDataUrl ?? null,
@@ -454,6 +483,7 @@ export default function App() {
               gender: payload.gender,
               employmentStatus: payload.employmentStatus,
               jabatan: payload.jabatan,
+              shift: payload.shift || t.shift,
               onDuty: payload.onDuty,
               phone: payload.phone || t.phone,
               avatarDataUrl: payload.avatarDataUrl ?? t.avatarDataUrl ?? null,
@@ -472,7 +502,7 @@ export default function App() {
             employmentStatus: payload.employmentStatus,
             jabatan: payload.jabatan,
             onDuty: payload.onDuty,
-            shift: oldUser?.shift ?? 'Pagi (07:00 - 15:00)',
+            shift: payload.shift || oldUser?.shift || 'Shift 2 (08.00 - 16.00)',
             phone: payload.phone || '0812-7000-0000',
             avatarKey: oldUser?.avatarKey ?? 'tech_male_1',
             avatarDataUrl: payload.avatarDataUrl ?? oldUser?.avatarDataUrl ?? null,
@@ -618,6 +648,16 @@ export default function App() {
     });
   };
 
+  const handleUpdateInfrastructure = (updated: InfrastructureItem) => {
+    if (!db) return;
+    persistDb({
+      ...db,
+      infrastructure: db.infrastructure.map((item) =>
+        item.id === updated.id ? updated : item
+      ),
+    });
+  };
+
   const handleChangePassword = (newPassword: string) => {
     if (!db || !currentUser) return;
     persistDb({
@@ -758,7 +798,11 @@ export default function App() {
           )}
 
           {activeNav === 'sarana' && (
-            <SaranaPrasaranaView infrastructure={db.infrastructure} />
+            <SaranaPrasaranaView
+              infrastructure={db.infrastructure}
+              userRole={currentUser.role}
+              onUpdateInfrastructure={handleUpdateInfrastructure}
+            />
           )}
 
           {activeNav === 'teknisi' && (

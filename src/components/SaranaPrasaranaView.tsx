@@ -5,14 +5,27 @@ import {
   CheckCircle2,
   Home,
   LandPlot,
+  Pencil,
   RadioTower,
   Search,
+  X,
   XCircle,
 } from 'lucide-react';
-import { InfrastructureItem } from '../types/transmisi';
+import { InfrastructureItem, UserRole } from '../types/transmisi';
 
 interface SaranaPrasaranaViewProps {
   infrastructure: InfrastructureItem[];
+  userRole: UserRole;
+  onUpdateInfrastructure: (updated: InfrastructureItem) => void;
+}
+
+type LandStatusOption = 'Bersertifikat' | 'Hibah' | '-';
+
+function normalizeLandStatusOption(raw: string): LandStatusOption {
+  const lower = raw.toLowerCase();
+  if (lower.includes('bersertifikat')) return 'Bersertifikat';
+  if (lower.includes('hibah')) return 'Hibah';
+  return '-';
 }
 
 function classifyCondition(text: string): 'baik' | 'rusak' | 'netral' {
@@ -23,7 +36,8 @@ function classifyCondition(text: string): 'baik' | 'rusak' | 'netral' {
     lower.includes('bocor') ||
     lower.includes('pencurian') ||
     lower.includes('belum ada sertifikat') ||
-    lower.includes('berlubang')
+    lower.includes('berlubang') ||
+    lower.includes('hibah')
   ) {
     return 'rusak';
   }
@@ -33,9 +47,44 @@ function classifyCondition(text: string): 'baik' | 'rusak' | 'netral' {
 
 export function SaranaPrasaranaView({
   infrastructure,
+  userRole,
+  onUpdateInfrastructure,
 }: SaranaPrasaranaViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [conditionFilter, setConditionFilter] = useState<'all' | 'baik' | 'perhatian'>('all');
+
+  const [editingItem, setEditingItem] = useState<InfrastructureItem | null>(null);
+  const [editLandStatus, setEditLandStatus] = useState<LandStatusOption>('Bersertifikat');
+  const [editTxRoom, setEditTxRoom] = useState('');
+  const [editGensetRoom, setEditGensetRoom] = useState('');
+  const [editOfficialHouse, setEditOfficialHouse] = useState('');
+  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+
+  const openEditModal = (item: InfrastructureItem) => {
+    setEditingItem(item);
+    setEditLandStatus(normalizeLandStatusOption(item.landStatus));
+    setEditTxRoom(item.txRoomCondition);
+    setEditGensetRoom(item.gensetRoomCondition);
+    setEditOfficialHouse(item.officialHouseCondition);
+  };
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+    const updated: InfrastructureItem = {
+      ...editingItem,
+      landStatus: editLandStatus,
+      txRoomCondition: editTxRoom.trim() || '-',
+      gensetRoomCondition: editGensetRoom.trim() || '-',
+      officialHouseCondition: editOfficialHouse.trim() || '-',
+    };
+    onUpdateInfrastructure(updated);
+    setFeedbackMsg(
+      `Data sarana & prasarana "${editingItem.stationName}" berhasil diperbarui.`
+    );
+    setEditingItem(null);
+    setTimeout(() => setFeedbackMsg(null), 3500);
+  };
 
   const filtered = infrastructure.filter((item) => {
     const hasIssue =
@@ -98,7 +147,7 @@ export function SaranaPrasaranaView({
             {certifiedCount} / {infrastructure.length}
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {infrastructure.length - certifiedCount} hibah belum sertifikat
+            {infrastructure.length - certifiedCount} belum bersertifikat / lainnya
           </div>
         </div>
 
@@ -128,6 +177,12 @@ export function SaranaPrasaranaView({
           </div>
         </div>
       </div>
+
+      {feedbackMsg && (
+        <div className="px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+          {feedbackMsg}
+        </div>
+      )}
 
       {/* Filter Toolbar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3">
@@ -194,7 +249,7 @@ export function SaranaPrasaranaView({
               className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4"
             >
               <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-                <div>
+                <div className="min-w-0">
                   <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                     {item.stationName}
                   </h2>
@@ -205,20 +260,34 @@ export function SaranaPrasaranaView({
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold shrink-0">
-                  {landState === 'rusak' ||
-                  txState === 'rusak' ||
-                  houseState === 'rusak' ||
-                  gensetState === 'rusak' ? (
-                    <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                      <span>Ada Catatan</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Baik</span>
-                    </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold">
+                    {landState === 'rusak' ||
+                    txState === 'rusak' ||
+                    houseState === 'rusak' ||
+                    gensetState === 'rusak' ? (
+                      <span className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        <span>Ada Catatan</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Baik</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {userRole === 'Admin' && (
+                    <button
+                      type="button"
+                      onClick={() => openEditModal(item)}
+                      className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                      aria-label={`Edit sarana ${item.stationName}`}
+                      title="Edit kondisi sarana & prasarana"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
                   )}
                 </div>
               </div>
@@ -237,9 +306,7 @@ export function SaranaPrasaranaView({
                   </div>
                   <div>
                     {renderCondText(
-                      item.officialHouseCount === 0
-                        ? 'Tidak ada (-)'
-                        : item.officialHouseCondition,
+                      item.officialHouseCondition || '-',
                       houseState
                     )}
                   </div>
@@ -279,6 +346,113 @@ export function SaranaPrasaranaView({
           </div>
         )}
       </div>
+
+      {/* Modal Edit Sarana & Prasarana (Khusus Admin) */}
+      {editingItem && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-[1px]"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  Edit Sarana &amp; Prasarana
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  {editingItem.stationName}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingItem(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                aria-label="Tutup modal edit sarana"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-3.5">
+              <div>
+                <label className="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Status Tanah
+                </label>
+                <select
+                  value={editLandStatus}
+                  onChange={(e) =>
+                    setEditLandStatus(e.target.value as LandStatusOption)
+                  }
+                  className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                >
+                  <option value="Bersertifikat">Bersertifikat</option>
+                  <option value="Hibah">Hibah</option>
+                  <option value="-">-</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Kondisi Ruang TX ({editingItem.txRoomArea})
+                </label>
+                <input
+                  type="text"
+                  value={editTxRoom}
+                  onChange={(e) => setEditTxRoom(e.target.value)}
+                  placeholder="mis. Baik / Atap bocor..."
+                  className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Kondisi Ruang Genset ({editingItem.gensetRoomArea})
+                </label>
+                <input
+                  type="text"
+                  value={editGensetRoom}
+                  onChange={(e) => setEditGensetRoom(e.target.value)}
+                  placeholder="mis. Baik / Plafon rusak..."
+                  className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-1">
+                  Kondisi Rumah Dinas ({editingItem.officialHouseCount} Unit)
+                </label>
+                <input
+                  type="text"
+                  value={editOfficialHouse}
+                  onChange={(e) => setEditOfficialHouse(e.target.value)}
+                  placeholder="mis. Baik / Rusak berat / -"
+                  className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                  required
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingItem(null)}
+                  className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold transition-colors"
+                >
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

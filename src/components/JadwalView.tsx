@@ -78,14 +78,14 @@ export function JadwalView({
               csvEscape(loc),
               csvEscape(t.name),
               csvEscape(t.jabatan),
-              csvEscape(t.shift || 'Pagi (07:00 - 15:00)'),
+              csvEscape(t.shift || 'Shift 2 (08.00 - 16.00)'),
               csvEscape(`Monitoring rutin Satuan Transmisi ${loc}`),
             ].join(',');
           })
         : [
-            'Kemarin,15 Agu 2026,Palembang,Agil Yurendi,Operator,Pagi (07:00 - 15:00),Monitoring MUX',
-            'Hari Ini,16 Agu 2026,Palembang,Sutio,Ketua Tim Palembang,Pagi (07:00 - 15:00),Koordinasi TX',
-            'Besok,17 Agu 2026,Prabumulih,Karsim,Ketua Tim,Pagi (07:00 - 15:00),Pengecekan pemancar & genset',
+            'Kemarin,15 Agu 2026,Palembang,Agil Yurendi,Operator,Shift 1 (00.00 - 08.00),Monitoring MUX',
+            'Hari Ini,16 Agu 2026,Palembang,Sutio,Ketua Tim Palembang,Shift 2 (08.00 - 16.00),Koordinasi TX',
+            'Besok,17 Agu 2026,Prabumulih,Karsim,Ketua Tim,Shift 3 (16.00 - 24.00),Pengecekan pemancar & genset',
           ];
 
     const csvLines = [
@@ -149,7 +149,7 @@ export function JadwalView({
             stationRegion: String(item.stationRegion || item.lokasi || 'Palembang'),
             technicianName: String(item.technicianName || item.nama_teknisi || 'Teknisi'),
             roleStatus: String(item.roleStatus || item.peran || 'Operator'),
-            shift: String(item.shift || 'Pagi (07:00 - 15:00)'),
+            shift: String(item.shift || 'Shift 2 (08.00 - 16.00)'),
             notes: item.notes || item.catatan || '',
           }));
           setParsedPreview(items);
@@ -187,7 +187,7 @@ export function JadwalView({
               stationRegion: cols[2] || 'Palembang',
               technicianName: cols[3] || 'Teknisi',
               roleStatus: cols[4] || 'Operator',
-              shift: cols[5] || 'Pagi (07:00 - 15:00)',
+              shift: cols[5] || 'Shift 2 (08.00 - 16.00)',
               notes: cols[6] || '',
             };
           })
@@ -239,7 +239,10 @@ export function JadwalView({
               Jadwal Operasional Teknisi Transmisi
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Pembagian tugas jaga 3 hari (Kemarin, Hari Ini, dan Besok)
+              Pembagian tugas jaga 3 hari (Kemarin, Hari Ini, dan Besok) ·{' '}
+              <span className="font-mono text-slate-600 dark:text-slate-300">
+                Shift 1: 00.00 - 08.00 | Shift 2: 08.00 - 16.00 | Shift 3: 16.00 - 24.00
+              </span>
             </p>
           </div>
         </div>
