@@ -85,7 +85,7 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
             {totalOnDuty} Orang
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Bertugas di {new Set(technicians.map((t) => t.stationId)).size} lokasi satuan
+            Sinkron dengan jadwal dinas hari ini
           </div>
         </div>
       </div>
@@ -220,8 +220,8 @@ export function TeknisiView({ stations, technicians }: TeknisiViewProps) {
                         </div>
 
                         <div className="pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                          <span>{tech.shift}</span>
-                          <span className="flex items-center gap-1">
+                          <span className="truncate">{tech.region}</span>
+                          <span className="flex items-center gap-1 shrink-0">
                             <Phone className="w-3 h-3" />
                             {tech.phone}
                           </span>

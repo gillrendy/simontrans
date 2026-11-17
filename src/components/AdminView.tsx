@@ -21,12 +21,17 @@ import {
   GenderCode,
   InfrastructureItem,
   MaintenanceReport,
+  ScheduleAssignment,
   Station,
   Technician,
   TicketStatus,
   UserAccount,
   UserRole,
 } from '../types/transmisi';
+import {
+  findTodayScheduleForPerson,
+  isOffDutyShiftLabel,
+} from '../services/googleSheetsDb';
 import { ConfirmModal } from './ConfirmModal';
 import { MonthlyReportModal } from './MonthlyReportModal';
 import { TechAvatar } from './TechAvatar';
@@ -38,6 +43,7 @@ interface AdminViewProps {
   infrastructure: InfrastructureItem[];
   reports: MaintenanceReport[];
   users: UserAccount[];
+  schedules: ScheduleAssignment[];
   currentUser: UserAccount;
   onUpdateReportStatus: (
     reportId: string,
@@ -64,7 +70,6 @@ interface AdminViewProps {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
-    shift: string;
     phone: string;
   }) => void;
   onUpdateUser: (payload: {
@@ -77,9 +82,7 @@ interface AdminViewProps {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
-    shift: string;
     phone: string;
-    onDuty: boolean;
     avatarDataUrl?: string | null;
   }) => void;
   onDeleteUser: (userId: string) => void;
@@ -118,12 +121,6 @@ const DEVICE_CATEGORIES: DeviceCategory[] = [
   'Kelistrikan',
 ];
 
-const SHIFT_OPTIONS = [
-  'Shift 1 (00.00 - 08.00)',
-  'Shift 2 (08.00 - 16.00)',
-  'Shift 3 (16.00 - 24.00)',
-];
-
 export function AdminView({
   stations,
   devices,
@@ -131,6 +128,7 @@ export function AdminView({
   infrastructure,
   reports,
   users,
+  schedules,
   currentUser,
   onUpdateReportStatus,
   onDeleteReport,
@@ -172,7 +170,6 @@ export function AdminView({
   const [uEmploymentStatus, setUEmploymentStatus] = useState<EmploymentStatus>('PNS');
   const [uJabatan, setUJabatan] = useState('Operator');
   const [uGender, setUGender] = useState<GenderCode>('L');
-  const [uShift, setUShift] = useState(SHIFT_OPTIONS[1]);
   const [uPhone, setUPhone] = useState('0812-7000-0000');
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userStationFilter, setUserStationFilter] = useState<string>('all');
@@ -187,9 +184,7 @@ export function AdminView({
   const [editEmploymentStatus, setEditEmploymentStatus] = useState<EmploymentStatus>('PNS');
   const [editJabatan, setEditJabatan] = useState('Operator');
   const [editGender, setEditGender] = useState<GenderCode>('L');
-  const [editShift, setEditShift] = useState(SHIFT_OPTIONS[1]);
   const [editPhone, setEditPhone] = useState('');
-  const [editOnDuty, setEditOnDuty] = useState(true);
   const [editAvatarDataUrl, setEditAvatarDataUrl] = useState<string | null>(null);
 
   // Station coordinate form state
@@ -254,7 +249,6 @@ export function AdminView({
       gender: uGender,
       employmentStatus: uEmploymentStatus,
       jabatan: uJabatan.trim() || 'Operator',
-      shift: uShift,
       phone: uPhone.trim() || '0812-7000-0000',
     });
     setUUsername('');
@@ -272,9 +266,7 @@ export function AdminView({
     setEditEmploymentStatus(user.employmentStatus);
     setEditJabatan(user.jabatan);
     setEditGender(user.gender);
-    setEditShift(SHIFT_OPTIONS.includes(user.shift) ? user.shift : SHIFT_OPTIONS[1]);
     setEditPhone(user.phone || '0812-7000-0000');
-    setEditOnDuty(user.onDuty);
     setEditAvatarDataUrl(user.avatarDataUrl ?? null);
   };
 
@@ -303,13 +295,11 @@ export function AdminView({
       gender: editGender,
       employmentStatus: editEmploymentStatus,
       jabatan: editJabatan.trim() || 'Operator',
-      shift: editShift,
       phone: editPhone.trim(),
-      onDuty: editOnDuty,
       avatarDataUrl: editAvatarDataUrl,
     });
     setEditingUser(null);
-    showFeedback(`Data user "${editFullName.trim()}" berhasil diperbarui & disinkronkan.`);
+    showFeedback(`Data user "${editFullName.trim()}" berhasil diperbarui.`);
   };
 
   const handleCreateStation = (e: React.FormEvent) => {
@@ -929,23 +919,6 @@ export function AdminView({
               </div>
             </div>
 
-            <div>
-              <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                Jam Kerja Shift
-              </label>
-              <select
-                value={uShift}
-                onChange={(e) => setUShift(e.target.value)}
-                className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
-              >
-                {SHIFT_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             <button
               type="submit"
               className="w-full h-10 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
@@ -988,7 +961,13 @@ export function AdminView({
               </div>
             </div>
             <div className="divide-y divide-slate-200 dark:divide-slate-800 max-h-[600px] overflow-y-auto">
-              {filteredUsers.map((u) => (
+              {filteredUsers.map((u) => {
+                const todaySched = findTodayScheduleForPerson(u.fullName, schedules);
+                const activeOnDuty = todaySched
+                  ? !isOffDutyShiftLabel(todaySched.shift)
+                  : u.onDuty;
+
+                return (
                 <div
                   key={u.id}
                   className="p-4 flex items-center justify-between gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
@@ -1001,8 +980,19 @@ export function AdminView({
                       sizeClass="w-10 h-10"
                     />
                     <div className="min-w-0">
-                      <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
-                        {u.fullName}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
+                          {u.fullName}
+                        </span>
+                        <span
+                          className={`text-[10px] font-mono shrink-0 ${
+                            activeOnDuty
+                              ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
+                              : 'text-slate-400 dark:text-slate-500'
+                          }`}
+                        >
+                          {activeOnDuty ? '· On Duty' : '· Off Duty'}
+                        </span>
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
                         @{u.username} · {u.role} · {u.region} · {u.employmentStatus} · {u.jabatan} · {u.gender}
@@ -1036,7 +1026,8 @@ export function AdminView({
                     )}
                   </div>
                 </div>
-              ))}
+                );
+              })}
               {filteredUsers.length === 0 && (
                 <div className="py-8 text-center text-xs text-slate-500 dark:text-slate-400">
                   Tidak ada user yang sesuai filter.
@@ -1449,33 +1440,6 @@ export function AdminView({
                   />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-[11px] text-slate-500 dark:text-slate-400 mb-1">
-                  Jam Kerja Shift
-                </label>
-                <select
-                  value={editShift}
-                  onChange={(e) => setEditShift(e.target.value)}
-                  className="w-full h-9 px-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs text-slate-900 dark:text-slate-100"
-                >
-                  {SHIFT_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 pt-1">
-                <input
-                  type="checkbox"
-                  checked={editOnDuty}
-                  onChange={(e) => setEditOnDuty(e.target.checked)}
-                  className="rounded border-slate-300 text-sky-600 focus:ring-sky-500"
-                />
-                <span>Status Bertugas (On Duty)</span>
-              </label>
 
               <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-200 dark:border-slate-800">
                 <button

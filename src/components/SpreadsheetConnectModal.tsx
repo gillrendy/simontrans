@@ -183,7 +183,8 @@ export function SpreadsheetConnectModal({
               <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 space-y-2">
                 <div>{syncError}</div>
                 {!hasGoogleToken &&
-                  (syncError.toLowerCase().includes('permission') ||
+                  (syncError.toLowerCase().includes('privat') ||
+                    syncError.toLowerCase().includes('permission') ||
                     syncError.includes('403') ||
                     syncError.includes('401')) && (
                     <div className="pt-2 border-t border-red-200 dark:border-red-900/60 text-[11px] text-red-800 dark:text-red-200">

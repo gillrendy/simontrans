@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import {
   getCurrentIndonesianMonthName,
+  isOffDutyShiftLabel,
   parseCsvMatrixText,
   parseMonthlyScheduleMatrix,
 } from '../services/googleSheetsDb';
@@ -32,14 +33,67 @@ interface JadwalViewProps {
   onImportSchedules: (newSchedules: ScheduleAssignment[], replaceExisting: boolean) => void;
 }
 
-const DAY_ROWS: Array<{
+const DAY_COLUMNS: Array<{
   bucket: ScheduleDayBucket;
   subtitle: string;
+  colSpanClass: string;
+  isToday?: boolean;
 }> = [
-  { bucket: 'Kemarin', subtitle: 'Rekap petugas jaga hari sebelumnya' },
-  { bucket: 'Hari Ini', subtitle: 'Petugas transmisi yang sedang bertugas aktif' },
-  { bucket: 'Besok', subtitle: 'Rencana penugasan shift hari berikutnya' },
+  {
+    bucket: 'Kemarin',
+    subtitle: 'Rekap dinas hari sebelumnya',
+    colSpanClass: 'lg:col-span-3',
+  },
+  {
+    bucket: 'Hari Ini',
+    subtitle: 'Petugas transmisi yang dinas aktif hari ini',
+    colSpanClass: 'lg:col-span-6',
+    isToday: true,
+  },
+  {
+    bucket: 'Besok',
+    subtitle: 'Rencana dinas hari berikutnya',
+    colSpanClass: 'lg:col-span-3',
+  },
 ];
+
+const SHIFT_GROUP_ORDER = [
+  'Shift 1 (00.00 - 08.00)',
+  'Shift 2 (08.00 - 16.00)',
+  'Shift 3 (16.00 - 24.00)',
+  'Libur / Off Duty',
+  'Dinas Luar / Off Duty',
+  'Cuti / Off Duty',
+];
+
+function groupSchedulesByShift(items: ScheduleAssignment[]): Array<{
+  shiftLabel: string;
+  entries: ScheduleAssignment[];
+  isOffDuty: boolean;
+}> {
+  const map = new Map<string, ScheduleAssignment[]>();
+  items.forEach((item) => {
+    const key = item.shift?.trim() || 'Shift 2 (08.00 - 16.00)';
+    const list = map.get(key) ?? [];
+    list.push(item);
+    map.set(key, list);
+  });
+
+  const sortedKeys = Array.from(map.keys()).sort((a, b) => {
+    const idxA = SHIFT_GROUP_ORDER.indexOf(a);
+    const idxB = SHIFT_GROUP_ORDER.indexOf(b);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return a.localeCompare(b);
+  });
+
+  return sortedKeys.map((shiftLabel) => ({
+    shiftLabel,
+    entries: map.get(shiftLabel) ?? [],
+    isOffDuty: isOffDutyShiftLabel(shiftLabel),
+  }));
+}
 
 export function JadwalView({
   schedules,
@@ -288,6 +342,9 @@ export function JadwalView({
                 P = Shift 1 (00.00 - 08.00) · S = Shift 2 (08.00 - 16.00) · M = Shift 3 (16.00 - 24.00) · L = Libur / Off Duty
               </span>
             </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              Catatan: Koordinator Teknik (Abdur Rahman) &amp; Ketua Tim Transmisi Palembang (Sutio) masuk Shift 2 (S) pada hari kerja dan Libur (L) di luar hari kerja.
+            </p>
           </div>
         </div>
 
@@ -340,95 +397,156 @@ export function JadwalView({
         </div>
       )}
 
-      {/* Three Explicit Day Rows: Kemarin, Hari Ini, Besok */}
-      <div className="space-y-4">
-        {DAY_ROWS.map((row) => {
+      {/* Tiga Kolom Jadwal: Kemarin | Hari Ini (Lebih Besar) | Besok */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        {DAY_COLUMNS.map((col) => {
           const items = schedules.filter(
             (s) =>
-              s.dayBucket === row.bucket &&
+              s.dayBucket === col.bucket &&
               (regionFilter === 'all' ||
                 s.stationRegion.toLowerCase() === regionFilter.toLowerCase())
           );
           const dateLabel = items[0]?.dateLabel;
+          const shiftGroups = groupSchedulesByShift(items);
+          const onDutyCount = items.filter(
+            (i) => !isOffDutyShiftLabel(i.shift)
+          ).length;
 
           return (
             <section
-              key={row.bucket}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden"
+              key={col.bucket}
+              className={`${col.colSpanClass} bg-white dark:bg-slate-900 rounded-xl overflow-hidden flex flex-col ${
+                col.isToday
+                  ? 'border-2 border-sky-400/80 dark:border-sky-600/80 shadow-md shadow-sky-500/5'
+                  : 'border border-slate-200 dark:border-slate-800'
+              }`}
             >
-              <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
+              {/* Column Header */}
+              <div
+                className={`px-4 py-3.5 border-b flex flex-wrap items-start justify-between gap-2 ${
+                  col.isToday
+                    ? 'bg-sky-50/80 dark:bg-sky-950/40 border-sky-200 dark:border-sky-900/70'
+                    : 'bg-slate-50/60 dark:bg-slate-950/40 border-slate-200 dark:border-slate-800'
+                }`}
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3
-                      className={`text-sm font-semibold ${
-                        row.bucket === 'Hari Ini'
-                          ? 'text-sky-700 dark:text-sky-400'
-                          : 'text-slate-900 dark:text-slate-100'
+                      className={`font-semibold ${
+                        col.isToday
+                          ? 'text-base text-sky-700 dark:text-sky-300'
+                          : 'text-sm text-slate-900 dark:text-slate-100'
                       }`}
                     >
-                      {row.bucket}
+                      {col.bucket}
                     </h3>
-                    {dateLabel && (
-                      <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
-                        · {dateLabel}
+                    {col.isToday && (
+                      <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-600 text-white">
+                        Aktif
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    {row.subtitle}
-                  </p>
+                  <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                    {dateLabel ? dateLabel : col.subtitle}
+                  </div>
                 </div>
-                <span className="text-xs font-mono tabular-nums text-slate-500 dark:text-slate-400">
-                  {items.length} personel terjadwal
-                </span>
+                <div className="text-right shrink-0">
+                  <div className="text-xs font-mono font-semibold tabular-nums text-slate-800 dark:text-slate-200">
+                    {onDutyCount} dinas
+                  </div>
+                  <div className="text-[10px] font-mono tabular-nums text-slate-500 dark:text-slate-400">
+                    {items.length} total
+                  </div>
+                </div>
               </div>
 
+              {/* Grouped by Shift */}
               {items.length === 0 ? (
-                <div className="px-5 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-                  Belum ada jadwal teknisi untuk {row.bucket.toLowerCase()}.
+                <div className="px-4 py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                  Belum ada jadwal teknisi untuk {col.bucket.toLowerCase()}.
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-y md:divide-y-0 md:gap-px bg-slate-200 dark:bg-slate-800">
-                  {items.map((item) => {
-                    const matchedTech = findTechnicianProfile(item.technicianName);
-                    const isOffDuty = item.shift.toLowerCase().includes('off duty');
+                <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                  {shiftGroups.map((group) => {
+                    const dotColor = group.isOffDuty
+                      ? 'bg-slate-400'
+                      : group.shiftLabel.includes('Shift 1')
+                      ? 'bg-indigo-500'
+                      : group.shiftLabel.includes('Shift 2')
+                      ? 'bg-emerald-500'
+                      : 'bg-sky-500';
+
                     return (
-                      <div
-                        key={item.id}
-                        className="bg-white dark:bg-slate-900 p-4 flex items-start gap-3"
-                      >
-                        <TechAvatar
-                          name={item.technicianName}
-                          avatarKey={matchedTech?.avatarKey ?? 'tech_male_1'}
-                          avatarDataUrl={matchedTech?.avatarDataUrl}
-                          sizeClass="w-10 h-10"
-                        />
-                        <div className="min-w-0 flex-1 space-y-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
-                              {item.technicianName}
-                            </span>
-                            <span className="text-[11px] font-medium text-sky-600 dark:text-sky-400 whitespace-nowrap shrink-0">
-                              {item.stationRegion}
-                            </span>
-                          </div>
-                          <div className="text-[11px] text-slate-600 dark:text-slate-300">
-                            {item.roleStatus} ·{' '}
+                      <div key={group.shiftLabel} className="p-3.5 space-y-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             <span
-                              className={`font-mono ${
-                                isOffDuty
-                                  ? 'text-slate-400 dark:text-slate-500'
-                                  : 'font-semibold text-emerald-700 dark:text-emerald-400'
+                              className={`w-2 h-2 rounded-full shrink-0 ${dotColor}`}
+                            />
+                            <span
+                              className={`text-[11px] font-semibold truncate ${
+                                group.isOffDuty
+                                  ? 'text-slate-500 dark:text-slate-400'
+                                  : 'text-slate-800 dark:text-slate-200'
                               }`}
                             >
-                              {item.shift}
+                              {group.shiftLabel}
                             </span>
                           </div>
-                          {item.notes && (
-                            <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                              {item.notes}
-                            </div>
-                          )}
+                          <span className="text-[11px] font-mono tabular-nums text-slate-400 dark:text-slate-500 shrink-0">
+                            {group.entries.length} org
+                          </span>
+                        </div>
+
+                        <div
+                          className={
+                            col.isToday
+                              ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5'
+                              : 'space-y-2'
+                          }
+                        >
+                          {group.entries.map((item) => {
+                            const matchedTech = findTechnicianProfile(
+                              item.technicianName
+                            );
+                            return (
+                              <div
+                                key={item.id}
+                                className={`rounded-lg border p-2.5 flex items-start gap-2.5 ${
+                                  group.isOffDuty
+                                    ? 'border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/50 opacity-75'
+                                    : col.isToday
+                                    ? 'border-sky-100 dark:border-slate-800 bg-sky-50/30 dark:bg-slate-950/70'
+                                    : 'border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-950/40'
+                                }`}
+                              >
+                                <TechAvatar
+                                  name={item.technicianName}
+                                  avatarKey={matchedTech?.avatarKey ?? 'tech_male_1'}
+                                  avatarDataUrl={matchedTech?.avatarDataUrl}
+                                  sizeClass={col.isToday ? 'w-9 h-9' : 'w-8 h-8'}
+                                />
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center justify-between gap-1.5">
+                                    <span className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                      {item.technicianName}
+                                    </span>
+                                    <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400 whitespace-nowrap shrink-0">
+                                      {item.stationRegion}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                                    {item.roleStatus}
+                                  </div>
+                                  {item.notes && (
+                                    <div className="text-[10px] font-mono text-slate-400 dark:text-slate-500 truncate mt-0.5">
+                                      {item.notes}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     );

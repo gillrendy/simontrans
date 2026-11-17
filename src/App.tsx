@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AdminView } from './components/AdminView';
 import { ChangePasswordModal, LoginScreen } from './components/AuthModals';
 import { ConfirmModal } from './components/ConfirmModal';
@@ -19,13 +19,17 @@ import {
   signOutGoogleSheets,
 } from './services/googleSheetsAuth';
 import {
+  applySchedulesToPersonnel,
+  buildScheduleSignature,
   createUnifiedDatabaseSpreadsheet,
   fetchBundledMatrixScheduleCsv,
   fetchScheduleFromSpreadsheet,
   fetchUnifiedSpreadsheetDb,
+  findTodayScheduleForPerson,
   getConfiguredDbSpreadsheetId,
   getConfiguredScheduleSpreadsheetId,
   getCurrentIndonesianMonthName,
+  isOffDutyShiftLabel,
   pingSpreadsheetConnection,
   setConfiguredDbSpreadsheetId,
   setConfiguredScheduleSpreadsheetId,
@@ -101,11 +105,12 @@ export default function App() {
   const [spreadsheetConnected, setSpreadsheetConnected] = useState(false);
   const [spreadsheetTitle, setSpreadsheetTitle] = useState<string | null>(null);
   const [activeScheduleSheetTitle, setActiveScheduleSheetTitle] = useState<string | null>(
-    () => getCurrentIndonesianMonthName()
+    () => `${getCurrentIndonesianMonthName()}${String(new Date().getFullYear()).slice(-2)}`
   );
   const [syncBusy, setSyncBusy] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [pendingSheetSync, setPendingSheetSync] = useState<PendingSheetSync | null>(null);
+  const lastFetchedScheduleSigRef = useRef<string>('');
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem(STORAGE_THEME_KEY);
@@ -216,7 +221,10 @@ export default function App() {
           );
           setActiveScheduleSheetTitle(liveSched.sheetTitle);
           if (liveSched.schedules.length > 0) {
-            baseDb = { ...baseDb, schedules: liveSched.schedules };
+            lastFetchedScheduleSigRef.current = buildScheduleSignature(
+              liveSched.schedules
+            );
+            baseDb = applySchedulesToPersonnel(baseDb, liveSched.schedules);
           }
         } catch {
           // Fallback silently to matrix CSV or cached schedules until OAuth sign-in
@@ -230,8 +238,10 @@ export default function App() {
           baseDb.stations
         );
         if (matrixFallback.length > 0) {
-          baseDb = { ...baseDb, schedules: matrixFallback };
+          baseDb = applySchedulesToPersonnel(baseDb, matrixFallback);
         }
+      } else {
+        baseDb = applySchedulesToPersonnel(baseDb, baseDb.schedules);
       }
 
       setDb(baseDb);
@@ -271,22 +281,88 @@ export default function App() {
     []
   );
 
+  const syncLiveScheduleSilently = useCallback(
+    async (forceApply = false) => {
+      if (!scheduleSpreadsheetId || !db) return;
+      try {
+        const token = getGoogleAccessToken();
+        const schedRes = await fetchScheduleFromSpreadsheet(
+          scheduleSpreadsheetId,
+          token,
+          new Date(),
+          db.technicians,
+          db.stations
+        );
+        if (schedRes.schedules.length === 0) return;
+        const sig = buildScheduleSignature(schedRes.schedules);
+        if (!forceApply && sig === lastFetchedScheduleSigRef.current) return;
+
+        lastFetchedScheduleSigRef.current = sig;
+        setActiveScheduleSheetTitle(schedRes.sheetTitle);
+        setDb((prev) => {
+          if (!prev) return prev;
+          const updated = applySchedulesToPersonnel(prev, schedRes.schedules);
+          localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(updated));
+          return updated;
+        });
+      } catch {
+        // Keep current schedule silently on transient errors
+      }
+    },
+    [scheduleSpreadsheetId, db]
+  );
+
   useEffect(() => {
-    if (!dbSpreadsheetId) {
+    if (!dbSpreadsheetId && !scheduleSpreadsheetId) {
       setSpreadsheetConnected(false);
       setSpreadsheetTitle(null);
       return;
     }
     const token = getGoogleAccessToken();
-    void runPingCheck(dbSpreadsheetId, token);
+    if (dbSpreadsheetId) {
+      void runPingCheck(dbSpreadsheetId, token);
+    }
 
     const timer = window.setInterval(() => {
       const currentToken = getGoogleAccessToken();
-      void runPingCheck(dbSpreadsheetId, currentToken);
-    }, 30000);
+      if (dbSpreadsheetId) {
+        void runPingCheck(dbSpreadsheetId, currentToken);
+      }
+      if (scheduleSpreadsheetId) {
+        void syncLiveScheduleSilently(false);
+      }
+    }, 20000);
 
-    return () => window.clearInterval(timer);
-  }, [hasGoogleToken, dbSpreadsheetId, runPingCheck]);
+    const handleFocus = () => {
+      if (scheduleSpreadsheetId) {
+        void syncLiveScheduleSilently(false);
+      }
+    };
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [
+    hasGoogleToken,
+    dbSpreadsheetId,
+    scheduleSpreadsheetId,
+    runPingCheck,
+    syncLiveScheduleSilently,
+  ]);
+
+  useEffect(() => {
+    if (
+      scheduleSpreadsheetId &&
+      (activeNav === 'jadwal' ||
+        activeNav === 'teknisi' ||
+        activeNav === 'admin' ||
+        activeNav === 'home')
+    ) {
+      void syncLiveScheduleSilently(false);
+    }
+  }, [activeNav, scheduleSpreadsheetId, syncLiveScheduleSilently]);
 
   const applyLocalDb = (nextDb: TransmisiDatabase) => {
     setDb(nextDb);
@@ -358,16 +434,30 @@ export default function App() {
         }
 
         if (targetScheduleId) {
-          const schedRes = await fetchScheduleFromSpreadsheet(
-            targetScheduleId,
-            token,
-            new Date(),
-            nextDb.technicians,
-            nextDb.stations
-          );
-          setActiveScheduleSheetTitle(schedRes.sheetTitle);
-          if (schedRes.schedules.length > 0) {
-            nextDb = { ...nextDb, schedules: schedRes.schedules };
+          try {
+            const schedRes = await fetchScheduleFromSpreadsheet(
+              targetScheduleId,
+              token,
+              new Date(),
+              nextDb.technicians,
+              nextDb.stations
+            );
+            setActiveScheduleSheetTitle(schedRes.sheetTitle);
+            if (schedRes.schedules.length > 0) {
+              lastFetchedScheduleSigRef.current = buildScheduleSignature(
+                schedRes.schedules
+              );
+              nextDb = applySchedulesToPersonnel(nextDb, schedRes.schedules);
+            }
+          } catch (schedErr) {
+            if (!targetDbId) {
+              throw schedErr;
+            }
+            setSyncError(
+              schedErr instanceof Error
+                ? `Database utama terhubung, namun gagal membaca Spreadsheet Jadwal: ${schedErr.message}`
+                : 'Database utama terhubung, namun gagal membaca Spreadsheet Jadwal.'
+            );
           }
         }
 
@@ -376,7 +466,9 @@ export default function App() {
         setSyncError(
           err instanceof Error ? err.message : 'Gagal menarik data dari Spreadsheet.'
         );
-        setSpreadsheetConnected(false);
+        if (targetDbId) {
+          setSpreadsheetConnected(false);
+        }
       } finally {
         setSyncBusy(false);
       }
@@ -409,8 +501,12 @@ export default function App() {
       await signOutGoogleSheets();
       setHasGoogleToken(false);
       setGoogleEmail(null);
-      setSpreadsheetConnected(false);
-      setSpreadsheetTitle(null);
+      if (!dbSpreadsheetId) {
+        setSpreadsheetConnected(false);
+        setSpreadsheetTitle(null);
+      } else {
+        await runPingCheck(dbSpreadsheetId, null);
+      }
     } finally {
       setSyncBusy(false);
     }
@@ -488,7 +584,7 @@ export default function App() {
   const handleRefreshScheduleSheet = async () => {
     if (!db) return;
     const token = getGoogleAccessToken();
-    if (scheduleSpreadsheetId && token) {
+    if (scheduleSpreadsheetId) {
       await pullFromSpreadsheets(dbSpreadsheetId, scheduleSpreadsheetId, token);
       return;
     }
@@ -755,7 +851,6 @@ export default function App() {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
-    shift: string;
     phone: string;
   }) => {
     if (!db) return;
@@ -769,6 +864,12 @@ export default function App() {
         ? 'tech_female_1'
         : 'tech_male_2';
 
+    const todaySched = findTodayScheduleForPerson(payload.fullName, db.schedules);
+    const resolvedShift = todaySched?.shift ?? 'Shift 2 (08.00 - 16.00)';
+    const resolvedOnDuty = todaySched
+      ? !isOffDutyShiftLabel(todaySched.shift)
+      : true;
+
     const newUser: UserAccount = {
       id: newId,
       username: payload.username,
@@ -780,8 +881,8 @@ export default function App() {
       gender: payload.gender,
       employmentStatus: payload.employmentStatus,
       jabatan: payload.jabatan,
-      onDuty: true,
-      shift: payload.shift || 'Shift 2 (08.00 - 16.00)',
+      onDuty: resolvedOnDuty,
+      shift: resolvedShift,
       phone: payload.phone || '0812-7000-0000',
       avatarKey,
     };
@@ -794,8 +895,8 @@ export default function App() {
       gender: payload.gender,
       employmentStatus: payload.employmentStatus,
       jabatan: payload.jabatan,
-      onDuty: true,
-      shift: payload.shift || 'Shift 2 (08.00 - 16.00)',
+      onDuty: resolvedOnDuty,
+      shift: resolvedShift,
       phone: payload.phone || '0812-7000-0000',
       avatarKey,
     };
@@ -820,15 +921,18 @@ export default function App() {
     gender: GenderCode;
     employmentStatus: EmploymentStatus;
     jabatan: string;
-    shift: string;
     phone: string;
-    onDuty: boolean;
     avatarDataUrl?: string | null;
   }) => {
     if (!db) return;
     const oldUser = db.users.find((u) => u.id === payload.id);
     const st = db.stations.find((s) => s.id === payload.stationId);
     const region = st?.region ?? 'Palembang';
+    const todaySched = findTodayScheduleForPerson(payload.fullName, db.schedules);
+    const nextShift = todaySched?.shift ?? oldUser?.shift ?? 'Shift 2 (08.00 - 16.00)';
+    const resolvedOnDuty = todaySched
+      ? !isOffDutyShiftLabel(todaySched.shift)
+      : oldUser?.onDuty ?? true;
 
     const nextUsers = db.users.map((u) =>
       u.id === payload.id
@@ -843,8 +947,8 @@ export default function App() {
             gender: payload.gender,
             employmentStatus: payload.employmentStatus,
             jabatan: payload.jabatan,
-            shift: payload.shift || u.shift,
-            onDuty: payload.onDuty,
+            shift: nextShift,
+            onDuty: resolvedOnDuty,
             phone: payload.phone,
             avatarDataUrl: payload.avatarDataUrl ?? u.avatarDataUrl ?? null,
           }
@@ -866,8 +970,8 @@ export default function App() {
               gender: payload.gender,
               employmentStatus: payload.employmentStatus,
               jabatan: payload.jabatan,
-              shift: payload.shift || t.shift,
-              onDuty: payload.onDuty,
+              shift: nextShift,
+              onDuty: resolvedOnDuty,
               phone: payload.phone || t.phone,
               avatarDataUrl: payload.avatarDataUrl ?? t.avatarDataUrl ?? null,
             };
@@ -884,8 +988,8 @@ export default function App() {
             gender: payload.gender,
             employmentStatus: payload.employmentStatus,
             jabatan: payload.jabatan,
-            onDuty: payload.onDuty,
-            shift: payload.shift || oldUser?.shift || 'Shift 2 (08.00 - 16.00)',
+            onDuty: resolvedOnDuty,
+            shift: nextShift,
             phone: payload.phone || '0812-7000-0000',
             avatarKey: oldUser?.avatarKey ?? 'tech_male_1',
             avatarDataUrl: payload.avatarDataUrl ?? oldUser?.avatarDataUrl ?? null,
@@ -1206,7 +1310,7 @@ export default function App() {
               technicians={db.technicians}
               userRole={currentUser.role}
               activeSheetTitle={activeScheduleSheetTitle}
-              spreadsheetConnected={spreadsheetConnected}
+              spreadsheetConnected={spreadsheetConnected || Boolean(scheduleSpreadsheetId)}
               onRefreshScheduleSheet={handleRefreshScheduleSheet}
               onImportSchedules={handleImportSchedules}
             />
@@ -1231,6 +1335,7 @@ export default function App() {
               infrastructure={db.infrastructure}
               reports={db.reports}
               users={db.users}
+              schedules={db.schedules}
               currentUser={currentUser}
               onUpdateReportStatus={handleUpdateReportStatus}
               onDeleteReport={handleDeleteReport}
