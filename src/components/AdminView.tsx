@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import {
+  AlertCircle,
+  CheckCircle2,
   Cpu,
   FileBarChart2,
   FileCheck2,
@@ -7,6 +9,8 @@ import {
   MapPin,
   Pencil,
   Plus,
+  RefreshCw,
+  Save,
   Search,
   Trash2,
   Upload,
@@ -103,9 +107,40 @@ interface AdminViewProps {
     longitude: number
   ) => void;
   onOpenSpreadsheetSettings: () => void;
+  dirtyTabs: AdminDirtyTabs;
+  savingTab: AdminTab | null;
+  spreadsheetConnected: boolean;
+  hasGoogleToken: boolean;
+  lastSyncedAt: string | null;
+  syncError: string | null;
+  onSaveTabChanges: (
+    tab: AdminTab,
+    pendingDrafts?: AdminPendingDrafts
+  ) => Promise<boolean>;
 }
 
-type AdminTab = 'laporan' | 'peralatan' | 'users' | 'koordinat';
+export type AdminTab = 'laporan' | 'peralatan' | 'users' | 'koordinat';
+export type AdminDirtyTabs = Record<AdminTab, boolean>;
+
+export interface AdminPendingDrafts {
+  reportDrafts?: Array<{
+    reportId: string;
+    status: TicketStatus;
+    adminNote: string;
+  }>;
+  coordDrafts?: Array<{
+    stationId: string;
+    latitude: number;
+    longitude: number;
+  }>;
+}
+
+const TAB_SHEET_LABELS: Record<AdminTab, string> = {
+  laporan: 'Data Riwayat Laporan',
+  peralatan: 'Data Perangkat',
+  users: 'Data Pegawai Transmisi',
+  koordinat: 'Data Menara & Perangkat',
+};
 
 const STATUS_FLOW: TicketStatus[] = [
   'Pengajuan',
@@ -141,6 +176,13 @@ export function AdminView({
   onAddStation,
   onUpdateStationCoords,
   onOpenSpreadsheetSettings,
+  dirtyTabs,
+  savingTab,
+  spreadsheetConnected,
+  hasGoogleToken,
+  lastSyncedAt,
+  syncError,
+  onSaveTabChanges,
 }: AdminViewProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>('laporan');
   const [monthlyReportOpen, setMonthlyReportOpen] = useState(false);
@@ -210,7 +252,19 @@ export function AdminView({
     const nextStatus = statusDrafts[rep.id] ?? rep.status;
     const nextNote = noteDrafts[rep.id] ?? rep.adminNote;
     onUpdateReportStatus(rep.id, nextStatus, nextNote);
-    showFeedback(`Status tiket ${rep.id} diperbarui menjadi "${nextStatus}".`);
+    setStatusDrafts((prev) => {
+      const next = { ...prev };
+      delete next[rep.id];
+      return next;
+    });
+    setNoteDrafts((prev) => {
+      const next = { ...prev };
+      delete next[rep.id];
+      return next;
+    });
+    showFeedback(
+      `Status tiket ${rep.id} diperbarui. Klik "Simpan Perubahan" untuk update ke Spreadsheet.`
+    );
   };
 
   const handleCreateDevice = (e: React.FormEvent) => {
@@ -354,9 +408,135 @@ export function AdminView({
     return true;
   });
 
+  const pendingReportDraftList = reports
+    .map((rep) => {
+      const draftStatus = statusDrafts[rep.id] ?? rep.status;
+      const draftNote = noteDrafts[rep.id] ?? rep.adminNote;
+      if (draftStatus !== rep.status || draftNote !== rep.adminNote) {
+        return { reportId: rep.id, status: draftStatus, adminNote: draftNote };
+      }
+      return null;
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
+
+  const pendingCoordDraftList = stations
+    .map((st) => {
+      const draft = coordEdits[st.id];
+      if (!draft) return null;
+      const lat = parseFloat(draft.lat);
+      const lon = parseFloat(draft.lon);
+      if (Number.isNaN(lat) || Number.isNaN(lon)) return null;
+      if (lat !== st.latitude || lon !== st.longitude) {
+        return { stationId: st.id, latitude: lat, longitude: lon };
+      }
+      return null;
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
+
+  const tabDirtyMap: AdminDirtyTabs = {
+    laporan: dirtyTabs.laporan || pendingReportDraftList.length > 0,
+    peralatan: dirtyTabs.peralatan,
+    users: dirtyTabs.users,
+    koordinat: dirtyTabs.koordinat || pendingCoordDraftList.length > 0,
+  };
+
+  const handleSaveTabToSpreadsheet = async (tab: AdminTab) => {
+    const drafts: AdminPendingDrafts = {};
+    if (tab === 'laporan' && pendingReportDraftList.length > 0) {
+      drafts.reportDrafts = pendingReportDraftList;
+    }
+    if (tab === 'koordinat' && pendingCoordDraftList.length > 0) {
+      drafts.coordDrafts = pendingCoordDraftList;
+    }
+    const ok = await onSaveTabChanges(tab, drafts);
+    if (ok) {
+      if (tab === 'laporan') {
+        setStatusDrafts({});
+        setNoteDrafts({});
+      }
+      if (tab === 'koordinat') {
+        setCoordEdits({});
+      }
+      showFeedback(
+        `Perubahan pada sheet "${TAB_SHEET_LABELS[tab]}" berhasil disimpan ke Google Spreadsheet.`
+      );
+    }
+  };
+
+  const renderTabSaveBar = (tab: AdminTab) => {
+    const isDirty = tabDirtyMap[tab];
+    const isSaving = savingTab === tab;
+    const sheetLabel = TAB_SHEET_LABELS[tab];
+
+    return (
+      <div
+        className={`rounded-xl border p-4 flex flex-wrap items-center justify-between gap-3 transition-colors ${
+          isDirty
+            ? 'bg-amber-50/80 dark:bg-amber-950/25 border-amber-200 dark:border-amber-800/70'
+            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800'
+        }`}
+      >
+        <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+          {isSaving ? (
+            <RefreshCw className="w-4 h-4 text-sky-600 dark:text-sky-400 animate-spin shrink-0 mt-0.5 sm:mt-0" />
+          ) : isDirty ? (
+            <span className="relative flex h-2.5 w-2.5 shrink-0 mt-1 sm:mt-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
+            </span>
+          ) : (
+            <CheckCircle2
+              className={`w-4 h-4 shrink-0 mt-0.5 sm:mt-0 ${
+                spreadsheetConnected
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-slate-400 dark:text-slate-500'
+              }`}
+            />
+          )}
+          <div className="min-w-0">
+            <div className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+              {isSaving
+                ? `Menyimpan perubahan ke sheet "${sheetLabel}"...`
+                : isDirty
+                ? `Perubahan belum disimpan ke Spreadsheet (${sheetLabel})`
+                : `Data pada tab "${sheetLabel}" sudah sinkron dengan Spreadsheet`}
+            </div>
+            <div className="text-[11px] text-slate-600 dark:text-slate-400">
+              {isDirty
+                ? hasGoogleToken
+                  ? 'Klik "Simpan Perubahan" untuk memperbarui database Google Spreadsheet secara real time.'
+                  : 'Klik "Simpan Perubahan" untuk login Google Sheets dan memperbarui database Spreadsheet.'
+                : lastSyncedAt
+                ? `Sinkronisasi terakhir: ${lastSyncedAt}`
+                : 'Lakukan perubahan data pada tab ini untuk mengaktifkan tombol Simpan Perubahan.'}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          disabled={savingTab !== null || !isDirty}
+          onClick={() => void handleSaveTabToSpreadsheet(tab)}
+          className={`h-9 px-4 rounded-lg text-xs font-semibold inline-flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 ${
+            isDirty
+              ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm disabled:opacity-60'
+              : 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+          }`}
+        >
+          {isSaving ? (
+            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Save className="w-3.5 h-3.5" />
+          )}
+          <span>{isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}</span>
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
-      {/* Top Admin Tabs + Export JSON */}
+      {/* Top Admin Tabs + Spreadsheet & Monthly Report */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg">
           <button
@@ -370,6 +550,12 @@ export function AdminView({
           >
             <FileCheck2 className="w-3.5 h-3.5" />
             <span>Proses Laporan ({reports.length})</span>
+            {tabDirtyMap.laporan && (
+              <span
+                className="w-2 h-2 rounded-full bg-amber-500 shrink-0"
+                title="Ada perubahan belum disimpan ke Spreadsheet"
+              />
+            )}
           </button>
           <button
             type="button"
@@ -382,6 +568,12 @@ export function AdminView({
           >
             <Cpu className="w-3.5 h-3.5" />
             <span>Kelola Peralatan ({devices.length})</span>
+            {tabDirtyMap.peralatan && (
+              <span
+                className="w-2 h-2 rounded-full bg-amber-500 shrink-0"
+                title="Ada perubahan belum disimpan ke Spreadsheet"
+              />
+            )}
           </button>
           <button
             type="button"
@@ -394,6 +586,12 @@ export function AdminView({
           >
             <UserPlus className="w-3.5 h-3.5" />
             <span>Kelola User ({users.length})</span>
+            {tabDirtyMap.users && (
+              <span
+                className="w-2 h-2 rounded-full bg-amber-500 shrink-0"
+                title="Ada perubahan belum disimpan ke Spreadsheet"
+              />
+            )}
           </button>
           <button
             type="button"
@@ -406,6 +604,12 @@ export function AdminView({
           >
             <MapPin className="w-3.5 h-3.5" />
             <span>Titik Koordinat Pemancar ({stations.length})</span>
+            {tabDirtyMap.koordinat && (
+              <span
+                className="w-2 h-2 rounded-full bg-amber-500 shrink-0"
+                title="Ada perubahan belum disimpan ke Spreadsheet"
+              />
+            )}
           </button>
         </div>
 
@@ -429,6 +633,22 @@ export function AdminView({
         </div>
       </div>
 
+      {syncError && (
+        <div className="px-4 py-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{syncError}</span>
+          </div>
+          <button
+            type="button"
+            onClick={onOpenSpreadsheetSettings}
+            className="px-2.5 py-1 rounded-md border border-red-300 dark:border-red-800 text-[11px] font-semibold hover:bg-red-100 dark:hover:bg-red-900/40 shrink-0"
+          >
+            Cek Koneksi
+          </button>
+        </div>
+      )}
+
       {feedbackMsg && (
         <div className="px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs font-medium text-emerald-700 dark:text-emerald-300">
           {feedbackMsg}
@@ -438,6 +658,7 @@ export function AdminView({
       {/* TAB 1: PROSES LAPORAN (dengan tombol Hapus Laporan + konfirmasi) */}
       {activeTab === 'laporan' && (
         <div className="space-y-4">
+          {renderTabSaveBar('laporan')}
           {reports.map((rep) => {
             const st = stations.find((s) => s.id === rep.stationId);
             const selectedStatus = statusDrafts[rep.id] ?? rep.status;
@@ -550,7 +771,9 @@ export function AdminView({
 
       {/* TAB 2: KELOLA PERALATAN */}
       {activeTab === 'peralatan' && (
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <div className="space-y-4">
+          {renderTabSaveBar('peralatan')}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
           {/* Form Tambah Perangkat */}
           <form
             onSubmit={handleCreateDevice}
@@ -772,12 +995,15 @@ export function AdminView({
               </table>
             </div>
           </div>
+          </div>
         </div>
       )}
 
       {/* TAB 3: KELOLA USER (dengan ikon Pensil untuk Edit User & Upload Foto Profil) */}
       {activeTab === 'users' && (
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <div className="space-y-4">
+          {renderTabSaveBar('users')}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
           {/* Form Add User */}
           <form
             onSubmit={handleCreateUser}
@@ -1035,12 +1261,15 @@ export function AdminView({
               )}
             </div>
           </div>
+          </div>
         </div>
       )}
 
       {/* TAB 4: INPUT PIN TITIK KOORDINAT PEMANCAR */}
       {activeTab === 'koordinat' && (
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <div className="space-y-4">
+          {renderTabSaveBar('koordinat')}
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
           {/* Add New Pin Form */}
           <form
             onSubmit={handleCreateStation}
@@ -1245,7 +1474,14 @@ export function AdminView({
                           const lon = parseFloat(draft.lon);
                           if (!Number.isNaN(lat) && !Number.isNaN(lon)) {
                             onUpdateStationCoords(st.id, lat, lon);
-                            showFeedback(`Koordinat ${st.region} diperbarui.`);
+                            setCoordEdits((prev) => {
+                              const next = { ...prev };
+                              delete next[st.id];
+                              return next;
+                            });
+                            showFeedback(
+                              `Koordinat ${st.region} diperbarui. Klik "Simpan Perubahan" untuk update ke Spreadsheet.`
+                            );
                           }
                         }}
                         className="h-8 px-3 rounded border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap"
@@ -1257,6 +1493,7 @@ export function AdminView({
                 );
               })}
             </div>
+          </div>
           </div>
         </div>
       )}
@@ -1453,7 +1690,7 @@ export function AdminView({
                   type="submit"
                   className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold"
                 >
-                  Simpan Perubahan
+                  Terapkan ke Daftar
                 </button>
               </div>
             </form>

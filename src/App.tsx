@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AdminView } from './components/AdminView';
+import {
+  AdminDirtyTabs,
+  AdminPendingDrafts,
+  AdminTab,
+  AdminView,
+} from './components/AdminView';
 import { ChangePasswordModal, LoginScreen } from './components/AuthModals';
 import { ConfirmModal } from './components/ConfirmModal';
 import { HomeView } from './components/HomeView';
@@ -20,6 +25,7 @@ import {
 } from './services/googleSheetsAuth';
 import {
   applySchedulesToPersonnel,
+  buildDbSignature,
   buildScheduleSignature,
   createUnifiedDatabaseSpreadsheet,
   fetchBundledMatrixScheduleCsv,
@@ -33,7 +39,10 @@ import {
   pingSpreadsheetConnection,
   setConfiguredDbSpreadsheetId,
   setConfiguredScheduleSpreadsheetId,
+  SHEET_TABS,
+  syncSpreadsheetTabs,
   syncUnifiedSpreadsheetDb,
+  UnifiedSheetTabKey,
 } from './services/googleSheetsDb';
 import {
   AppNotification,
@@ -110,7 +119,22 @@ export default function App() {
   const [syncBusy, setSyncBusy] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
   const [pendingSheetSync, setPendingSheetSync] = useState<PendingSheetSync | null>(null);
+  const [adminDirtyTabs, setAdminDirtyTabs] = useState<AdminDirtyTabs>({
+    laporan: false,
+    peralatan: false,
+    users: false,
+    koordinat: false,
+  });
+  const [savingAdminTab, setSavingAdminTab] = useState<AdminTab | null>(null);
+  const [lastAdminSyncedAt, setLastAdminSyncedAt] = useState<string | null>(null);
   const lastFetchedScheduleSigRef = useRef<string>('');
+  const lastFetchedDbSigRef = useRef<string>('');
+
+  const hasAnyAdminDirty =
+    adminDirtyTabs.laporan ||
+    adminDirtyTabs.peralatan ||
+    adminDirtyTabs.users ||
+    adminDirtyTabs.koordinat;
 
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem(STORAGE_THEME_KEY);
@@ -244,6 +268,7 @@ export default function App() {
         baseDb = applySchedulesToPersonnel(baseDb, baseDb.schedules);
       }
 
+      lastFetchedDbSigRef.current = buildDbSignature(baseDb);
       setDb(baseDb);
       localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(baseDb));
     } catch (err) {
@@ -312,6 +337,35 @@ export default function App() {
     [scheduleSpreadsheetId, db]
   );
 
+  const syncLiveDbSilently = useCallback(
+    async (forceApply = false) => {
+      if (
+        !dbSpreadsheetId ||
+        !db ||
+        syncBusy ||
+        savingAdminTab !== null ||
+        hasAnyAdminDirty
+      ) {
+        return;
+      }
+      try {
+        const token = getGoogleAccessToken();
+        const fetchedDb = await fetchUnifiedSpreadsheetDb(dbSpreadsheetId, token, db);
+        const merged = applySchedulesToPersonnel(fetchedDb, db.schedules);
+        const sig = buildDbSignature(merged);
+        if (!forceApply && sig === lastFetchedDbSigRef.current) return;
+
+        lastFetchedDbSigRef.current = sig;
+        setSpreadsheetConnected(true);
+        setDb(merged);
+        localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(merged));
+      } catch {
+        // Keep current local state silently on transient network/private errors
+      }
+    },
+    [dbSpreadsheetId, db, syncBusy, savingAdminTab, hasAnyAdminDirty]
+  );
+
   useEffect(() => {
     if (!dbSpreadsheetId && !scheduleSpreadsheetId) {
       setSpreadsheetConnected(false);
@@ -327,6 +381,7 @@ export default function App() {
       const currentToken = getGoogleAccessToken();
       if (dbSpreadsheetId) {
         void runPingCheck(dbSpreadsheetId, currentToken);
+        void syncLiveDbSilently(false);
       }
       if (scheduleSpreadsheetId) {
         void syncLiveScheduleSilently(false);
@@ -334,6 +389,9 @@ export default function App() {
     }, 20000);
 
     const handleFocus = () => {
+      if (dbSpreadsheetId) {
+        void syncLiveDbSilently(false);
+      }
       if (scheduleSpreadsheetId) {
         void syncLiveScheduleSilently(false);
       }
@@ -349,10 +407,14 @@ export default function App() {
     dbSpreadsheetId,
     scheduleSpreadsheetId,
     runPingCheck,
+    syncLiveDbSilently,
     syncLiveScheduleSilently,
   ]);
 
   useEffect(() => {
+    if (dbSpreadsheetId) {
+      void syncLiveDbSilently(false);
+    }
     if (
       scheduleSpreadsheetId &&
       (activeNav === 'jadwal' ||
@@ -362,7 +424,13 @@ export default function App() {
     ) {
       void syncLiveScheduleSilently(false);
     }
-  }, [activeNav, scheduleSpreadsheetId, syncLiveScheduleSilently]);
+  }, [
+    activeNav,
+    dbSpreadsheetId,
+    scheduleSpreadsheetId,
+    syncLiveDbSilently,
+    syncLiveScheduleSilently,
+  ]);
 
   const applyLocalDb = (nextDb: TransmisiDatabase) => {
     setDb(nextDb);
@@ -372,8 +440,15 @@ export default function App() {
   const commitDbChange = (
     nextDb: TransmisiDatabase,
     sheetWriteSummary?: string,
-    isDestructive = false
+    isDestructive = false,
+    adminTabSource?: AdminTab
   ) => {
+    if (adminTabSource) {
+      applyLocalDb(nextDb);
+      setSyncError(null);
+      setAdminDirtyTabs((prev) => ({ ...prev, [adminTabSource]: true }));
+      return;
+    }
     const token = getGoogleAccessToken();
     if (spreadsheetConnected && dbSpreadsheetId && token && sheetWriteSummary) {
       setPendingSheetSync({
@@ -399,6 +474,8 @@ export default function App() {
     setSyncError(null);
     try {
       await syncUnifiedSpreadsheetDb(dbSpreadsheetId, nextDb, token);
+      lastFetchedDbSigRef.current = buildDbSignature(nextDb);
+      setLastAdminSyncedAt(formatNowWIB());
       setSpreadsheetConnected(true);
     } catch (err) {
       setSyncError(
@@ -461,6 +538,13 @@ export default function App() {
           }
         }
 
+        lastFetchedDbSigRef.current = buildDbSignature(nextDb);
+        setAdminDirtyTabs({
+          laporan: false,
+          peralatan: false,
+          users: false,
+          koordinat: false,
+        });
         applyLocalDb(nextDb);
       } catch (err) {
         setSyncError(
@@ -566,6 +650,14 @@ export default function App() {
     setSyncError(null);
     try {
       await syncUnifiedSpreadsheetDb(dbSpreadsheetId, db, token);
+      lastFetchedDbSigRef.current = buildDbSignature(db);
+      setAdminDirtyTabs({
+        laporan: false,
+        peralatan: false,
+        users: false,
+        koordinat: false,
+      });
+      setLastAdminSyncedAt(formatNowWIB());
       await runPingCheck(dbSpreadsheetId, token);
     } catch (err) {
       setSyncError(
@@ -652,7 +744,8 @@ export default function App() {
 
   const handleUpdateDeviceCondition = (
     deviceId: string,
-    nextCondition: DeviceCondition
+    nextCondition: DeviceCondition,
+    adminTabSource?: AdminTab
   ) => {
     if (!db) return;
     const nowLabel = formatNowWIB().replace(' WIB', '');
@@ -674,18 +767,23 @@ export default function App() {
     });
     commitDbChange(
       { ...db, devices: nextDevices },
-      `Tab "Data Perangkat": Ubah kondisi "${dev?.name ?? deviceId}" menjadi ${nextCondition}`
+      `Tab "Data Perangkat": Ubah kondisi "${dev?.name ?? deviceId}" menjadi ${nextCondition}`,
+      false,
+      adminTabSource
     );
   };
 
-  const handleAddDevice = (payload: {
-    name: string;
-    category: DeviceCategory;
-    stationId: string;
-    brandModel: string;
-    notes: string;
-    condition: DeviceCondition;
-  }) => {
+  const handleAddDevice = (
+    payload: {
+      name: string;
+      category: DeviceCategory;
+      stationId: string;
+      brandModel: string;
+      notes: string;
+      condition: DeviceCondition;
+    },
+    adminTabSource?: AdminTab
+  ) => {
     if (!db) return;
     const nowLabel = formatNowWIB().replace(' WIB', '');
     const newDevice: DeviceItem = {
@@ -704,11 +802,13 @@ export default function App() {
         ...db,
         devices: [newDevice, ...db.devices],
       },
-      `Tab "Data Perangkat": Tambah perangkat baru "${payload.name}"`
+      `Tab "Data Perangkat": Tambah perangkat baru "${payload.name}"`,
+      false,
+      adminTabSource
     );
   };
 
-  const handleDeleteDevice = (deviceId: string) => {
+  const handleDeleteDevice = (deviceId: string, adminTabSource?: AdminTab) => {
     if (!db) return;
     const dev = db.devices.find((d) => d.id === deviceId);
     commitDbChange(
@@ -717,7 +817,8 @@ export default function App() {
         devices: db.devices.filter((d) => d.id !== deviceId),
       },
       `Tab "Data Perangkat": Hapus perangkat "${dev?.name ?? deviceId}"`,
-      true
+      true,
+      adminTabSource
     );
   };
 
@@ -781,7 +882,8 @@ export default function App() {
   const handleUpdateReportStatus = (
     reportId: string,
     newStatus: TicketStatus,
-    adminNote: string
+    adminNote: string,
+    adminTabSource?: AdminTab
   ) => {
     if (!db || !currentUser) return;
     const nowLabel = formatNowWIB();
@@ -825,11 +927,13 @@ export default function App() {
         reports: nextReports,
         notifications: [newNotif, ...db.notifications],
       },
-      `Tab "Data Riwayat Laporan": Update status tiket ${reportId} menjadi "${newStatus}"`
+      `Tab "Data Riwayat Laporan": Update status tiket ${reportId} menjadi "${newStatus}"`,
+      false,
+      adminTabSource
     );
   };
 
-  const handleDeleteReport = (reportId: string) => {
+  const handleDeleteReport = (reportId: string, adminTabSource?: AdminTab) => {
     if (!db) return;
     commitDbChange(
       {
@@ -838,21 +942,25 @@ export default function App() {
         notifications: db.notifications.filter((n) => n.reportId !== reportId),
       },
       `Tab "Data Riwayat Laporan": Hapus tiket laporan ${reportId}`,
-      true
+      true,
+      adminTabSource
     );
   };
 
-  const handleAddUser = (payload: {
-    username: string;
-    password: string;
-    fullName: string;
-    role: UserRole;
-    stationId: string;
-    gender: GenderCode;
-    employmentStatus: EmploymentStatus;
-    jabatan: string;
-    phone: string;
-  }) => {
+  const handleAddUser = (
+    payload: {
+      username: string;
+      password: string;
+      fullName: string;
+      role: UserRole;
+      stationId: string;
+      gender: GenderCode;
+      employmentStatus: EmploymentStatus;
+      jabatan: string;
+      phone: string;
+    },
+    adminTabSource?: AdminTab
+  ) => {
     if (!db) return;
     const st = db.stations.find((s) => s.id === payload.stationId);
     const region = st?.region ?? 'Palembang';
@@ -907,23 +1015,28 @@ export default function App() {
         users: [...db.users, newUser],
         technicians: [...db.technicians, newTech],
       },
-      `Tab "Data Pegawai Transmisi": Tambah user "${payload.fullName}"`
+      `Tab "Data Pegawai Transmisi": Tambah user "${payload.fullName}"`,
+      false,
+      adminTabSource
     );
   };
 
-  const handleUpdateUser = (payload: {
-    id: string;
-    username: string;
-    password: string;
-    fullName: string;
-    role: UserRole;
-    stationId: string;
-    gender: GenderCode;
-    employmentStatus: EmploymentStatus;
-    jabatan: string;
-    phone: string;
-    avatarDataUrl?: string | null;
-  }) => {
+  const handleUpdateUser = (
+    payload: {
+      id: string;
+      username: string;
+      password: string;
+      fullName: string;
+      role: UserRole;
+      stationId: string;
+      gender: GenderCode;
+      employmentStatus: EmploymentStatus;
+      jabatan: string;
+      phone: string;
+      avatarDataUrl?: string | null;
+    },
+    adminTabSource?: AdminTab
+  ) => {
     if (!db) return;
     const oldUser = db.users.find((u) => u.id === payload.id);
     const st = db.stations.find((s) => s.id === payload.stationId);
@@ -1002,11 +1115,13 @@ export default function App() {
         users: nextUsers,
         technicians: nextTechs,
       },
-      `Tab "Data Pegawai Transmisi": Perbarui profil "${payload.fullName}"`
+      `Tab "Data Pegawai Transmisi": Perbarui profil "${payload.fullName}"`,
+      false,
+      adminTabSource
     );
   };
 
-  const handleDeleteUser = (userId: string) => {
+  const handleDeleteUser = (userId: string, adminTabSource?: AdminTab) => {
     if (!db || userId === currentUserId) return;
     const targetUser = db.users.find((u) => u.id === userId);
     commitDbChange(
@@ -1018,21 +1133,25 @@ export default function App() {
         ),
       },
       `Tab "Data Pegawai Transmisi": Hapus user "${targetUser?.fullName ?? userId}"`,
-      true
+      true,
+      adminTabSource
     );
   };
 
-  const handleAddStation = (payload: {
-    code: string;
-    name: string;
-    region: string;
-    address: string;
-    latitude: number;
-    longitude: number;
-    channelFreq: string;
-    maxCapacityKw: number;
-    forwardPowerKw: number;
-  }) => {
+  const handleAddStation = (
+    payload: {
+      code: string;
+      name: string;
+      region: string;
+      address: string;
+      latitude: number;
+      longitude: number;
+      channelFreq: string;
+      maxCapacityKw: number;
+      forwardPowerKw: number;
+    },
+    adminTabSource?: AdminTab
+  ) => {
     if (!db || !currentUser) return;
     const nowLabel = formatNowWIB();
     const id = `st-${Date.now()}`;
@@ -1114,14 +1233,17 @@ export default function App() {
         stations: [...db.stations, newStation],
         devices: [...db.devices, ...defaultDevices],
       },
-      `Tab "Data Menara" & "Data Perangkat": Tambah lokasi baru "${payload.name}"`
+      `Tab "Data Menara" & "Data Perangkat": Tambah lokasi baru "${payload.name}"`,
+      false,
+      adminTabSource
     );
   };
 
   const handleUpdateStationCoords = (
     stationId: string,
     latitude: number,
-    longitude: number
+    longitude: number,
+    adminTabSource?: AdminTab
   ) => {
     if (!db) return;
     const st = db.stations.find((s) => s.id === stationId);
@@ -1132,8 +1254,133 @@ export default function App() {
           s.id === stationId ? { ...s, latitude, longitude } : s
         ),
       },
-      `Tab "Data Menara": Update koordinat ${st?.region ?? stationId} (${latitude}, ${longitude})`
+      `Tab "Data Menara": Update koordinat ${st?.region ?? stationId} (${latitude}, ${longitude})`,
+      false,
+      adminTabSource
     );
+  };
+
+  const handleSaveAdminTabChanges = async (
+    tab: AdminTab,
+    pendingDrafts?: AdminPendingDrafts
+  ): Promise<boolean> => {
+    if (!db || !currentUser) return false;
+
+    let latestDb = db;
+    const nowLabel = formatNowWIB();
+
+    if (tab === 'laporan' && pendingDrafts?.reportDrafts?.length) {
+      const draftMap = new Map(
+        pendingDrafts.reportDrafts.map((d) => [d.reportId, d])
+      );
+      const newNotifs: AppNotification[] = [];
+      const nextReports = latestDb.reports.map((rep) => {
+        const draft = draftMap.get(rep.id);
+        if (!draft) return rep;
+        const st = latestDb.stations.find((s) => s.id === rep.stationId);
+        newNotifs.push({
+          id: `notif-${Date.now()}-${rep.id}`,
+          reportId: rep.id,
+          title: `Status Diperbarui · ${st?.region ?? 'Sumsel'}`,
+          message: `Tiket ${rep.id} diperbarui menjadi "${draft.status}". ${
+            draft.adminNote ? `Catatan: ${draft.adminNote}` : ''
+          }`,
+          status: draft.status,
+          timestamp: nowLabel,
+          read: false,
+        });
+        return {
+          ...rep,
+          status: draft.status,
+          adminNote: draft.adminNote,
+          updatedAt: nowLabel,
+          history: [
+            ...rep.history,
+            {
+              status: draft.status,
+              timestamp: nowLabel,
+              actor: `${currentUser.fullName} (Admin)`,
+              note: draft.adminNote || `Status diubah ke ${draft.status}`,
+            },
+          ],
+        };
+      });
+
+      latestDb = {
+        ...latestDb,
+        reports: nextReports,
+        notifications: [...newNotifs, ...latestDb.notifications],
+      };
+      applyLocalDb(latestDb);
+    }
+
+    if (tab === 'koordinat' && pendingDrafts?.coordDrafts?.length) {
+      const coordMap = new Map(
+        pendingDrafts.coordDrafts.map((c) => [c.stationId, c])
+      );
+      latestDb = {
+        ...latestDb,
+        stations: latestDb.stations.map((s) => {
+          const upd = coordMap.get(s.id);
+          return upd
+            ? { ...s, latitude: upd.latitude, longitude: upd.longitude }
+            : s;
+        }),
+      };
+      applyLocalDb(latestDb);
+    }
+
+    if (!dbSpreadsheetId) {
+      setSyncError(
+        'Spreadsheet Database Utama belum dikonfigurasi. Silakan masukkan Spreadsheet ID.'
+      );
+      setSpreadsheetModalOpen(true);
+      return false;
+    }
+
+    setSavingAdminTab(tab);
+    setSyncError(null);
+    try {
+      let token = getGoogleAccessToken();
+      if (!token) {
+        const { email, accessToken } = await signInWithGoogleSheets();
+        setGoogleEmail(email);
+        setHasGoogleToken(true);
+        token = accessToken;
+      }
+
+      const tabsMap: Record<AdminTab, UnifiedSheetTabKey[]> = {
+        laporan: [SHEET_TABS.REPORTS],
+        peralatan: [SHEET_TABS.DEVICES],
+        users: [SHEET_TABS.PERSONNEL],
+        koordinat: [SHEET_TABS.TOWERS, SHEET_TABS.DEVICES],
+      };
+
+      await syncSpreadsheetTabs(
+        dbSpreadsheetId,
+        latestDb,
+        token,
+        tabsMap[tab]
+      );
+      lastFetchedDbSigRef.current = buildDbSignature(latestDb);
+      setSpreadsheetConnected(true);
+      setAdminDirtyTabs((prev) => ({ ...prev, [tab]: false }));
+      setLastAdminSyncedAt(formatNowWIB());
+      return true;
+    } catch (err) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : 'Gagal menyimpan perubahan ke Google Spreadsheet.';
+      if (msg.toLowerCase().includes('credential') || msg.includes('401')) {
+        clearGoogleAccessToken();
+        setHasGoogleToken(false);
+      }
+      setSyncError(`Gagal memperbarui Google Spreadsheet: ${msg}`);
+      return false;
+    } finally {
+      setSavingAdminTab(null);
+    }
   };
 
   const handleImportSchedules = (
@@ -1337,17 +1584,30 @@ export default function App() {
               users={db.users}
               schedules={db.schedules}
               currentUser={currentUser}
-              onUpdateReportStatus={handleUpdateReportStatus}
-              onDeleteReport={handleDeleteReport}
-              onAddDevice={handleAddDevice}
-              onUpdateDeviceCondition={handleUpdateDeviceCondition}
-              onDeleteDevice={handleDeleteDevice}
-              onAddUser={handleAddUser}
-              onUpdateUser={handleUpdateUser}
-              onDeleteUser={handleDeleteUser}
-              onAddStation={handleAddStation}
-              onUpdateStationCoords={handleUpdateStationCoords}
+              onUpdateReportStatus={(id, status, note) =>
+                handleUpdateReportStatus(id, status, note, 'laporan')
+              }
+              onDeleteReport={(id) => handleDeleteReport(id, 'laporan')}
+              onAddDevice={(payload) => handleAddDevice(payload, 'peralatan')}
+              onUpdateDeviceCondition={(id, cond) =>
+                handleUpdateDeviceCondition(id, cond, 'peralatan')
+              }
+              onDeleteDevice={(id) => handleDeleteDevice(id, 'peralatan')}
+              onAddUser={(payload) => handleAddUser(payload, 'users')}
+              onUpdateUser={(payload) => handleUpdateUser(payload, 'users')}
+              onDeleteUser={(id) => handleDeleteUser(id, 'users')}
+              onAddStation={(payload) => handleAddStation(payload, 'koordinat')}
+              onUpdateStationCoords={(id, lat, lon) =>
+                handleUpdateStationCoords(id, lat, lon, 'koordinat')
+              }
               onOpenSpreadsheetSettings={() => setSpreadsheetModalOpen(true)}
+              dirtyTabs={adminDirtyTabs}
+              savingTab={savingAdminTab}
+              spreadsheetConnected={spreadsheetConnected}
+              hasGoogleToken={hasGoogleToken}
+              lastSyncedAt={lastAdminSyncedAt}
+              syncError={syncError}
+              onSaveTabChanges={handleSaveAdminTabChanges}
             />
           )}
         </main>

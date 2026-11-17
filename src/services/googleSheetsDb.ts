@@ -546,18 +546,23 @@ function buildReportsTable(reports: MaintenanceReport[]): string[][] {
   return [header, ...rows];
 }
 
-export async function syncUnifiedSpreadsheetDb(
+export type UnifiedSheetTabKey =
+  | typeof SHEET_TABS.DEVICES
+  | typeof SHEET_TABS.INFRASTRUCTURE
+  | typeof SHEET_TABS.TOWERS
+  | typeof SHEET_TABS.PERSONNEL
+  | typeof SHEET_TABS.REPORTS;
+
+export async function syncSpreadsheetTabs(
   spreadsheetId: string,
   db: TransmisiDatabase,
-  accessToken: string
+  accessToken: string,
+  tabs: UnifiedSheetTabKey[]
 ): Promise<void> {
-  const rangesToClear = [
-    `'${SHEET_TABS.DEVICES}'!A:Z`,
-    `'${SHEET_TABS.INFRASTRUCTURE}'!A:Z`,
-    `'${SHEET_TABS.TOWERS}'!A:Z`,
-    `'${SHEET_TABS.PERSONNEL}'!A:Z`,
-    `'${SHEET_TABS.REPORTS}'!A:Z`,
-  ];
+  if (tabs.length === 0) return;
+
+  const uniqueTabs = Array.from(new Set(tabs));
+  const rangesToClear = uniqueTabs.map((tab) => `'${tab}'!A:Z`);
 
   await sheetsFetch(
     `/${encodeURIComponent(spreadsheetId)}/values:batchClear`,
@@ -568,28 +573,18 @@ export async function syncUnifiedSpreadsheetDb(
     }
   );
 
-  const data = [
-    {
-      range: `'${SHEET_TABS.DEVICES}'!A1`,
-      values: buildDevicesTable(db.devices),
-    },
-    {
-      range: `'${SHEET_TABS.INFRASTRUCTURE}'!A1`,
-      values: buildInfrastructureTable(db.infrastructure),
-    },
-    {
-      range: `'${SHEET_TABS.TOWERS}'!A1`,
-      values: buildTowersTable(db.stations, db.infrastructure),
-    },
-    {
-      range: `'${SHEET_TABS.PERSONNEL}'!A1`,
-      values: buildPersonnelTable(db.users, db.technicians),
-    },
-    {
-      range: `'${SHEET_TABS.REPORTS}'!A1`,
-      values: buildReportsTable(db.reports),
-    },
-  ];
+  const tableBuilders: Record<UnifiedSheetTabKey, () => string[][]> = {
+    [SHEET_TABS.DEVICES]: () => buildDevicesTable(db.devices),
+    [SHEET_TABS.INFRASTRUCTURE]: () => buildInfrastructureTable(db.infrastructure),
+    [SHEET_TABS.TOWERS]: () => buildTowersTable(db.stations, db.infrastructure),
+    [SHEET_TABS.PERSONNEL]: () => buildPersonnelTable(db.users, db.technicians),
+    [SHEET_TABS.REPORTS]: () => buildReportsTable(db.reports),
+  };
+
+  const data = uniqueTabs.map((tab) => ({
+    range: `'${tab}'!A1`,
+    values: tableBuilders[tab](),
+  }));
 
   await sheetsFetch(
     `/${encodeURIComponent(spreadsheetId)}/values:batchUpdate`,
@@ -602,6 +597,20 @@ export async function syncUnifiedSpreadsheetDb(
       }),
     }
   );
+}
+
+export async function syncUnifiedSpreadsheetDb(
+  spreadsheetId: string,
+  db: TransmisiDatabase,
+  accessToken: string
+): Promise<void> {
+  await syncSpreadsheetTabs(spreadsheetId, db, accessToken, [
+    SHEET_TABS.DEVICES,
+    SHEET_TABS.INFRASTRUCTURE,
+    SHEET_TABS.TOWERS,
+    SHEET_TABS.PERSONNEL,
+    SHEET_TABS.REPORTS,
+  ]);
 }
 
 export async function createUnifiedDatabaseSpreadsheet(
@@ -956,6 +965,9 @@ export async function fetchUnifiedSpreadsheetDb(
         }))
       : fallbackDb.technicians;
 
+  const reportsHasHeader = reportsRaw.some(
+    (r) => (r[0] ?? '').trim() === 'ID Tiket'
+  );
   const reports: MaintenanceReport[] =
     reportsRows.length > 0
       ? reportsRows.map((r) => {
@@ -987,6 +999,8 @@ export async function fetchUnifiedSpreadsheetDb(
             history,
           };
         })
+      : reportsHasHeader
+      ? []
       : fallbackDb.reports;
 
   return {
@@ -1470,4 +1484,64 @@ export function buildScheduleSignature(schedules: ScheduleAssignment[]): string 
   return schedules
     .map((s) => `${s.dayBucket}|${s.technicianName}|${s.shift}|${s.dateLabel}`)
     .join(';;');
+}
+
+export function buildDbSignature(db: TransmisiDatabase): string {
+  return JSON.stringify({
+    stations: db.stations.map((s) => [
+      s.id,
+      s.code,
+      s.name,
+      s.region,
+      s.latitude,
+      s.longitude,
+      s.forwardPowerKw,
+      s.reflectedPowerW,
+      s.lastPowerUpdatedAt,
+    ]),
+    devices: db.devices.map((d) => [
+      d.id,
+      d.stationId,
+      d.name,
+      d.category,
+      d.brandModel,
+      d.condition,
+      d.active,
+      d.lastChecked,
+      d.notes,
+    ]),
+    infrastructure: db.infrastructure.map((i) => [
+      i.id,
+      i.landStatus,
+      i.txRoomArea,
+      i.txRoomCondition,
+      i.officialHouseCount,
+      i.officialHouseCondition,
+      i.gensetRoomArea,
+      i.gensetRoomCondition,
+      i.towerHeightM,
+      i.towerCondition,
+    ]),
+    users: db.users.map((u) => [
+      u.id,
+      u.username,
+      u.password,
+      u.fullName,
+      u.role,
+      u.stationId,
+      u.employmentStatus,
+      u.jabatan,
+      u.gender,
+      u.phone,
+    ]),
+    reports: db.reports.map((r) => [
+      r.id,
+      r.stationId,
+      r.subject,
+      r.priority,
+      r.status,
+      r.updatedAt,
+      r.adminNote,
+    ]),
+  });
 }
