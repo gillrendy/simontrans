@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import {
   Cpu,
-  Download,
   FileBarChart2,
   FileCheck2,
+  FileSpreadsheet,
   MapPin,
   Pencil,
   Plus,
@@ -99,8 +99,7 @@ interface AdminViewProps {
     latitude: number,
     longitude: number
   ) => void;
-  onExportJson: () => void;
-  onResetLocalData: () => void;
+  onOpenSpreadsheetSettings: () => void;
 }
 
 type AdminTab = 'laporan' | 'peralatan' | 'users' | 'koordinat';
@@ -143,8 +142,7 @@ export function AdminView({
   onDeleteUser,
   onAddStation,
   onUpdateStationCoords,
-  onExportJson,
-  onResetLocalData,
+  onOpenSpreadsheetSettings,
 }: AdminViewProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>('laporan');
   const [monthlyReportOpen, setMonthlyReportOpen] = useState(false);
@@ -424,18 +422,11 @@ export function AdminView({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={onResetLocalData}
-            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0"
+            onClick={onOpenSpreadsheetSettings}
+            className="px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0"
           >
-            Reset ke JSON Awal
-          </button>
-          <button
-            type="button"
-            onClick={onExportJson}
-            className="px-3.5 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Ekspor transmisi.json</span>
+            <FileSpreadsheet className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+            <span>Koneksi Spreadsheet</span>
           </button>
           <button
             type="button"

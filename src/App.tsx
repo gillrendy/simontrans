@@ -1,14 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AdminView } from './components/AdminView';
 import { ChangePasswordModal, LoginScreen } from './components/AuthModals';
+import { ConfirmModal } from './components/ConfirmModal';
 import { HomeView } from './components/HomeView';
 import { JadwalView } from './components/JadwalView';
 import { LaporanView } from './components/LaporanView';
 import { PerangkatView } from './components/PerangkatView';
 import { SaranaPrasaranaView } from './components/SaranaPrasaranaView';
 import { Sidebar } from './components/Sidebar';
+import { SpreadsheetConnectModal } from './components/SpreadsheetConnectModal';
 import { TeknisiView } from './components/TeknisiView';
 import { TopBar } from './components/TopBar';
+import {
+  clearGoogleAccessToken,
+  getGoogleAccessToken,
+  initGoogleAuth,
+  signInWithGoogleSheets,
+  signOutGoogleSheets,
+} from './services/googleSheetsAuth';
+import {
+  createUnifiedDatabaseSpreadsheet,
+  fetchBundledMatrixScheduleCsv,
+  fetchScheduleFromSpreadsheet,
+  fetchUnifiedSpreadsheetDb,
+  getConfiguredDbSpreadsheetId,
+  getConfiguredScheduleSpreadsheetId,
+  getCurrentIndonesianMonthName,
+  pingSpreadsheetConnection,
+  setConfiguredDbSpreadsheetId,
+  setConfiguredScheduleSpreadsheetId,
+  syncUnifiedSpreadsheetDb,
+} from './services/googleSheetsDb';
 import {
   AppNotification,
   DeviceCategory,
@@ -48,6 +70,12 @@ const normalizeShiftLabel = (shift?: string): string => {
   return shift;
 };
 
+interface PendingSheetSync {
+  nextDb: TransmisiDatabase;
+  summary: string;
+  isDestructive?: boolean;
+}
+
 export default function App() {
   const [db, setDb] = useState<TransmisiDatabase | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,6 +88,25 @@ export default function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
+  // Google Spreadsheet API State
+  const [spreadsheetModalOpen, setSpreadsheetModalOpen] = useState(false);
+  const [googleEmail, setGoogleEmail] = useState<string | null>(null);
+  const [hasGoogleToken, setHasGoogleToken] = useState(false);
+  const [dbSpreadsheetId, setDbSpreadsheetIdState] = useState<string>(() =>
+    getConfiguredDbSpreadsheetId()
+  );
+  const [scheduleSpreadsheetId, setScheduleSpreadsheetIdState] = useState<string>(() =>
+    getConfiguredScheduleSpreadsheetId()
+  );
+  const [spreadsheetConnected, setSpreadsheetConnected] = useState(false);
+  const [spreadsheetTitle, setSpreadsheetTitle] = useState<string | null>(null);
+  const [activeScheduleSheetTitle, setActiveScheduleSheetTitle] = useState<string | null>(
+    () => getCurrentIndonesianMonthName()
+  );
+  const [syncBusy, setSyncBusy] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const [pendingSheetSync, setPendingSheetSync] = useState<PendingSheetSync | null>(null);
+
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     const saved = localStorage.getItem(STORAGE_THEME_KEY);
     return saved ? saved === 'dark' : false;
@@ -70,40 +117,61 @@ export default function App() {
     localStorage.setItem(STORAGE_THEME_KEY, darkMode ? 'dark' : 'light');
   }, [darkMode]);
 
-  const loadInitialJson = async (forceFresh = false) => {
+  useEffect(() => {
+    const unsubscribe = initGoogleAuth((session) => {
+      setGoogleEmail(session.user?.email ?? null);
+      setHasGoogleToken(session.hasToken);
+      if (!session.hasToken) {
+        setSpreadsheetConnected(false);
+        setSpreadsheetTitle(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const loadBaselineData = useCallback(async () => {
     setLoading(true);
     setLoadError(null);
     try {
-      if (!forceFresh) {
-        const cached = localStorage.getItem(STORAGE_DB_KEY);
-        if (cached) {
-          const parsed = JSON.parse(cached) as TransmisiDatabase;
-          setDb({
-            ...parsed,
-            technicians: parsed.technicians.map((t) => ({
-              ...t,
-              shift: normalizeShiftLabel(t.shift),
-            })),
-            users: parsed.users.map((u) => ({
-              ...u,
-              shift: normalizeShiftLabel(u.shift),
-            })),
-            schedules: (parsed.schedules ?? []).map((s) => ({
-              ...s,
-              shift: normalizeShiftLabel(s.shift),
-            })),
-            infrastructure: parsed.infrastructure ?? [],
-          });
-          setLoading(false);
-          return;
+      const cached = localStorage.getItem(STORAGE_DB_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as TransmisiDatabase;
+        let normalizedSchedules = (parsed.schedules ?? []).map((s) => ({
+          ...s,
+          shift: normalizeShiftLabel(s.shift),
+        }));
+        if (normalizedSchedules.length === 0) {
+          const matrixFallback = await fetchBundledMatrixScheduleCsv(
+            new Date(),
+            parsed.technicians ?? [],
+            parsed.stations ?? []
+          );
+          if (matrixFallback.length > 0) {
+            normalizedSchedules = matrixFallback;
+          }
         }
+        setDb({
+          ...parsed,
+          technicians: parsed.technicians.map((t) => ({
+            ...t,
+            shift: normalizeShiftLabel(t.shift),
+          })),
+          users: parsed.users.map((u) => ({
+            ...u,
+            shift: normalizeShiftLabel(u.shift),
+          })),
+          schedules: normalizedSchedules,
+          infrastructure: parsed.infrastructure ?? [],
+        });
+        setLoading(false);
+        return;
       }
 
       let data: TransmisiDatabase;
       try {
         const res = await fetch('./data/transmisi.json');
         if (!res.ok) {
-          throw new Error(`Gagal memuat data JSON (${res.status})`);
+          throw new Error(`Gagal memuat data awal (${res.status})`);
         }
         data = (await res.json()) as TransmisiDatabase;
       } catch {
@@ -118,41 +186,292 @@ export default function App() {
                 reject(parseErr);
               }
             } else {
-              reject(new Error(`Gagal memuat data JSON (${xhr.status})`));
+              reject(new Error(`Gagal memuat data awal (${xhr.status})`));
             }
           };
-          xhr.onerror = () => reject(new Error('Gagal memuat data JSON'));
+          xhr.onerror = () => reject(new Error('Gagal memuat data awal'));
           xhr.send();
         });
       }
 
+      let initialSchedules = data.schedules ?? [];
+      const matrixFallback = await fetchBundledMatrixScheduleCsv(
+        new Date(),
+        data.technicians ?? [],
+        data.stations ?? []
+      );
+      if (matrixFallback.length > 0) {
+        initialSchedules = matrixFallback;
+      }
+
       const normalized: TransmisiDatabase = {
         ...data,
-        schedules: data.schedules ?? [],
+        schedules: initialSchedules,
         infrastructure: data.infrastructure ?? [],
       };
       setDb(normalized);
       localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(normalized));
     } catch (err) {
       setLoadError(
-        err instanceof Error ? err.message : 'Gagal membaca file data/transmisi.json'
+        err instanceof Error ? err.message : 'Gagal memuat data awal aplikasi'
       );
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    void loadInitialJson(false);
   }, []);
 
-  const persistDb = (nextDb: TransmisiDatabase) => {
+  useEffect(() => {
+    void loadBaselineData();
+  }, [loadBaselineData]);
+
+  // Ping Spreadsheet API periodically when token & ID exist
+  const runPingCheck = useCallback(
+    async (targetDbId: string, token: string | null) => {
+      if (!targetDbId || !token) {
+        setSpreadsheetConnected(false);
+        setSpreadsheetTitle(null);
+        return false;
+      }
+      const res = await pingSpreadsheetConnection(targetDbId, token);
+      setSpreadsheetConnected(res.connected);
+      setSpreadsheetTitle(res.title ?? null);
+      if (!res.connected && res.error) {
+        if (res.error.toLowerCase().includes('credential') || res.error.includes('401')) {
+          clearGoogleAccessToken();
+          setHasGoogleToken(false);
+        }
+      }
+      return res.connected;
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!hasGoogleToken || !dbSpreadsheetId) {
+      setSpreadsheetConnected(false);
+      return;
+    }
+    const token = getGoogleAccessToken();
+    void runPingCheck(dbSpreadsheetId, token);
+
+    const timer = window.setInterval(() => {
+      const currentToken = getGoogleAccessToken();
+      void runPingCheck(dbSpreadsheetId, currentToken);
+    }, 30000);
+
+    return () => window.clearInterval(timer);
+  }, [hasGoogleToken, dbSpreadsheetId, runPingCheck]);
+
+  const applyLocalDb = (nextDb: TransmisiDatabase) => {
     setDb(nextDb);
     localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(nextDb));
   };
 
-  const currentUser =
-    db?.users.find((u) => u.id === currentUserId) ?? null;
+  const commitDbChange = (
+    nextDb: TransmisiDatabase,
+    sheetWriteSummary?: string,
+    isDestructive = false
+  ) => {
+    const token = getGoogleAccessToken();
+    if (spreadsheetConnected && dbSpreadsheetId && token && sheetWriteSummary) {
+      setPendingSheetSync({
+        nextDb,
+        summary: sheetWriteSummary,
+        isDestructive,
+      });
+      return;
+    }
+    applyLocalDb(nextDb);
+  };
+
+  const handleConfirmSheetWrite = async () => {
+    if (!pendingSheetSync) return;
+    const { nextDb } = pendingSheetSync;
+    setPendingSheetSync(null);
+
+    applyLocalDb(nextDb);
+    const token = getGoogleAccessToken();
+    if (!token || !dbSpreadsheetId) return;
+
+    setSyncBusy(true);
+    setSyncError(null);
+    try {
+      await syncUnifiedSpreadsheetDb(dbSpreadsheetId, nextDb, token);
+      setSpreadsheetConnected(true);
+    } catch (err) {
+      setSyncError(
+        err instanceof Error
+          ? `Gagal menyinkronkan ke Google Spreadsheet: ${err.message}`
+          : 'Gagal menyinkronkan ke Google Spreadsheet.'
+      );
+      setSpreadsheetConnected(false);
+    } finally {
+      setSyncBusy(false);
+    }
+  };
+
+  const pullFromSpreadsheets = useCallback(
+    async (targetDbId: string, targetScheduleId: string, token: string) => {
+      if (!db) return;
+      setSyncBusy(true);
+      setSyncError(null);
+      try {
+        let nextDb = db;
+        if (targetDbId) {
+          const ping = await pingSpreadsheetConnection(targetDbId, token);
+          setSpreadsheetConnected(ping.connected);
+          setSpreadsheetTitle(ping.title ?? null);
+          if (!ping.connected) {
+            throw new Error(ping.error || 'Gagal terhubung ke Spreadsheet Database.');
+          }
+          nextDb = await fetchUnifiedSpreadsheetDb(targetDbId, token, db);
+        }
+
+        if (targetScheduleId) {
+          const schedRes = await fetchScheduleFromSpreadsheet(
+            targetScheduleId,
+            token,
+            new Date(),
+            nextDb.technicians,
+            nextDb.stations
+          );
+          setActiveScheduleSheetTitle(schedRes.sheetTitle);
+          if (schedRes.schedules.length > 0) {
+            nextDb = { ...nextDb, schedules: schedRes.schedules };
+          }
+        }
+
+        applyLocalDb(nextDb);
+      } catch (err) {
+        setSyncError(
+          err instanceof Error ? err.message : 'Gagal menarik data dari Spreadsheet.'
+        );
+        setSpreadsheetConnected(false);
+      } finally {
+        setSyncBusy(false);
+      }
+    },
+    [db]
+  );
+
+  const handleSignInGoogle = async () => {
+    setSyncBusy(true);
+    setSyncError(null);
+    try {
+      const { user, accessToken } = await signInWithGoogleSheets();
+      setGoogleEmail(user.email);
+      setHasGoogleToken(true);
+      if (dbSpreadsheetId) {
+        await pullFromSpreadsheets(dbSpreadsheetId, scheduleSpreadsheetId, accessToken);
+      }
+    } catch (err) {
+      setSyncError(
+        err instanceof Error ? err.message : 'Login Google Sheets dibatalkan atau gagal.'
+      );
+    } finally {
+      setSyncBusy(false);
+    }
+  };
+
+  const handleSignOutGoogle = async () => {
+    setSyncBusy(true);
+    try {
+      await signOutGoogleSheets();
+      setHasGoogleToken(false);
+      setGoogleEmail(null);
+      setSpreadsheetConnected(false);
+      setSpreadsheetTitle(null);
+    } finally {
+      setSyncBusy(false);
+    }
+  };
+
+  const handleSaveSpreadsheetIds = async (newDbId: string, newScheduleId: string) => {
+    const cleanDb = setConfiguredDbSpreadsheetId(newDbId);
+    const cleanSched = setConfiguredScheduleSpreadsheetId(newScheduleId);
+    setDbSpreadsheetIdState(cleanDb);
+    setScheduleSpreadsheetIdState(cleanSched);
+
+    const token = getGoogleAccessToken();
+    if (token && (cleanDb || cleanSched)) {
+      await pullFromSpreadsheets(cleanDb, cleanSched, token);
+    } else {
+      setSpreadsheetConnected(false);
+    }
+  };
+
+  const handleCreateUnifiedSpreadsheet = async () => {
+    if (!db) return;
+    const token = getGoogleAccessToken();
+    if (!token) {
+      setSyncError('Silakan Sign in with Google terlebih dahulu.');
+      return;
+    }
+    setSyncBusy(true);
+    setSyncError(null);
+    try {
+      const created = await createUnifiedDatabaseSpreadsheet(db, token);
+      const savedId = setConfiguredDbSpreadsheetId(created.spreadsheetId);
+      setDbSpreadsheetIdState(savedId);
+      setSpreadsheetConnected(true);
+      setSpreadsheetTitle(created.title);
+    } catch (err) {
+      setSyncError(
+        err instanceof Error ? err.message : 'Gagal membuat spreadsheet baru.'
+      );
+    } finally {
+      setSyncBusy(false);
+    }
+  };
+
+  const handlePushLocalToSpreadsheet = async () => {
+    if (!db || !dbSpreadsheetId) return;
+    const token = getGoogleAccessToken();
+    if (!token) {
+      setSyncError('Silakan Sign in with Google terlebih dahulu.');
+      return;
+    }
+    setSyncBusy(true);
+    setSyncError(null);
+    try {
+      await syncUnifiedSpreadsheetDb(dbSpreadsheetId, db, token);
+      await runPingCheck(dbSpreadsheetId, token);
+    } catch (err) {
+      setSyncError(
+        err instanceof Error ? err.message : 'Gagal mengirim data ke Spreadsheet.'
+      );
+    } finally {
+      setSyncBusy(false);
+    }
+  };
+
+  const handleRefreshFromSpreadsheet = async () => {
+    const token = getGoogleAccessToken();
+    if (!token) {
+      setSyncError('Silakan Sign in with Google terlebih dahulu.');
+      return;
+    }
+    await pullFromSpreadsheets(dbSpreadsheetId, scheduleSpreadsheetId, token);
+  };
+
+  const handleRefreshScheduleSheet = async () => {
+    if (!db) return;
+    const token = getGoogleAccessToken();
+    if (scheduleSpreadsheetId && token) {
+      await pullFromSpreadsheets(dbSpreadsheetId, scheduleSpreadsheetId, token);
+      return;
+    }
+    const matrixFallback = await fetchBundledMatrixScheduleCsv(
+      new Date(),
+      db.technicians,
+      db.stations
+    );
+    if (matrixFallback.length > 0) {
+      applyLocalDb({ ...db, schedules: matrixFallback });
+    }
+  };
+
+  const currentUser = db?.users.find((u) => u.id === currentUserId) ?? null;
 
   useEffect(() => {
     if (currentUser && currentUser.role !== 'Admin' && activeNav === 'admin') {
@@ -180,6 +499,7 @@ export default function App() {
     if (!db || !currentUser) return;
     const nowLabel = formatNowWIB();
     const shortTime = nowLabel.slice(11, 16);
+    const st = db.stations.find((s) => s.id === stationId);
 
     const nextStations = db.stations.map((s) => {
       if (s.id !== stationId) return s;
@@ -197,7 +517,10 @@ export default function App() {
       };
     });
 
-    persistDb({ ...db, stations: nextStations });
+    commitDbChange(
+      { ...db, stations: nextStations },
+      `Tab "Data Menara": Update daya pemancar ${st?.region ?? stationId} (${forwardKw} kW / ${reflectedW} W)`
+    );
   };
 
   const handleUpdateDeviceCondition = (
@@ -206,6 +529,7 @@ export default function App() {
   ) => {
     if (!db) return;
     const nowLabel = formatNowWIB().replace(' WIB', '');
+    const dev = db.devices.find((d) => d.id === deviceId);
     const nextDevices: DeviceItem[] = db.devices.map((d) => {
       if (d.id !== deviceId) return d;
       return {
@@ -221,7 +545,10 @@ export default function App() {
             : 'Ditandai rusak oleh petugas monitoring',
       };
     });
-    persistDb({ ...db, devices: nextDevices });
+    commitDbChange(
+      { ...db, devices: nextDevices },
+      `Tab "Data Perangkat": Ubah kondisi "${dev?.name ?? deviceId}" menjadi ${nextCondition}`
+    );
   };
 
   const handleAddDevice = (payload: {
@@ -245,18 +572,26 @@ export default function App() {
       lastChecked: nowLabel,
       notes: payload.notes,
     };
-    persistDb({
-      ...db,
-      devices: [newDevice, ...db.devices],
-    });
+    commitDbChange(
+      {
+        ...db,
+        devices: [newDevice, ...db.devices],
+      },
+      `Tab "Data Perangkat": Tambah perangkat baru "${payload.name}"`
+    );
   };
 
   const handleDeleteDevice = (deviceId: string) => {
     if (!db) return;
-    persistDb({
-      ...db,
-      devices: db.devices.filter((d) => d.id !== deviceId),
-    });
+    const dev = db.devices.find((d) => d.id === deviceId);
+    commitDbChange(
+      {
+        ...db,
+        devices: db.devices.filter((d) => d.id !== deviceId),
+      },
+      `Tab "Data Perangkat": Hapus perangkat "${dev?.name ?? deviceId}"`,
+      true
+    );
   };
 
   const handleSubmitReport = (payload: {
@@ -306,11 +641,14 @@ export default function App() {
       read: false,
     };
 
-    persistDb({
-      ...db,
-      reports: [newReport, ...db.reports],
-      notifications: [newNotif, ...db.notifications],
-    });
+    commitDbChange(
+      {
+        ...db,
+        reports: [newReport, ...db.reports],
+        notifications: [newNotif, ...db.notifications],
+      },
+      `Tab "Data Riwayat Laporan": Simpan tiket laporan baru ${newId}`
+    );
   };
 
   const handleUpdateReportStatus = (
@@ -354,20 +692,27 @@ export default function App() {
       read: false,
     };
 
-    persistDb({
-      ...db,
-      reports: nextReports,
-      notifications: [newNotif, ...db.notifications],
-    });
+    commitDbChange(
+      {
+        ...db,
+        reports: nextReports,
+        notifications: [newNotif, ...db.notifications],
+      },
+      `Tab "Data Riwayat Laporan": Update status tiket ${reportId} menjadi "${newStatus}"`
+    );
   };
 
   const handleDeleteReport = (reportId: string) => {
     if (!db) return;
-    persistDb({
-      ...db,
-      reports: db.reports.filter((r) => r.id !== reportId),
-      notifications: db.notifications.filter((n) => n.reportId !== reportId),
-    });
+    commitDbChange(
+      {
+        ...db,
+        reports: db.reports.filter((r) => r.id !== reportId),
+        notifications: db.notifications.filter((n) => n.reportId !== reportId),
+      },
+      `Tab "Data Riwayat Laporan": Hapus tiket laporan ${reportId}`,
+      true
+    );
   };
 
   const handleAddUser = (payload: {
@@ -424,11 +769,14 @@ export default function App() {
       avatarKey,
     };
 
-    persistDb({
-      ...db,
-      users: [...db.users, newUser],
-      technicians: [...db.technicians, newTech],
-    });
+    commitDbChange(
+      {
+        ...db,
+        users: [...db.users, newUser],
+        technicians: [...db.technicians, newTech],
+      },
+      `Tab "Data Pegawai Transmisi": Tambah user "${payload.fullName}"`
+    );
   };
 
   const handleUpdateUser = (payload: {
@@ -513,23 +861,30 @@ export default function App() {
           },
         ];
 
-    persistDb({
-      ...db,
-      users: nextUsers,
-      technicians: nextTechs,
-    });
+    commitDbChange(
+      {
+        ...db,
+        users: nextUsers,
+        technicians: nextTechs,
+      },
+      `Tab "Data Pegawai Transmisi": Perbarui profil "${payload.fullName}"`
+    );
   };
 
   const handleDeleteUser = (userId: string) => {
     if (!db || userId === currentUserId) return;
     const targetUser = db.users.find((u) => u.id === userId);
-    persistDb({
-      ...db,
-      users: db.users.filter((u) => u.id !== userId),
-      technicians: db.technicians.filter(
-        (t) => t.id !== userId && (!targetUser || t.name !== targetUser.fullName)
-      ),
-    });
+    commitDbChange(
+      {
+        ...db,
+        users: db.users.filter((u) => u.id !== userId),
+        technicians: db.technicians.filter(
+          (t) => t.id !== userId && (!targetUser || t.name !== targetUser.fullName)
+        ),
+      },
+      `Tab "Data Pegawai Transmisi": Hapus user "${targetUser?.fullName ?? userId}"`,
+      true
+    );
   };
 
   const handleAddStation = (payload: {
@@ -618,11 +973,14 @@ export default function App() {
       },
     ];
 
-    persistDb({
-      ...db,
-      stations: [...db.stations, newStation],
-      devices: [...db.devices, ...defaultDevices],
-    });
+    commitDbChange(
+      {
+        ...db,
+        stations: [...db.stations, newStation],
+        devices: [...db.devices, ...defaultDevices],
+      },
+      `Tab "Data Menara" & "Data Perangkat": Tambah lokasi baru "${payload.name}"`
+    );
   };
 
   const handleUpdateStationCoords = (
@@ -631,12 +989,16 @@ export default function App() {
     longitude: number
   ) => {
     if (!db) return;
-    persistDb({
-      ...db,
-      stations: db.stations.map((s) =>
-        s.id === stationId ? { ...s, latitude, longitude } : s
-      ),
-    });
+    const st = db.stations.find((s) => s.id === stationId);
+    commitDbChange(
+      {
+        ...db,
+        stations: db.stations.map((s) =>
+          s.id === stationId ? { ...s, latitude, longitude } : s
+        ),
+      },
+      `Tab "Data Menara": Update koordinat ${st?.region ?? stationId} (${latitude}, ${longitude})`
+    );
   };
 
   const handleImportSchedules = (
@@ -644,7 +1006,7 @@ export default function App() {
     replaceExisting: boolean
   ) => {
     if (!db) return;
-    persistDb({
+    applyLocalDb({
       ...db,
       schedules: replaceExisting
         ? newSchedules
@@ -654,27 +1016,33 @@ export default function App() {
 
   const handleUpdateInfrastructure = (updated: InfrastructureItem) => {
     if (!db) return;
-    persistDb({
-      ...db,
-      infrastructure: db.infrastructure.map((item) =>
-        item.id === updated.id ? updated : item
-      ),
-    });
+    commitDbChange(
+      {
+        ...db,
+        infrastructure: db.infrastructure.map((item) =>
+          item.id === updated.id ? updated : item
+        ),
+      },
+      `Tab "Data Sarana Prasarana": Update kondisi sarana ${updated.stationName}`
+    );
   };
 
   const handleChangePassword = (newPassword: string) => {
     if (!db || !currentUser) return;
-    persistDb({
-      ...db,
-      users: db.users.map((u) =>
-        u.id === currentUser.id ? { ...u, password: newPassword } : u
-      ),
-    });
+    commitDbChange(
+      {
+        ...db,
+        users: db.users.map((u) =>
+          u.id === currentUser.id ? { ...u, password: newPassword } : u
+        ),
+      },
+      `Tab "Data Pegawai Transmisi": Update password akun ${currentUser.username}`
+    );
   };
 
   const handleMarkAllRead = () => {
     if (!db) return;
-    persistDb({
+    applyLocalDb({
       ...db,
       notifications: db.notifications.map((n) => ({ ...n, read: true })),
     });
@@ -682,31 +1050,13 @@ export default function App() {
 
   const handleSelectNotification = (notif: AppNotification) => {
     if (!db) return;
-    persistDb({
+    applyLocalDb({
       ...db,
       notifications: db.notifications.map((n) =>
         n.id === notif.id ? { ...n, read: true } : n
       ),
     });
     setActiveNav('laporan');
-  };
-
-  const handleExportJson = () => {
-    if (!db) return;
-    const blob = new Blob([JSON.stringify(db, null, 2)], {
-      type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'transmisi.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleResetLocalData = () => {
-    localStorage.removeItem(STORAGE_DB_KEY);
-    void loadInitialJson(true);
   };
 
   if (loading) {
@@ -724,14 +1074,14 @@ export default function App() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6">
         <div className="max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 text-center space-y-3">
           <div className="text-sm font-semibold text-red-600 dark:text-red-400">
-            Gagal Memuat Data Statis JSON
+            Gagal Memuat Data Aplikasi
           </div>
           <p className="text-xs text-slate-600 dark:text-slate-400">
             {loadError}
           </p>
           <button
             type="button"
-            onClick={() => void loadInitialJson(true)}
+            onClick={() => void loadBaselineData()}
             className="px-4 py-2 rounded-lg bg-sky-600 text-white text-xs font-medium"
           >
             Muat Ulang
@@ -763,7 +1113,9 @@ export default function App() {
         mobileOpen={mobileNavOpen}
         onCloseMobile={() => setMobileNavOpen(false)}
         openReportCount={openReportCount}
-        onExportJson={handleExportJson}
+        spreadsheetConnected={spreadsheetConnected}
+        dbSpreadsheetId={dbSpreadsheetId}
+        onOpenSpreadsheetModal={() => setSpreadsheetModalOpen(true)}
       />
 
       <div className="flex-1 flex flex-col min-w-0">
@@ -771,6 +1123,8 @@ export default function App() {
           activeNav={activeNav}
           darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode((d) => !d)}
+          spreadsheetConnected={spreadsheetConnected}
+          onOpenSpreadsheetModal={() => setSpreadsheetModalOpen(true)}
           notifications={db.notifications}
           onMarkAllRead={handleMarkAllRead}
           onSelectNotification={handleSelectNotification}
@@ -820,6 +1174,9 @@ export default function App() {
               stations={db.stations}
               technicians={db.technicians}
               userRole={currentUser.role}
+              activeSheetTitle={activeScheduleSheetTitle}
+              spreadsheetConnected={spreadsheetConnected}
+              onRefreshScheduleSheet={handleRefreshScheduleSheet}
               onImportSchedules={handleImportSchedules}
             />
           )}
@@ -852,8 +1209,7 @@ export default function App() {
               onDeleteUser={handleDeleteUser}
               onAddStation={handleAddStation}
               onUpdateStationCoords={handleUpdateStationCoords}
-              onExportJson={handleExportJson}
-              onResetLocalData={handleResetLocalData}
+              onOpenSpreadsheetSettings={() => setSpreadsheetModalOpen(true)}
             />
           )}
         </main>
@@ -866,6 +1222,46 @@ export default function App() {
           onChangePassword={handleChangePassword}
         />
       )}
+
+      <SpreadsheetConnectModal
+        open={spreadsheetModalOpen}
+        onClose={() => setSpreadsheetModalOpen(false)}
+        connected={spreadsheetConnected}
+        spreadsheetTitle={spreadsheetTitle}
+        googleEmail={googleEmail}
+        hasGoogleToken={hasGoogleToken}
+        dbSpreadsheetId={dbSpreadsheetId}
+        scheduleSpreadsheetId={scheduleSpreadsheetId}
+        activeScheduleSheetTitle={activeScheduleSheetTitle}
+        syncBusy={syncBusy}
+        syncError={syncError}
+        onSignInGoogle={handleSignInGoogle}
+        onSignOutGoogle={handleSignOutGoogle}
+        onSaveSpreadsheetIds={handleSaveSpreadsheetIds}
+        onCreateUnifiedSpreadsheet={handleCreateUnifiedSpreadsheet}
+        onPushLocalToSpreadsheet={handlePushLocalToSpreadsheet}
+        onRefreshFromSpreadsheet={handleRefreshFromSpreadsheet}
+      />
+
+      {/* Explicit Confirmation Modal Before Writing to Connected Google Spreadsheet */}
+      <ConfirmModal
+        open={pendingSheetSync !== null}
+        variant={pendingSheetSync?.isDestructive ? 'danger' : 'primary'}
+        message={
+          pendingSheetSync?.isDestructive
+            ? 'Konfirmasi Hapus & Update Google Spreadsheet?'
+            : 'Simpan Perubahan ke Google Spreadsheet?'
+        }
+        detail={
+          pendingSheetSync
+            ? `${pendingSheetSync.summary}. Perubahan ini akan langsung ditulis ke Google Spreadsheet yang sedang terhubung.`
+            : undefined
+        }
+        confirmLabel="Ya, Sinkronkan ke Sheet"
+        cancelLabel="Batal"
+        onCancel={() => setPendingSheetSync(null)}
+        onConfirm={() => void handleConfirmSheetWrite()}
+      />
     </div>
   );
 }

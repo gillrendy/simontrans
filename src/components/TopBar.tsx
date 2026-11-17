@@ -19,6 +19,8 @@ interface TopBarProps {
   activeNav: NavSection;
   darkMode: boolean;
   onToggleDarkMode: () => void;
+  spreadsheetConnected: boolean;
+  onOpenSpreadsheetModal: () => void;
   notifications: AppNotification[];
   onMarkAllRead: () => void;
   onSelectNotification: (notif: AppNotification) => void;
@@ -42,6 +44,8 @@ export function TopBar({
   activeNav,
   darkMode,
   onToggleDarkMode,
+  spreadsheetConnected,
+  onOpenSpreadsheetModal,
   notifications,
   onMarkAllRead,
   onSelectNotification,
@@ -93,8 +97,39 @@ export function TopBar({
         </div>
       </div>
 
-      {/* Right: Dark/Light Switch, Notifications, Profile Dropdown */}
+      {/* Right: Spreadsheet API Ping Indicator, Dark/Light Switch, Notifications, Profile Dropdown */}
       <div className="flex items-center gap-2 shrink-0">
+        {/* Live Spreadsheet Ping Status */}
+        <button
+          type="button"
+          onClick={onOpenSpreadsheetModal}
+          className={`h-10 px-3 rounded-lg border transition-colors flex items-center gap-2 text-xs font-medium whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
+            spreadsheetConnected
+              ? 'border-emerald-200 dark:border-emerald-900/70 bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100/70 dark:hover:bg-emerald-950/50'
+              : 'border-red-200 dark:border-red-900/70 bg-red-50/70 dark:bg-red-950/30 text-red-700 dark:text-red-300 hover:bg-red-100/70 dark:hover:bg-red-950/50'
+          }`}
+          title="Pengaturan Koneksi Google Spreadsheet API"
+          aria-label={
+            spreadsheetConnected ? 'Live spreadsheet' : 'Spreadsheet Disconnected'
+          }
+        >
+          <span className="relative flex h-2.5 w-2.5 shrink-0">
+            <span
+              className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                spreadsheetConnected ? 'bg-emerald-400' : 'bg-red-400'
+              }`}
+            />
+            <span
+              className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                spreadsheetConnected ? 'bg-emerald-500' : 'bg-red-500'
+              }`}
+            />
+          </span>
+          <span className="inline">
+            {spreadsheetConnected ? 'Live spreadsheet' : 'Spreadsheet Disconnected'}
+          </span>
+        </button>
+
         {/* Dark / Light Mode Switch */}
         <button
           type="button"

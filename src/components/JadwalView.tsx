@@ -3,9 +3,15 @@ import {
   CalendarDays,
   Download,
   FileSpreadsheet,
+  RefreshCw,
   Upload,
   X,
 } from 'lucide-react';
+import {
+  getCurrentIndonesianMonthName,
+  parseCsvMatrixText,
+  parseMonthlyScheduleMatrix,
+} from '../services/googleSheetsDb';
 import {
   ScheduleAssignment,
   ScheduleDayBucket,
@@ -20,6 +26,9 @@ interface JadwalViewProps {
   stations: Station[];
   technicians: Technician[];
   userRole: UserRole;
+  activeSheetTitle: string | null;
+  spreadsheetConnected: boolean;
+  onRefreshScheduleSheet: () => Promise<void>;
   onImportSchedules: (newSchedules: ScheduleAssignment[], replaceExisting: boolean) => void;
 }
 
@@ -37,6 +46,9 @@ export function JadwalView({
   stations,
   technicians,
   userRole,
+  activeSheetTitle,
+  spreadsheetConnected,
+  onRefreshScheduleSheet,
   onImportSchedules,
 }: JadwalViewProps) {
   const [regionFilter, setRegionFilter] = useState<string>('all');
@@ -46,6 +58,9 @@ export function JadwalView({
   const [fileName, setFileName] = useState<string | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const currentMonth = getCurrentIndonesianMonthName();
 
   const normalizeBucket = (raw: string): ScheduleDayBucket => {
     const val = raw.trim().toLowerCase();
@@ -61,9 +76,9 @@ export function JadwalView({
     const sampleTechs = technicians.slice(0, 6);
     const dayBuckets: ScheduleDayBucket[] = ['Kemarin', 'Hari Ini', 'Besok'];
     const dateMap: Record<ScheduleDayBucket, string> = {
-      Kemarin: '15 Agu 2026',
-      'Hari Ini': '16 Agu 2026',
-      Besok: '17 Agu 2026',
+      Kemarin: '15 Nov 2026',
+      'Hari Ini': '16 Nov 2026',
+      Besok: '17 Nov 2026',
     };
 
     const sampleRows =
@@ -83,9 +98,9 @@ export function JadwalView({
             ].join(',');
           })
         : [
-            'Kemarin,15 Agu 2026,Palembang,Agil Yurendi,Operator,Shift 1 (00.00 - 08.00),Monitoring MUX',
-            'Hari Ini,16 Agu 2026,Palembang,Sutio,Ketua Tim Palembang,Shift 2 (08.00 - 16.00),Koordinasi TX',
-            'Besok,17 Agu 2026,Prabumulih,Karsim,Ketua Tim,Shift 3 (16.00 - 24.00),Pengecekan pemancar & genset',
+            'Kemarin,15 Nov 2026,Palembang,Agil Yurendi,Operator,Shift 1 (00.00 - 08.00),Monitoring MUX',
+            'Hari Ini,16 Nov 2026,Palembang,Sutio,Ketua Tim Palembang,Shift 2 (08.00 - 16.00),Koordinasi TX',
+            'Besok,17 Nov 2026,Prabumulih,Karsim,Ketua Tim,Shift 3 (16.00 - 24.00),Pengecekan pemancar & genset',
           ];
 
     const csvLines = [
@@ -136,7 +151,6 @@ export function JadwalView({
           return;
         }
 
-        // Support JSON array directly as well as CSV / TSV
         if (file.name.toLowerCase().endsWith('.json')) {
           const json = JSON.parse(text);
           if (!Array.isArray(json)) {
@@ -153,6 +167,19 @@ export function JadwalView({
             notes: item.notes || item.catatan || '',
           }));
           setParsedPreview(items);
+          return;
+        }
+
+        // First try matrix schedule parser (TANGGAL 1..31 with M/S/P/L codes)
+        const matrixRows = parseCsvMatrixText(text);
+        const matrixParsed = parseMonthlyScheduleMatrix(
+          matrixRows,
+          new Date(),
+          technicians,
+          stations
+        );
+        if (matrixParsed.length > 0) {
+          setParsedPreview(matrixParsed);
           return;
         }
 
@@ -173,7 +200,9 @@ export function JadwalView({
           c.toLowerCase()
         );
         const hasHeader =
-          firstCols.some((c) => c.includes('hari') || c.includes('teknisi') || c.includes('lokasi'));
+          firstCols.some(
+            (c) => c.includes('hari') || c.includes('teknisi') || c.includes('lokasi')
+          );
 
         const dataLines = hasHeader ? lines.slice(1) : lines;
         const parsed: ScheduleAssignment[] = dataLines
@@ -195,7 +224,7 @@ export function JadwalView({
 
         if (parsed.length === 0) {
           setParseError(
-            'Format kolom tidak dikenali. Gunakan urutan: hari, tanggal, lokasi, nama_teknisi, peran, shift, catatan.'
+            'Format kolom tidak dikenali. Gunakan matriks jadwal bulanan (1..31 dengan kode P/S/M/L) atau kolom: hari, tanggal, lokasi, nama_teknisi, peran, shift, catatan.'
           );
           setParsedPreview([]);
           return;
@@ -221,9 +250,20 @@ export function JadwalView({
     setTimeout(() => setImportSuccess(null), 4000);
   };
 
+  const handleRefreshClick = async () => {
+    setRefreshing(true);
+    try {
+      await onRefreshScheduleSheet();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const findTechnicianProfile = (name: string) =>
     technicians.find(
-      (t) => t.name.toLowerCase() === name.trim().toLowerCase()
+      (t) =>
+        t.name.toLowerCase().replace(/\./g, '') ===
+        name.trim().toLowerCase().replace(/\./g, '')
     );
 
   return (
@@ -235,13 +275,17 @@ export function JadwalView({
             <CalendarDays className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-              Jadwal Operasional Teknisi Transmisi
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Pembagian tugas jaga 3 hari (Kemarin, Hari Ini, dan Besok) ·{' '}
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                Jadwal Operasional Teknisi Transmisi
+              </h2>
+              <span className="text-[11px] font-mono text-sky-700 dark:text-sky-400">
+                · Sheet Bulan: {activeSheetTitle || currentMonth}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               <span className="font-mono text-slate-600 dark:text-slate-300">
-                Shift 1: 00.00 - 08.00 | Shift 2: 08.00 - 16.00 | Shift 3: 16.00 - 24.00
+                P = Shift 1 (00.00 - 08.00) · S = Shift 2 (08.00 - 16.00) · M = Shift 3 (16.00 - 24.00) · L = Libur / Off Duty
               </span>
             </p>
           </div>
@@ -261,6 +305,18 @@ export function JadwalView({
               </option>
             ))}
           </select>
+
+          {spreadsheetConnected && (
+            <button
+              type="button"
+              onClick={() => void handleRefreshClick()}
+              disabled={refreshing}
+              className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+              <span>Muat Ulang Sheet</span>
+            </button>
+          )}
 
           {userRole === 'Admin' && (
             <button
@@ -323,7 +379,7 @@ export function JadwalView({
                   </p>
                 </div>
                 <span className="text-xs font-mono tabular-nums text-slate-500 dark:text-slate-400">
-                  {items.length} teknisi terjadwal
+                  {items.length} personel terjadwal
                 </span>
               </div>
 
@@ -335,6 +391,7 @@ export function JadwalView({
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 divide-y md:divide-y-0 md:gap-px bg-slate-200 dark:bg-slate-800">
                   {items.map((item) => {
                     const matchedTech = findTechnicianProfile(item.technicianName);
+                    const isOffDuty = item.shift.toLowerCase().includes('off duty');
                     return (
                       <div
                         key={item.id}
@@ -356,7 +413,16 @@ export function JadwalView({
                             </span>
                           </div>
                           <div className="text-[11px] text-slate-600 dark:text-slate-300">
-                            {item.roleStatus} · <span className="font-mono">{item.shift}</span>
+                            {item.roleStatus} ·{' '}
+                            <span
+                              className={`font-mono ${
+                                isOffDuty
+                                  ? 'text-slate-400 dark:text-slate-500'
+                                  : 'font-semibold text-emerald-700 dark:text-emerald-400'
+                              }`}
+                            >
+                              {item.shift}
+                            </span>
                           </div>
                           {item.notes && (
                             <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
@@ -386,7 +452,7 @@ export function JadwalView({
               <div className="flex items-center gap-2.5">
                 <FileSpreadsheet className="w-4 h-4 text-sky-600 dark:text-sky-400" />
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  Input Jadwal Teknisi (Upload CSV / TSV / JSON)
+                  Input Jadwal Teknisi (Matriks Bulanan CSV atau CSV Standar)
                 </h3>
               </div>
               <button
@@ -402,7 +468,7 @@ export function JadwalView({
             <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-semibold text-slate-800 dark:text-slate-200">
-                  Format Kolom File CSV:
+                  Mendukung Matriks Jadwal Bulanan (Kode P / S / M / L) maupun CSV Standar:
                 </span>
                 <button
                   type="button"
@@ -414,12 +480,8 @@ export function JadwalView({
                 </button>
               </div>
               <code className="block font-mono text-[11px] text-slate-600 dark:text-slate-400 overflow-x-auto">
-                hari,tanggal,lokasi,nama_teknisi,peran,shift,catatan
+                P = Shift 1 (00.00 - 08.00) | S = Shift 2 (08.00 - 16.00) | M = Shift 3 (16.00 - 24.00) | L = Libur / Off Duty
               </code>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Isi kolom <strong>hari</strong> dengan: <span className="font-mono">Kemarin</span>,{' '}
-                <span className="font-mono">Hari Ini</span>, atau <span className="font-mono">Besok</span>.
-              </p>
             </div>
 
             <div className="space-y-3">

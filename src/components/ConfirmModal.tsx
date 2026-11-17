@@ -1,9 +1,12 @@
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, X } from 'lucide-react';
 
 interface ConfirmModalProps {
   open: boolean;
   message: string;
   detail?: string;
+  variant?: 'danger' | 'primary';
+  confirmLabel?: string;
+  cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -12,10 +15,15 @@ export function ConfirmModal({
   open,
   message,
   detail,
+  variant = 'danger',
+  confirmLabel = 'Ya',
+  cancelLabel = 'Tidak',
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
   if (!open) return null;
+
+  const isPrimary = variant === 'primary';
 
   return (
     <div
@@ -27,8 +35,18 @@ export function ConfirmModal({
       <div className="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xl space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
-              <AlertTriangle className="w-5 h-5" />
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                isPrimary
+                  ? 'bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400'
+                  : 'bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400'
+              }`}
+            >
+              {isPrimary ? (
+                <CheckCircle2 className="w-5 h-5" />
+              ) : (
+                <AlertTriangle className="w-5 h-5" />
+              )}
             </div>
             <div>
               <h3
@@ -38,7 +56,7 @@ export function ConfirmModal({
                 {message}
               </h3>
               {detail && (
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                   {detail}
                 </p>
               )}
@@ -60,14 +78,18 @@ export function ConfirmModal({
             onClick={onCancel}
             className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            Tidak
+            {cancelLabel}
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors"
+            className={`px-4 py-2 rounded-lg text-white text-xs font-semibold transition-colors ${
+              isPrimary
+                ? 'bg-sky-600 hover:bg-sky-700'
+                : 'bg-red-600 hover:bg-red-700'
+            }`}
           >
-            Ya
+            {confirmLabel}
           </button>
         </div>
       </div>
