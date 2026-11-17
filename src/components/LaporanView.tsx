@@ -30,7 +30,7 @@ interface LaporanViewProps {
     attachmentName: string | null;
     attachmentDataUrl: string | null;
     priority: ReportPriority;
-  }) => void;
+  }) => Promise<{ syncedToSheet: boolean; message: string }>;
 }
 
 const TICKET_STEPS: TicketStatus[] = [
@@ -56,7 +56,11 @@ export function LaporanView({
   const [priority, setPriority] = useState<ReportPriority>('Biasa');
   const [attachmentName, setAttachmentName] = useState<string | null>(null);
   const [attachmentDataUrl, setAttachmentDataUrl] = useState<string | null>(null);
-  const [submittedNotice, setSubmittedNotice] = useState<string | null>(null);
+  const [submittedNotice, setSubmittedNotice] = useState<{
+    synced: boolean;
+    text: string;
+  } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const [filterStation, setFilterStation] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | TicketStatus>('all');
@@ -84,26 +88,35 @@ export function LaporanView({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!subject.trim() || !description.trim() || !stationId) return;
+    if (!subject.trim() || !description.trim() || !stationId || submitting) return;
 
-    onSubmitReport({
-      stationId,
-      subject: subject.trim(),
-      description: description.trim(),
-      attachmentName,
-      attachmentDataUrl,
-      priority,
-    });
+    setSubmitting(true);
+    setSubmittedNotice(null);
+    try {
+      const res = await onSubmitReport({
+        stationId,
+        subject: subject.trim(),
+        description: description.trim(),
+        attachmentName,
+        attachmentDataUrl,
+        priority,
+      });
 
-    setSubject('');
-    setDescription('');
-    setPriority('Biasa');
-    setAttachmentName(null);
-    setAttachmentDataUrl(null);
-    setSubmittedNotice('Laporan berhasil dikirim dengan status Pengajuan.');
-    setTimeout(() => setSubmittedNotice(null), 4000);
+      setSubject('');
+      setDescription('');
+      setPriority('Biasa');
+      setAttachmentName(null);
+      setAttachmentDataUrl(null);
+      setSubmittedNotice({
+        synced: res.syncedToSheet,
+        text: res.message,
+      });
+      setTimeout(() => setSubmittedNotice(null), 6000);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const filteredReports = reports.filter((r) => {
@@ -219,15 +232,22 @@ export function LaporanView({
           <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold flex items-center gap-2 transition-colors whitespace-nowrap shrink-0"
+              disabled={submitting}
+              className="px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-700 disabled:opacity-60 text-white text-xs font-semibold flex items-center gap-2 transition-colors whitespace-nowrap shrink-0"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>Submit Laporan</span>
+              <span>{submitting ? 'Mengirim Laporan...' : 'Submit Laporan'}</span>
             </button>
 
             {submittedNotice && (
-              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                {submittedNotice}
+              <span
+                className={`text-xs font-medium ${
+                  submittedNotice.synced
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-amber-600 dark:text-amber-400'
+                }`}
+              >
+                {submittedNotice.text}
               </span>
             )}
           </div>

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
+  Check,
   CheckCircle2,
+  Code2,
+  Copy,
   ExternalLink,
   FileSpreadsheet,
   FolderPlus,
@@ -10,9 +13,11 @@ import {
   X,
 } from 'lucide-react';
 import {
+  APPS_SCRIPT_BRIDGE_CODE,
   extractSpreadsheetId,
   getCurrentIndonesianMonthName,
   getSheetsApiBaseUrl,
+  pingWebhookConnection,
   SHEET_TABS,
 } from '../services/googleSheetsDb';
 import { getFirebaseAuthDiagnostics } from '../services/googleSheetsAuth';
@@ -28,12 +33,17 @@ interface SpreadsheetConnectModalProps {
   hasGoogleToken: boolean;
   dbSpreadsheetId: string;
   scheduleSpreadsheetId: string;
+  sheetsWebhookUrl: string;
   activeScheduleSheetTitle: string | null;
   syncBusy: boolean;
   syncError: string | null;
   onSignInGoogle: () => Promise<void>;
   onSignOutGoogle: () => Promise<void>;
-  onSaveSpreadsheetIds: (dbId: string, scheduleId: string) => Promise<void>;
+  onSaveSpreadsheetIds: (
+    dbId: string,
+    scheduleId: string,
+    webhookUrl: string
+  ) => Promise<void>;
   onCreateUnifiedSpreadsheet: () => Promise<void>;
   onPushLocalToSpreadsheet: () => Promise<void>;
   onRefreshFromSpreadsheet: () => Promise<void>;
@@ -48,6 +58,7 @@ export function SpreadsheetConnectModal({
   hasGoogleToken,
   dbSpreadsheetId,
   scheduleSpreadsheetId,
+  sheetsWebhookUrl,
   activeScheduleSheetTitle,
   syncBusy,
   syncError,
@@ -60,6 +71,10 @@ export function SpreadsheetConnectModal({
 }: SpreadsheetConnectModalProps) {
   const [draftDbId, setDraftDbId] = useState(dbSpreadsheetId);
   const [draftScheduleId, setDraftScheduleId] = useState(scheduleSpreadsheetId);
+  const [draftWebhookUrl, setDraftWebhookUrl] = useState(sheetsWebhookUrl);
+  const [showAppsScriptCode, setShowAppsScriptCode] = useState(false);
+  const [copiedScript, setCopiedScript] = useState(false);
+  const [webhookStatusMsg, setWebhookStatusMsg] = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<'create' | 'push' | null>(
     null
   );
@@ -69,21 +84,47 @@ export function SpreadsheetConnectModal({
     if (open) {
       setDraftDbId(dbSpreadsheetId);
       setDraftScheduleId(scheduleSpreadsheetId);
+      setDraftWebhookUrl(sheetsWebhookUrl);
+      setWebhookStatusMsg(null);
       setLocalMsg(null);
     }
-  }, [open, dbSpreadsheetId, scheduleSpreadsheetId]);
+  }, [open, dbSpreadsheetId, scheduleSpreadsheetId, sheetsWebhookUrl]);
 
   if (!open) return null;
 
   const currentMonth = getCurrentIndonesianMonthName();
   const cleanDbId = extractSpreadsheetId(draftDbId);
   const cleanSchedId = extractSpreadsheetId(draftScheduleId);
+  const cleanWebhookUrl = draftWebhookUrl.trim();
+
+  const handleCopyScript = async () => {
+    try {
+      await navigator.clipboard.writeText(APPS_SCRIPT_BRIDGE_CODE);
+      setCopiedScript(true);
+      setTimeout(() => setCopiedScript(false), 2500);
+    } catch {
+      setShowAppsScriptCode(true);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalMsg(null);
-    await onSaveSpreadsheetIds(cleanDbId, cleanSchedId);
-    setLocalMsg('Konfigurasi Spreadsheet ID tersimpan & disinkronkan.');
+    setWebhookStatusMsg(null);
+    await onSaveSpreadsheetIds(cleanDbId, cleanSchedId, cleanWebhookUrl);
+    if (cleanWebhookUrl) {
+      const check = await pingWebhookConnection(cleanWebhookUrl);
+      if (check.ok) {
+        setWebhookStatusMsg(
+          'Web App Apps Script aktif! Teknisi di PC/browser lain dapat mengirim laporan langsung ke Spreadsheet tanpa login Google.'
+        );
+      } else {
+        setWebhookStatusMsg(
+          `Catatan Web App URL: ${check.error || 'Pastikan deployment Web App diset "Anyone" / siapa saja.'}`
+        );
+      }
+    }
+    setLocalMsg('Konfigurasi Spreadsheet tersimpan & disinkronkan.');
   };
 
   return (
@@ -347,6 +388,78 @@ export function SpreadsheetConnectModal({
                   <span className="font-mono">M = Shift 3</span>,{' '}
                   <span className="font-mono">L = Libur / Off Duty</span>.
                 </p>
+              </div>
+
+              {/* Passwordless Apps Script Webhook Bridge */}
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50 space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                    4. URL Web App Apps Script (Submit Laporan Tanpa Login Google)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void handleCopyScript()}
+                      className="text-[11px] font-medium text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1"
+                    >
+                      {copiedScript ? (
+                        <>
+                          <Check className="w-3 h-3" />
+                          <span>Script Disalin</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Salin Kode Apps Script</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowAppsScriptCode((v) => !v)}
+                      className="text-[11px] font-medium text-slate-600 dark:text-slate-300 hover:underline inline-flex items-center gap-1"
+                    >
+                      <Code2 className="w-3 h-3" />
+                      <span>{showAppsScriptCode ? 'Sembunyikan' : 'Lihat Panduan'}</span>
+                    </button>
+                  </div>
+                </div>
+                <input
+                  type="url"
+                  value={draftWebhookUrl}
+                  onChange={(e) => setDraftWebhookUrl(e.target.value)}
+                  placeholder="https://script.google.com/macros/s/.../exec"
+                  className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono text-slate-900 dark:text-slate-100"
+                />
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Jika diisi (atau ditanam di <code className="font-mono">index.html</code>{' '}
+                  meta <code className="font-mono">simontrans-sheets-webhook</code>), seluruh
+                  teknisi di browser/PC mana pun dapat submit laporan ke{' '}
+                  <strong>{SHEET_TABS.REPORTS}</strong> tanpa pop-up Sign-In Google.
+                </p>
+
+                {webhookStatusMsg && (
+                  <div className="px-3 py-2 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-[11px] text-sky-800 dark:text-sky-200">
+                    {webhookStatusMsg}
+                  </div>
+                )}
+
+                {showAppsScriptCode && (
+                  <div className="space-y-2 pt-1">
+                    <div className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      1. Buka Spreadsheet Database Utama → menu{' '}
+                      <strong>Ekstensi → Apps Script</strong>.<br />
+                      2. Hapus isi awal, tempel kode di bawah, lalu klik{' '}
+                      <strong>Terapkan (Deploy) → Deployment baru → Aplikasi web</strong>.<br />
+                      3. Pilih <em>Jalankan sebagai: Saya</em> &amp;{' '}
+                      <em>Yang memiliki akses: Siapa saja (Anyone)</em>, lalu tempel URL{' '}
+                      <code className="font-mono">/exec</code> di atas.
+                    </div>
+                    <pre className="p-3 rounded-lg bg-slate-900 text-slate-100 text-[10.5px] font-mono overflow-x-auto max-h-48">
+                      {APPS_SCRIPT_BRIDGE_CODE}
+                    </pre>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">

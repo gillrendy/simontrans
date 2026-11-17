@@ -34,13 +34,17 @@ import {
   findTodayScheduleForPerson,
   getConfiguredDbSpreadsheetId,
   getConfiguredScheduleSpreadsheetId,
+  getConfiguredSheetsWebhookUrl,
   getCurrentIndonesianMonthName,
   isOffDutyShiftLabel,
   pingSpreadsheetConnection,
+  postReportViaWebhook,
   setConfiguredDbSpreadsheetId,
   setConfiguredScheduleSpreadsheetId,
+  setConfiguredSheetsWebhookUrl,
   SHEET_TABS,
   syncSpreadsheetTabs,
+  syncSpreadsheetTabsViaWebhook,
   syncUnifiedSpreadsheetDb,
   UnifiedSheetTabKey,
 } from './services/googleSheetsDb';
@@ -68,6 +72,42 @@ import { formatNowWIB } from './utils/stationHelpers';
 const STORAGE_DB_KEY = 'simontrans_tvri_sumsel_db_v3';
 const STORAGE_USER_KEY = 'simontrans_tvri_user_v3';
 const STORAGE_THEME_KEY = 'simontrans_sumsel_theme_v1';
+const STORAGE_UNSYNCED_REPORTS_KEY = 'simontrans_unsynced_reports_v1';
+
+function loadUnsyncedReports(): MaintenanceReport[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_UNSYNCED_REPORTS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as MaintenanceReport[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveUnsyncedReports(list: MaintenanceReport[]): void {
+  if (list.length === 0) {
+    localStorage.removeItem(STORAGE_UNSYNCED_REPORTS_KEY);
+  } else {
+    localStorage.setItem(STORAGE_UNSYNCED_REPORTS_KEY, JSON.stringify(list));
+  }
+}
+
+function mergeSpreadsheetWithUnsyncedReports(
+  fetchedReports: MaintenanceReport[]
+): { mergedReports: MaintenanceReport[]; remainingUnsynced: MaintenanceReport[] } {
+  const queue = loadUnsyncedReports();
+  if (queue.length === 0) {
+    return { mergedReports: fetchedReports, remainingUnsynced: [] };
+  }
+  const fetchedIds = new Set(fetchedReports.map((r) => r.id));
+  const remainingUnsynced = queue.filter((r) => !fetchedIds.has(r.id));
+  saveUnsyncedReports(remainingUnsynced);
+  return {
+    mergedReports: [...remainingUnsynced, ...fetchedReports],
+    remainingUnsynced,
+  };
+}
 
 const normalizeShiftLabel = (shift?: string): string => {
   if (!shift) return 'Shift 2 (08.00 - 16.00)';
@@ -110,6 +150,9 @@ export default function App() {
   );
   const [scheduleSpreadsheetId, setScheduleSpreadsheetIdState] = useState<string>(() =>
     getConfiguredScheduleSpreadsheetId()
+  );
+  const [sheetsWebhookUrl, setSheetsWebhookUrlState] = useState<string>(() =>
+    getConfiguredSheetsWebhookUrl()
   );
   const [spreadsheetConnected, setSpreadsheetConnected] = useState(false);
   const [spreadsheetTitle, setSpreadsheetTitle] = useState<string | null>(null);
@@ -225,7 +268,9 @@ export default function App() {
           setSpreadsheetConnected(ping.connected);
           setSpreadsheetTitle(ping.title ?? null);
           if (ping.connected) {
-            baseDb = await fetchUnifiedSpreadsheetDb(initialDbId, token, baseDb);
+            const fetched = await fetchUnifiedSpreadsheetDb(initialDbId, token, baseDb);
+            const { mergedReports } = mergeSpreadsheetWithUnsyncedReports(fetched.reports);
+            baseDb = { ...fetched, reports: mergedReports };
           }
         } catch {
           // Keep baseline data if private or offline
@@ -351,7 +396,22 @@ export default function App() {
       try {
         const token = getGoogleAccessToken();
         const fetchedDb = await fetchUnifiedSpreadsheetDb(dbSpreadsheetId, token, db);
-        const merged = applySchedulesToPersonnel(fetchedDb, db.schedules);
+        const { mergedReports, remainingUnsynced } =
+          mergeSpreadsheetWithUnsyncedReports(fetchedDb.reports);
+
+        // Flush queued reports silently if webhook or token is available
+        if (remainingUnsynced.length > 0 && sheetsWebhookUrl) {
+          for (const pendingRep of remainingUnsynced) {
+            try {
+              await postReportViaWebhook(sheetsWebhookUrl, dbSpreadsheetId, pendingRep);
+            } catch {
+              // keep remaining in queue until succeeded
+            }
+          }
+        }
+
+        const withReports = { ...fetchedDb, reports: mergedReports };
+        const merged = applySchedulesToPersonnel(withReports, db.schedules);
         const sig = buildDbSignature(merged);
         if (!forceApply && sig === lastFetchedDbSigRef.current) return;
 
@@ -363,7 +423,7 @@ export default function App() {
         // Keep current local state silently on transient network/private errors
       }
     },
-    [dbSpreadsheetId, db, syncBusy, savingAdminTab, hasAnyAdminDirty]
+    [dbSpreadsheetId, sheetsWebhookUrl, db, syncBusy, savingAdminTab, hasAnyAdminDirty]
   );
 
   useEffect(() => {
@@ -441,7 +501,8 @@ export default function App() {
     nextDb: TransmisiDatabase,
     sheetWriteSummary?: string,
     isDestructive = false,
-    adminTabSource?: AdminTab
+    adminTabSource?: AdminTab,
+    tabsToSync?: UnifiedSheetTabKey[]
   ) => {
     if (adminTabSource) {
       applyLocalDb(nextDb);
@@ -449,7 +510,21 @@ export default function App() {
       setAdminDirtyTabs((prev) => ({ ...prev, [adminTabSource]: true }));
       return;
     }
+
     const token = getGoogleAccessToken();
+    if (dbSpreadsheetId && sheetsWebhookUrl && !token && tabsToSync?.length) {
+      applyLocalDb(nextDb);
+      void syncSpreadsheetTabsViaWebhook(
+        sheetsWebhookUrl,
+        dbSpreadsheetId,
+        nextDb,
+        tabsToSync
+      ).catch(() => {
+        // Silent fallback: keep local state without interrupting non-admin workflow
+      });
+      return;
+    }
+
     if (spreadsheetConnected && dbSpreadsheetId && token && sheetWriteSummary) {
       setPendingSheetSync({
         nextDb,
@@ -507,7 +582,9 @@ export default function App() {
           if (!ping.connected) {
             throw new Error(ping.error || 'Gagal terhubung ke Spreadsheet Database.');
           }
-          nextDb = await fetchUnifiedSpreadsheetDb(targetDbId, token, db);
+          const fetched = await fetchUnifiedSpreadsheetDb(targetDbId, token, db);
+          const { mergedReports } = mergeSpreadsheetWithUnsyncedReports(fetched.reports);
+          nextDb = { ...fetched, reports: mergedReports };
         }
 
         if (targetScheduleId) {
@@ -596,11 +673,17 @@ export default function App() {
     }
   };
 
-  const handleSaveSpreadsheetIds = async (newDbId: string, newScheduleId: string) => {
+  const handleSaveSpreadsheetIds = async (
+    newDbId: string,
+    newScheduleId: string,
+    newWebhookUrl: string
+  ) => {
     const cleanDb = setConfiguredDbSpreadsheetId(newDbId);
     const cleanSched = setConfiguredScheduleSpreadsheetId(newScheduleId);
+    const cleanWebhook = setConfiguredSheetsWebhookUrl(newWebhookUrl);
     setDbSpreadsheetIdState(cleanDb);
     setScheduleSpreadsheetIdState(cleanSched);
+    setSheetsWebhookUrlState(cleanWebhook);
 
     const token = getGoogleAccessToken();
     if (cleanDb || cleanSched) {
@@ -738,7 +821,10 @@ export default function App() {
 
     commitDbChange(
       { ...db, stations: nextStations },
-      `Tab "Data Menara": Update daya pemancar ${st?.region ?? stationId} (${forwardKw} kW / ${reflectedW} W)`
+      `Tab "Data Menara": Update daya pemancar ${st?.region ?? stationId} (${forwardKw} kW / ${reflectedW} W)`,
+      false,
+      undefined,
+      [SHEET_TABS.TOWERS]
     );
   };
 
@@ -769,7 +855,8 @@ export default function App() {
       { ...db, devices: nextDevices },
       `Tab "Data Perangkat": Ubah kondisi "${dev?.name ?? deviceId}" menjadi ${nextCondition}`,
       false,
-      adminTabSource
+      adminTabSource,
+      [SHEET_TABS.DEVICES]
     );
   };
 
@@ -822,17 +909,27 @@ export default function App() {
     );
   };
 
-  const handleSubmitReport = (payload: {
+  const handleSubmitReport = async (payload: {
     stationId: string;
     subject: string;
     description: string;
     attachmentName: string | null;
     attachmentDataUrl: string | null;
     priority: ReportPriority;
-  }) => {
-    if (!db || !currentUser) return;
+  }): Promise<{ syncedToSheet: boolean; message: string }> => {
+    if (!db || !currentUser) {
+      return {
+        syncedToSheet: false,
+        message: 'Data aplikasi belum siap.',
+      };
+    }
     const nowLabel = formatNowWIB();
-    const nextNum = db.reports.length + 38;
+    const maxReportNum = db.reports.reduce((max, r) => {
+      const m = r.id.match(/(\d+)$/);
+      const num = m ? Number(m[1]) : 0;
+      return num > max ? num : max;
+    }, db.reports.length + 37);
+    const nextNum = Math.max(maxReportNum + 1, db.reports.length + 38);
     const newId = `TIK-2026-${String(nextNum).padStart(3, '0')}`;
     const station = db.stations.find((s) => s.id === payload.stationId);
 
@@ -869,14 +966,61 @@ export default function App() {
       read: false,
     };
 
-    commitDbChange(
-      {
-        ...db,
-        reports: [newReport, ...db.reports],
-        notifications: [newNotif, ...db.notifications],
-      },
-      `Tab "Data Riwayat Laporan": Simpan tiket laporan baru ${newId}`
-    );
+    const nextDb: TransmisiDatabase = {
+      ...db,
+      reports: [newReport, ...db.reports],
+      notifications: [newNotif, ...db.notifications],
+    };
+
+    // Simpan ke state lokal segera tanpa memunculkan popup login Google
+    applyLocalDb(nextDb);
+
+    // 1. Jika Web App Apps Script tersedia, tulis langsung ke Spreadsheet tanpa login Google
+    if (dbSpreadsheetId && sheetsWebhookUrl) {
+      try {
+        await postReportViaWebhook(sheetsWebhookUrl, dbSpreadsheetId, newReport);
+        lastFetchedDbSigRef.current = buildDbSignature(nextDb);
+        return {
+          syncedToSheet: true,
+          message: `Laporan ${newId} berhasil dikirim & langsung tersimpan di Spreadsheet.`,
+        };
+      } catch {
+        // Antrekan agar tidak hilang saat polling berikutnya
+        saveUnsyncedReports([newReport, ...loadUnsyncedReports()]);
+        return {
+          syncedToSheet: false,
+          message: `Laporan ${newId} tersimpan di antrean lokal (gagal menghubungi Web App Spreadsheet).`,
+        };
+      }
+    }
+
+    // 2. Jika sesi OAuth Google kebetulan sudah aktif di browser ini, sinkronkan langsung tanpa modal
+    const existingToken = getGoogleAccessToken();
+    if (dbSpreadsheetId && existingToken) {
+      try {
+        await syncSpreadsheetTabs(dbSpreadsheetId, nextDb, existingToken, [
+          SHEET_TABS.REPORTS,
+        ]);
+        lastFetchedDbSigRef.current = buildDbSignature(nextDb);
+        return {
+          syncedToSheet: true,
+          message: `Laporan ${newId} berhasil dikirim & langsung tersimpan di Spreadsheet.`,
+        };
+      } catch {
+        saveUnsyncedReports([newReport, ...loadUnsyncedReports()]);
+        return {
+          syncedToSheet: false,
+          message: `Laporan ${newId} tersimpan lokal dan menunggu sinkronisasi Spreadsheet.`,
+        };
+      }
+    }
+
+    // 3. Tanpa Web App URL & tanpa login Google: simpan aman di antrean lokal (tanpa popup Google Sign-In)
+    saveUnsyncedReports([newReport, ...loadUnsyncedReports()]);
+    return {
+      syncedToSheet: false,
+      message: `Laporan ${newId} tersimpan tanpa login Google. Atur URL Web App Apps Script di Koneksi Spreadsheet agar otomatis masuk ke Google Sheets dari PC mana pun.`,
+    };
   };
 
   const handleUpdateReportStatus = (
@@ -1341,14 +1485,6 @@ export default function App() {
     setSavingAdminTab(tab);
     setSyncError(null);
     try {
-      let token = getGoogleAccessToken();
-      if (!token) {
-        const { email, accessToken } = await signInWithGoogleSheets();
-        setGoogleEmail(email);
-        setHasGoogleToken(true);
-        token = accessToken;
-      }
-
       const tabsMap: Record<AdminTab, UnifiedSheetTabKey[]> = {
         laporan: [SHEET_TABS.REPORTS],
         peralatan: [SHEET_TABS.DEVICES],
@@ -1356,12 +1492,29 @@ export default function App() {
         koordinat: [SHEET_TABS.TOWERS, SHEET_TABS.DEVICES],
       };
 
-      await syncSpreadsheetTabs(
-        dbSpreadsheetId,
-        latestDb,
-        token,
-        tabsMap[tab]
-      );
+      let token = getGoogleAccessToken();
+      if (!token && sheetsWebhookUrl) {
+        await syncSpreadsheetTabsViaWebhook(
+          sheetsWebhookUrl,
+          dbSpreadsheetId,
+          latestDb,
+          tabsMap[tab]
+        );
+      } else {
+        if (!token) {
+          const { email, accessToken } = await signInWithGoogleSheets();
+          setGoogleEmail(email);
+          setHasGoogleToken(true);
+          token = accessToken;
+        }
+        await syncSpreadsheetTabs(
+          dbSpreadsheetId,
+          latestDb,
+          token,
+          tabsMap[tab]
+        );
+      }
+
       lastFetchedDbSigRef.current = buildDbSignature(latestDb);
       setSpreadsheetConnected(true);
       setAdminDirtyTabs((prev) => ({ ...prev, [tab]: false }));
@@ -1405,7 +1558,10 @@ export default function App() {
           item.id === updated.id ? updated : item
         ),
       },
-      `Tab "Data Sarana Prasarana": Update kondisi sarana ${updated.stationName}`
+      `Tab "Data Sarana Prasarana": Update kondisi sarana ${updated.stationName}`,
+      false,
+      undefined,
+      [SHEET_TABS.INFRASTRUCTURE, SHEET_TABS.TOWERS]
     );
   };
 
@@ -1418,7 +1574,10 @@ export default function App() {
           u.id === currentUser.id ? { ...u, password: newPassword } : u
         ),
       },
-      `Tab "Data Pegawai Transmisi": Update password akun ${currentUser.username}`
+      `Tab "Data Pegawai Transmisi": Update password akun ${currentUser.username}`,
+      false,
+      undefined,
+      [SHEET_TABS.PERSONNEL]
     );
   };
 
@@ -1630,6 +1789,7 @@ export default function App() {
         hasGoogleToken={hasGoogleToken}
         dbSpreadsheetId={dbSpreadsheetId}
         scheduleSpreadsheetId={scheduleSpreadsheetId}
+        sheetsWebhookUrl={sheetsWebhookUrl}
         activeScheduleSheetTitle={activeScheduleSheetTitle}
         syncBusy={syncBusy}
         syncError={syncError}

@@ -24,6 +24,7 @@ declare global {
       sheetsApiBase?: string;
       dbSpreadsheetId?: string;
       scheduleSpreadsheetId?: string;
+      sheetsWebhookUrl?: string;
     };
   }
 }
@@ -31,6 +32,7 @@ declare global {
 export const STORAGE_DB_SPREADSHEET_ID_KEY = 'simontrans_db_spreadsheet_id_v1';
 export const STORAGE_SCHEDULE_SPREADSHEET_ID_KEY =
   'simontrans_schedule_spreadsheet_id_v1';
+export const STORAGE_SHEETS_WEBHOOK_URL_KEY = 'simontrans_sheets_webhook_url_v1';
 
 export const SHEET_TABS = {
   DEVICES: 'Data Perangkat',
@@ -141,6 +143,109 @@ export function setConfiguredScheduleSpreadsheetId(idOrUrl: string): string {
   }
   return id;
 }
+
+export function getConfiguredSheetsWebhookUrl(): string {
+  const saved =
+    localStorage.getItem(STORAGE_SHEETS_WEBHOOK_URL_KEY)?.trim() ?? '';
+  if (saved) return saved;
+  const meta =
+    typeof document !== 'undefined'
+      ? document
+          .querySelector('meta[name="simontrans-sheets-webhook"]')
+          ?.getAttribute('content')
+          ?.trim() ?? ''
+      : '';
+  const globalUrl =
+    typeof window !== 'undefined'
+      ? window.__SIMONTRANS_API_CONFIG__?.sheetsWebhookUrl?.trim() ?? ''
+      : '';
+  return meta || globalUrl;
+}
+
+export function setConfiguredSheetsWebhookUrl(rawUrl: string): string {
+  const clean = rawUrl.trim();
+  if (clean) {
+    localStorage.setItem(STORAGE_SHEETS_WEBHOOK_URL_KEY, clean);
+  } else {
+    localStorage.removeItem(STORAGE_SHEETS_WEBHOOK_URL_KEY);
+  }
+  return clean;
+}
+
+export const APPS_SCRIPT_BRIDGE_CODE = `// Tempel kode ini di Google Spreadsheet Database -> Ekstensi -> Apps Script
+// Lalu klik Deploy -> New deployment -> Web app -> Execute as: Me, Who has access: Anyone
+function doGet() {
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true, service: 'SIMONTRANS Sheets Bridge' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    var body = JSON.parse(e.postData.contents || '{}');
+    var ss = body.spreadsheetId
+      ? SpreadsheetApp.openById(body.spreadsheetId)
+      : SpreadsheetApp.getActiveSpreadsheet();
+
+    if (body.action === 'appendReport' && Array.isArray(body.row)) {
+      var sheetName = body.sheetName || 'Data Riwayat Laporan';
+      var sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
+      if (sheet.getLastRow() === 0 && Array.isArray(body.header)) {
+        sheet.getRange(1, 1, 1, body.header.length).setValues([body.header]);
+      }
+      var targetId = String(body.row[0] || '');
+      var lastRow = sheet.getLastRow();
+      var updatedRow = false;
+      if (lastRow >= 2 && targetId) {
+        var ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+        for (var i = 0; i < ids.length; i++) {
+          if (String(ids[i][0]) === targetId) {
+            sheet.getRange(i + 2, 1, 1, body.row.length).setValues([body.row]);
+            updatedRow = true;
+            break;
+          }
+        }
+      }
+      if (!updatedRow) {
+        if (lastRow >= 1) {
+          sheet.insertRowAfter(1);
+          sheet.getRange(2, 1, 1, body.row.length).setValues([body.row]);
+        } else {
+          sheet.getRange(1, 1, 1, body.row.length).setValues([body.row]);
+        }
+      }
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true, action: 'appendReport', id: targetId }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (body.action === 'syncTabs' && Array.isArray(body.tabs)) {
+      for (var t = 0; t < body.tabs.length; t++) {
+        var tab = body.tabs[t];
+        var s = ss.getSheetByName(tab.sheetName) || ss.insertSheet(tab.sheetName);
+        s.clearContents();
+        if (Array.isArray(tab.values) && tab.values.length > 0 && tab.values[0].length > 0) {
+          s.getRange(1, 1, tab.values.length, tab.values[0].length).setValues(tab.values);
+        }
+      }
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true, action: 'syncTabs' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: false, error: 'Aksi tidak dikenal' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}`;
 
 export function getCurrentIndonesianMonthName(date = new Date()): string {
   return MONTHS_ID[date.getMonth()] ?? 'November';
@@ -597,6 +702,117 @@ export async function syncSpreadsheetTabs(
       }),
     }
   );
+}
+
+function buildTableForTab(
+  tab: UnifiedSheetTabKey,
+  db: TransmisiDatabase
+): string[][] {
+  switch (tab) {
+    case SHEET_TABS.DEVICES:
+      return buildDevicesTable(db.devices);
+    case SHEET_TABS.INFRASTRUCTURE:
+      return buildInfrastructureTable(db.infrastructure);
+    case SHEET_TABS.TOWERS:
+      return buildTowersTable(db.stations, db.infrastructure);
+    case SHEET_TABS.PERSONNEL:
+      return buildPersonnelTable(db.users, db.technicians);
+    case SHEET_TABS.REPORTS:
+      return buildReportsTable(db.reports);
+  }
+}
+
+async function sendWebhookPost(
+  webhookUrl: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  const res = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8',
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} saat menghubungi Web App Apps Script`);
+  }
+  const text = await res.text();
+  if (text) {
+    try {
+      const json = JSON.parse(text) as { ok?: boolean; error?: string };
+      if (json.ok === false) {
+        throw new Error(json.error || 'Apps Script menolak pembaruan data');
+      }
+    } catch (parseErr) {
+      if (parseErr instanceof SyntaxError) {
+        // Non-JSON redirect output; ignore if HTTP 2xx
+      } else {
+        throw parseErr;
+      }
+    }
+  }
+}
+
+export async function pingWebhookConnection(
+  webhookUrl: string
+): Promise<{ ok: boolean; error?: string }> {
+  const clean = webhookUrl.trim();
+  if (!clean) {
+    return { ok: false, error: 'URL Web App Apps Script belum diisi' };
+  }
+  try {
+    const res = await fetch(clean, { method: 'GET' });
+    if (!res.ok) {
+      return { ok: false, error: `HTTP ${res.status}` };
+    }
+    const text = await res.text();
+    const parsed = JSON.parse(text) as { ok?: boolean; error?: string };
+    if (!parsed.ok) {
+      return { ok: false, error: parsed.error || 'Respons Apps Script tidak valid' };
+    }
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : 'Gagal terhubung ke URL Web App Apps Script',
+    };
+  }
+}
+
+export async function postReportViaWebhook(
+  webhookUrl: string,
+  spreadsheetId: string,
+  report: MaintenanceReport
+): Promise<void> {
+  const table = buildReportsTable([report]);
+  await sendWebhookPost(webhookUrl, {
+    action: 'appendReport',
+    spreadsheetId,
+    sheetName: SHEET_TABS.REPORTS,
+    header: table[0],
+    row: table[1],
+  });
+}
+
+export async function syncSpreadsheetTabsViaWebhook(
+  webhookUrl: string,
+  spreadsheetId: string,
+  db: TransmisiDatabase,
+  tabs: UnifiedSheetTabKey[]
+): Promise<void> {
+  if (tabs.length === 0) return;
+  const uniqueTabs = Array.from(new Set(tabs));
+  await sendWebhookPost(webhookUrl, {
+    action: 'syncTabs',
+    spreadsheetId,
+    tabs: uniqueTabs.map((tab) => ({
+      sheetName: tab,
+      values: buildTableForTab(tab, db),
+    })),
+  });
 }
 
 export async function syncUnifiedSpreadsheetDb(
