@@ -121,13 +121,13 @@ export default function App() {
     const unsubscribe = initGoogleAuth((session) => {
       setGoogleEmail(session.email);
       setHasGoogleToken(session.hasToken);
-      if (!session.hasToken) {
+      if (!session.hasToken && !dbSpreadsheetId) {
         setSpreadsheetConnected(false);
         setSpreadsheetTitle(null);
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [dbSpreadsheetId]);
 
   const loadBaselineData = useCallback(async () => {
     setLoading(true);
@@ -187,7 +187,23 @@ export default function App() {
         };
       }
 
-      // Attempt live public schedule read first if Schedule Spreadsheet ID is configured
+      // Attempt live DB Spreadsheet read first if DB Spreadsheet ID is configured
+      const initialDbId = getConfiguredDbSpreadsheetId();
+      if (initialDbId) {
+        try {
+          const token = getGoogleAccessToken();
+          const ping = await pingSpreadsheetConnection(initialDbId, token);
+          setSpreadsheetConnected(ping.connected);
+          setSpreadsheetTitle(ping.title ?? null);
+          if (ping.connected) {
+            baseDb = await fetchUnifiedSpreadsheetDb(initialDbId, token, baseDb);
+          }
+        } catch {
+          // Keep baseline data if private or offline
+        }
+      }
+
+      // Attempt live public schedule read if Schedule Spreadsheet ID is configured
       const initialSchedId = getConfiguredScheduleSpreadsheetId();
       if (initialSchedId) {
         try {
@@ -233,10 +249,10 @@ export default function App() {
     void loadBaselineData();
   }, [loadBaselineData]);
 
-  // Ping Spreadsheet API periodically when token & ID exist
+  // Ping Spreadsheet API periodically whenever DB Spreadsheet ID exists (OAuth or API-key read)
   const runPingCheck = useCallback(
     async (targetDbId: string, token: string | null) => {
-      if (!targetDbId || !token) {
+      if (!targetDbId) {
         setSpreadsheetConnected(false);
         setSpreadsheetTitle(null);
         return false;
@@ -244,7 +260,7 @@ export default function App() {
       const res = await pingSpreadsheetConnection(targetDbId, token);
       setSpreadsheetConnected(res.connected);
       setSpreadsheetTitle(res.title ?? null);
-      if (!res.connected && res.error) {
+      if (!res.connected && token && res.error) {
         if (res.error.toLowerCase().includes('credential') || res.error.includes('401')) {
           clearGoogleAccessToken();
           setHasGoogleToken(false);
@@ -256,8 +272,9 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (!hasGoogleToken || !dbSpreadsheetId) {
+    if (!dbSpreadsheetId) {
       setSpreadsheetConnected(false);
+      setSpreadsheetTitle(null);
       return;
     }
     const token = getGoogleAccessToken();
@@ -406,10 +423,15 @@ export default function App() {
     setScheduleSpreadsheetIdState(cleanSched);
 
     const token = getGoogleAccessToken();
-    if (token && (cleanDb || cleanSched)) {
+    if (cleanDb || cleanSched) {
       await pullFromSpreadsheets(cleanDb, cleanSched, token);
+      if (!cleanDb) {
+        setSpreadsheetConnected(false);
+        setSpreadsheetTitle(null);
+      }
     } else {
       setSpreadsheetConnected(false);
+      setSpreadsheetTitle(null);
     }
   };
 
@@ -460,10 +482,6 @@ export default function App() {
 
   const handleRefreshFromSpreadsheet = async () => {
     const token = getGoogleAccessToken();
-    if (!token) {
-      setSyncError('Silakan Sign in with Google terlebih dahulu.');
-      return;
-    }
     await pullFromSpreadsheets(dbSpreadsheetId, scheduleSpreadsheetId, token);
   };
 
@@ -1198,6 +1216,8 @@ export default function App() {
             <LaporanView
               stations={db.stations}
               reports={db.reports}
+              technicians={db.technicians}
+              users={db.users}
               currentUser={currentUser}
               onSubmitReport={handleSubmitReport}
             />

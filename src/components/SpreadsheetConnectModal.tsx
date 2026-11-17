@@ -143,10 +143,12 @@ export function SpreadsheetConnectModal({
                   </div>
                   <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                     {connected && spreadsheetTitle
-                      ? `Terhubung ke: ${spreadsheetTitle}`
+                      ? hasGoogleToken
+                        ? `Terhubung ke: ${spreadsheetTitle} (Baca & Tulis)`
+                        : `Terhubung ke: ${spreadsheetTitle} (Mode Baca Live · tanpa Sign-In)`
                       : hasGoogleToken
                       ? 'Login Google aktif — buat atau masukkan Spreadsheet ID di bawah.'
-                      : 'Masuk dengan akun Google untuk mengaktifkan baca/tulis Google Sheets API.'}
+                      : 'Masukkan Spreadsheet ID yang dibagikan (Viewer) untuk Live Ping tanpa Sign-In, atau Sign in with Google untuk akses tulis.'}
                   </div>
                 </div>
               </div>
@@ -180,6 +182,18 @@ export function SpreadsheetConnectModal({
             {syncError && (
               <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 space-y-2">
                 <div>{syncError}</div>
+                {!hasGoogleToken &&
+                  (syncError.toLowerCase().includes('permission') ||
+                    syncError.includes('403') ||
+                    syncError.includes('401')) && (
+                    <div className="pt-2 border-t border-red-200 dark:border-red-900/60 text-[11px] text-red-800 dark:text-red-200">
+                      Spreadsheet masih bersifat privat. Buka Google Sheets → klik{' '}
+                      <strong>Bagikan (Share)</strong> → ubah akses menjadi{' '}
+                      <strong>Siapa saja yang memiliki link (Pelihat/Viewer)</strong>{' '}
+                      agar ping tetap hijau di semua browser tanpa Sign-In Google, atau klik{' '}
+                      <strong>Sign in with Google</strong> di atas.
+                    </div>
+                  )}
                 {(syncError.includes('unauthorized-domain') ||
                   syncError.includes('OAuth')) && (
                   <div className="pt-2 border-t border-red-200 dark:border-red-900/60 text-[11px] space-y-1.5 text-red-800 dark:text-red-200">
@@ -338,7 +352,7 @@ export function SpreadsheetConnectModal({
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    disabled={!hasGoogleToken || !cleanDbId || syncBusy}
+                    disabled={!cleanDbId || syncBusy}
                     onClick={() => void onRefreshFromSpreadsheet()}
                     className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 inline-flex items-center gap-1.5"
                   >

@@ -4,19 +4,24 @@ import {
   Clock,
   FileText,
   Paperclip,
+  Printer,
   Send,
 } from 'lucide-react';
 import {
   MaintenanceReport,
   ReportPriority,
   Station,
+  Technician,
   TicketStatus,
   UserAccount,
 } from '../types/transmisi';
+import { TicketPrintModal } from './TicketPrintModal';
 
 interface LaporanViewProps {
   stations: Station[];
   reports: MaintenanceReport[];
+  technicians: Technician[];
+  users: UserAccount[];
   currentUser: UserAccount;
   onSubmitReport: (payload: {
     stationId: string;
@@ -38,6 +43,8 @@ const TICKET_STEPS: TicketStatus[] = [
 export function LaporanView({
   stations,
   reports,
+  technicians,
+  users,
   currentUser,
   onSubmitReport,
 }: LaporanViewProps) {
@@ -54,6 +61,7 @@ export function LaporanView({
   const [filterStation, setFilterStation] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | TicketStatus>('all');
   const [expandedId, setExpandedId] = useState<string | null>(reports[0]?.id ?? null);
+  const [printingReport, setPrintingReport] = useState<MaintenanceReport | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -356,14 +364,25 @@ export function LaporanView({
                       {rep.description}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                      <span>Pelapor: {rep.submittedBy}</span>
-                      {rep.attachmentName && (
-                        <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400 font-mono">
-                          <FileText className="w-3.5 h-3.5" />
-                          {rep.attachmentName}
-                        </span>
-                      )}
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                        <span>Pelapor: {rep.submittedBy}</span>
+                        {rep.attachmentName && (
+                          <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400 font-mono">
+                            <FileText className="w-3.5 h-3.5" />
+                            {rep.attachmentName}
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setPrintingReport(rep)}
+                        className="h-8 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 inline-flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0"
+                      >
+                        <Printer className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                        <span>Cetak Laporan</span>
+                      </button>
                     </div>
 
                     {rep.attachmentDataUrl && (
@@ -429,6 +448,14 @@ export function LaporanView({
           )}
         </div>
       </div>
+
+      <TicketPrintModal
+        report={printingReport}
+        onClose={() => setPrintingReport(null)}
+        stations={stations}
+        technicians={technicians}
+        users={users}
+      />
     </div>
   );
 }

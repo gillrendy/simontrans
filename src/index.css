@@ -65,7 +65,8 @@
   body.printing-monthly-report #monthly-report-printable * {
     visibility: visible;
   }
-  body.printing-monthly-report #monthly-report-printable {
+  body.printing-monthly-report #monthly-report-printable,
+  body.printing-ticket-report #ticket-report-printable {
     position: absolute;
     left: 0;
     top: 0;
@@ -74,6 +75,13 @@
     margin: 0;
     background: #ffffff !important;
     color: #0f172a !important;
+  }
+  body.printing-ticket-report * {
+    visibility: hidden;
+  }
+  body.printing-ticket-report #ticket-report-printable,
+  body.printing-ticket-report #ticket-report-printable * {
+    visibility: visible;
   }
 }
 
