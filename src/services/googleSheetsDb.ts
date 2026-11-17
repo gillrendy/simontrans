@@ -525,7 +525,7 @@ export async function createUnifiedDatabaseSpreadsheet(
     body: JSON.stringify({
       properties: {
         title,
-        locale: 'id_ID',
+        timeZone: 'Asia/Jakarta',
       },
       sheets: [
         { properties: { title: SHEET_TABS.DEVICES, gridProperties: { frozenRowCount: 1 } } },
