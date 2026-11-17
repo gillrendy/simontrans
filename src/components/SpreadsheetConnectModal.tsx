@@ -15,6 +15,7 @@ import {
   getSheetsApiBaseUrl,
   SHEET_TABS,
 } from '../services/googleSheetsDb';
+import { getFirebaseAuthDiagnostics } from '../services/googleSheetsAuth';
 import { ConfirmModal } from './ConfirmModal';
 import { GoogleSignInButton } from './GoogleSignInButton';
 
@@ -177,8 +178,59 @@ export function SpreadsheetConnectModal({
             </div>
 
             {syncError && (
-              <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300">
-                {syncError}
+              <div className="px-4 py-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-700 dark:text-red-300 space-y-2">
+                <div>{syncError}</div>
+                {(syncError.includes('unauthorized-domain') ||
+                  syncError.includes('OAuth')) && (
+                  <div className="pt-2 border-t border-red-200 dark:border-red-900/60 text-[11px] space-y-1.5 text-red-800 dark:text-red-200">
+                    <div className="font-semibold">
+                      Cara Mengatasi Domain Belum Diizinkan:
+                    </div>
+                    {(() => {
+                      const diag = getFirebaseAuthDiagnostics();
+                      return (
+                        <>
+                          <div>
+                            1. Buka{' '}
+                            <a
+                              href={diag.firebaseAuthSettingsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline font-semibold"
+                            >
+                              Firebase Console → Authentication → Authorized domains
+                            </a>
+                            , lalu klik <strong>Add domain</strong> dan tambahkan:{' '}
+                            <code className="px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/60 font-mono">
+                              {diag.hostname}
+                            </code>{' '}
+                            (serta{' '}
+                            <code className="px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/60 font-mono">
+                              gillrendy.github.io
+                            </code>{' '}
+                            jika diakses dari GitHub Pages).
+                          </div>
+                          <div>
+                            2. Pada{' '}
+                            <a
+                              href={diag.gcpCredentialsUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline font-semibold"
+                            >
+                              Google Cloud Console → Credentials (OAuth 2.0 Client)
+                            </a>
+                            , pastikan <em>Authorized JavaScript origins</em> memuat:{' '}
+                            <code className="px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/60 font-mono">
+                              {diag.origin}
+                            </code>
+                            .
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
               </div>
             )}
 

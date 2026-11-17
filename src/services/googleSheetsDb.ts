@@ -18,6 +18,8 @@ import {
   UserRole,
 } from '../types/transmisi';
 
+import firebaseConfig from '../../firebase-applet-config.json';
+
 declare global {
   interface Window {
     __SIMONTRANS_API_CONFIG__?: {
@@ -148,16 +150,32 @@ export function getCurrentIndonesianMonthName(date = new Date()): string {
 
 async function sheetsFetch<T>(
   path: string,
-  accessToken: string,
+  accessToken: string | null,
   init: RequestInit = {}
 ): Promise<T> {
   const base = getSheetsApiBaseUrl().replace(/\/$/, '');
-  const res = await fetch(`${base}${path}`, {
+  const method = (init.method || 'GET').toUpperCase();
+  const isRead = method === 'GET';
+
+  let url = `${base}${path}`;
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  } else if (isRead && firebaseConfig.apiKey) {
+    const sep = url.includes('?') ? '&' : '?';
+    url = `${url}${sep}key=${encodeURIComponent(firebaseConfig.apiKey)}`;
+  } else {
+    throw new Error('Autentikasi Google Sheets diperlukan.');
+  }
+
+  const res = await fetch(url, {
     ...init,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-      ...(init.headers || {}),
+      ...headers,
+      ...(init.headers as Record<string, string> | undefined),
     },
   });
 
@@ -181,25 +199,26 @@ async function sheetsFetch<T>(
 
 export async function pingSpreadsheetConnection(
   spreadsheetId: string,
-  accessToken: string
+  accessToken: string | null
 ): Promise<{
   connected: boolean;
   title?: string;
   error?: string;
 }> {
-  if (!spreadsheetId || !accessToken) {
+  if (!spreadsheetId) {
     return {
       connected: false,
-      error: !accessToken
-        ? 'Belum login Google Sheets'
-        : 'Spreadsheet ID belum diisi',
+      error: 'Spreadsheet ID belum diisi',
     };
   }
   try {
     const meta = await sheetsFetch<{
       spreadsheetId: string;
       properties?: { title?: string };
-    }>(`/${encodeURIComponent(spreadsheetId)}?fields=spreadsheetId,properties.title`, accessToken);
+    }>(
+      `/${encodeURIComponent(spreadsheetId)}?fields=spreadsheetId,properties.title`,
+      accessToken
+    );
     return {
       connected: Boolean(meta.spreadsheetId),
       title: meta.properties?.title || 'SIMONTRANS Spreadsheet',
@@ -531,7 +550,7 @@ export async function createUnifiedDatabaseSpreadsheet(
 
 export async function fetchUnifiedSpreadsheetDb(
   spreadsheetId: string,
-  accessToken: string,
+  accessToken: string | null,
   fallbackDb: TransmisiDatabase
 ): Promise<TransmisiDatabase> {
   const ranges = [
@@ -913,7 +932,7 @@ export function parseCsvMatrixText(csvText: string): string[][] {
 
 export async function fetchScheduleFromSpreadsheet(
   scheduleSpreadsheetId: string,
-  accessToken: string,
+  accessToken: string | null,
   targetDate: Date,
   technicians: Technician[],
   stations: Station[]

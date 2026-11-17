@@ -119,7 +119,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = initGoogleAuth((session) => {
-      setGoogleEmail(session.user?.email ?? null);
+      setGoogleEmail(session.email);
       setHasGoogleToken(session.hasToken);
       if (!session.hasToken) {
         setSpreadsheetConnected(false);
@@ -133,24 +133,11 @@ export default function App() {
     setLoading(true);
     setLoadError(null);
     try {
+      let baseDb: TransmisiDatabase;
       const cached = localStorage.getItem(STORAGE_DB_KEY);
       if (cached) {
         const parsed = JSON.parse(cached) as TransmisiDatabase;
-        let normalizedSchedules = (parsed.schedules ?? []).map((s) => ({
-          ...s,
-          shift: normalizeShiftLabel(s.shift),
-        }));
-        if (normalizedSchedules.length === 0) {
-          const matrixFallback = await fetchBundledMatrixScheduleCsv(
-            new Date(),
-            parsed.technicians ?? [],
-            parsed.stations ?? []
-          );
-          if (matrixFallback.length > 0) {
-            normalizedSchedules = matrixFallback;
-          }
-        }
-        setDb({
+        baseDb = {
           ...parsed,
           technicians: parsed.technicians.map((t) => ({
             ...t,
@@ -160,57 +147,79 @@ export default function App() {
             ...u,
             shift: normalizeShiftLabel(u.shift),
           })),
-          schedules: normalizedSchedules,
+          schedules: (parsed.schedules ?? []).map((s) => ({
+            ...s,
+            shift: normalizeShiftLabel(s.shift),
+          })),
           infrastructure: parsed.infrastructure ?? [],
-        });
-        setLoading(false);
-        return;
-      }
-
-      let data: TransmisiDatabase;
-      try {
-        const res = await fetch('./data/transmisi.json');
-        if (!res.ok) {
-          throw new Error(`Gagal memuat data awal (${res.status})`);
-        }
-        data = (await res.json()) as TransmisiDatabase;
-      } catch {
-        data = await new Promise<TransmisiDatabase>((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', './data/transmisi.json', true);
-          xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              try {
-                resolve(JSON.parse(xhr.responseText) as TransmisiDatabase);
-              } catch (parseErr) {
-                reject(parseErr);
+        };
+      } else {
+        let data: TransmisiDatabase;
+        try {
+          const res = await fetch('./data/transmisi.json');
+          if (!res.ok) {
+            throw new Error(`Gagal memuat data awal (${res.status})`);
+          }
+          data = (await res.json()) as TransmisiDatabase;
+        } catch {
+          data = await new Promise<TransmisiDatabase>((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', './data/transmisi.json', true);
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  resolve(JSON.parse(xhr.responseText) as TransmisiDatabase);
+                } catch (parseErr) {
+                  reject(parseErr);
+                }
+              } else {
+                reject(new Error(`Gagal memuat data awal (${xhr.status})`));
               }
-            } else {
-              reject(new Error(`Gagal memuat data awal (${xhr.status})`));
-            }
-          };
-          xhr.onerror = () => reject(new Error('Gagal memuat data awal'));
-          xhr.send();
-        });
+            };
+            xhr.onerror = () => reject(new Error('Gagal memuat data awal'));
+            xhr.send();
+          });
+        }
+        baseDb = {
+          ...data,
+          schedules: data.schedules ?? [],
+          infrastructure: data.infrastructure ?? [],
+        };
       }
 
-      let initialSchedules = data.schedules ?? [];
-      const matrixFallback = await fetchBundledMatrixScheduleCsv(
-        new Date(),
-        data.technicians ?? [],
-        data.stations ?? []
-      );
-      if (matrixFallback.length > 0) {
-        initialSchedules = matrixFallback;
+      // Attempt live public schedule read first if Schedule Spreadsheet ID is configured
+      const initialSchedId = getConfiguredScheduleSpreadsheetId();
+      if (initialSchedId) {
+        try {
+          const liveSched = await fetchScheduleFromSpreadsheet(
+            initialSchedId,
+            getGoogleAccessToken(),
+            new Date(),
+            baseDb.technicians,
+            baseDb.stations
+          );
+          setActiveScheduleSheetTitle(liveSched.sheetTitle);
+          if (liveSched.schedules.length > 0) {
+            baseDb = { ...baseDb, schedules: liveSched.schedules };
+          }
+        } catch {
+          // Fallback silently to matrix CSV or cached schedules until OAuth sign-in
+        }
       }
 
-      const normalized: TransmisiDatabase = {
-        ...data,
-        schedules: initialSchedules,
-        infrastructure: data.infrastructure ?? [],
-      };
-      setDb(normalized);
-      localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(normalized));
+      if (baseDb.schedules.length === 0) {
+        const matrixFallback = await fetchBundledMatrixScheduleCsv(
+          new Date(),
+          baseDb.technicians,
+          baseDb.stations
+        );
+        if (matrixFallback.length > 0) {
+          baseDb = { ...baseDb, schedules: matrixFallback };
+        }
+      }
+
+      setDb(baseDb);
+      localStorage.setItem(STORAGE_DB_KEY, JSON.stringify(baseDb));
     } catch (err) {
       setLoadError(
         err instanceof Error ? err.message : 'Gagal memuat data awal aplikasi'
@@ -311,7 +320,11 @@ export default function App() {
   };
 
   const pullFromSpreadsheets = useCallback(
-    async (targetDbId: string, targetScheduleId: string, token: string) => {
+    async (
+      targetDbId: string,
+      targetScheduleId: string,
+      token: string | null
+    ) => {
       if (!db) return;
       setSyncBusy(true);
       setSyncError(null);
@@ -358,10 +371,10 @@ export default function App() {
     setSyncBusy(true);
     setSyncError(null);
     try {
-      const { user, accessToken } = await signInWithGoogleSheets();
-      setGoogleEmail(user.email);
+      const { email, accessToken } = await signInWithGoogleSheets();
+      setGoogleEmail(email);
       setHasGoogleToken(true);
-      if (dbSpreadsheetId) {
+      if (dbSpreadsheetId || scheduleSpreadsheetId) {
         await pullFromSpreadsheets(dbSpreadsheetId, scheduleSpreadsheetId, accessToken);
       }
     } catch (err) {
